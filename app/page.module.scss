@@ -1,0 +1,481 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.pageWrapper {
+  // display
+  @include mixins.flex(column, flex-start, stretch, nowrap);
+
+  // size
+  flex: 1;
+}
+
+.heroSection {
+    // position
+    position: relative;
+    overflow: hidden;
+
+    .backgroundGlow {
+        // position
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        overflow: hidden;
+        pointer-events: none;
+
+        .glowOrb {
+            // position
+            position: absolute;
+            left: 50%;
+            top: 0;
+            transform: translate(-50%, -50%);
+
+            // size
+            width: 800px;
+            height: 500px;
+
+            // decoration
+            background: radial-gradient(circle, rgba(variables.$color-primary, 0.05) 0%, transparent 70%);
+            border-radius: variables.$radius-full;
+            filter: blur(80px);
+        }
+    }
+
+    .heroContainer {
+        // position
+        position: relative;
+
+        // size
+        width: 100%;
+        max-width: variables.$container-lg;
+
+        // margin
+        margin: 0 auto;
+        padding: variables.$spacing-20 variables.$spacing-4;
+
+        @media (min-width: variables.$breakpoint-sm) {
+            padding: variables.$spacing-24 * 1.33 variables.$spacing-6;
+        }
+
+        .heroContent {
+            // display
+            @include mixins.flex(column, center, center, nowrap);
+
+            // decoration
+            text-align: center;
+
+            .badge {
+                // display
+                @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+                // margin
+                margin-bottom: variables.$spacing-6;
+                padding: variables.$spacing-2 variables.$spacing-4;
+
+                // decoration
+                border: 1px solid variables.$color-border;
+                border-radius: variables.$radius-full;
+                background-color: rgba(variables.$color-surface-elevated, 0.5);
+
+                .badgeIcon {
+                    // size
+                    width: variables.$spacing-4;
+                    height: variables.$spacing-4;
+
+                    // decoration
+                    color: variables.$color-primary;
+                }
+
+                .badgeText {
+                    // decoration
+                    font-size: variables.$font-size-sm;
+                    font-weight: variables.$font-weight-medium;
+                    color: variables.$color-text-muted;
+                }
+            }
+
+            .heroTitle {
+                // size
+                max-width: 48rem;
+
+                // margin
+                margin: 0;
+
+                // decoration
+                font-family: variables.$font-display;
+                font-size: variables.$font-size-4xl;
+                font-weight: variables.$font-weight-bold;
+                line-height: variables.$line-height-tight;
+                letter-spacing: -0.025em;
+                color: variables.$color-foreground;
+
+                @media (min-width: variables.$breakpoint-sm) {
+                    font-size: variables.$font-size-5xl;
+                }
+
+                @media (min-width: variables.$breakpoint-lg) {
+                    font-size: variables.$font-size-6xl;
+                }
+
+                .heroTitleAccent {
+                    // decoration
+                    color: variables.$color-primary;
+                }
+            }
+
+            .heroDescription {
+                // size
+                max-width: 36rem;
+
+                // margin
+                margin: variables.$spacing-6 0 0;
+
+                // decoration
+                font-size: variables.$font-size-lg;
+                line-height: variables.$line-height-relaxed;
+                color: variables.$color-text-muted;
+            }
+
+            .heroActions {
+                // display
+                @include mixins.flex(column, center, center, nowrap, variables.$spacing-3);
+
+                @media (min-width: variables.$breakpoint-sm) {
+                    @include mixins.flex(row, center, center, nowrap, variables.$spacing-3);
+                }
+
+                // margin
+                margin-top: variables.$spacing-8;
+
+                .primaryButton {
+                    // display
+                    @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+                    // margin
+                    padding: variables.$spacing-3 variables.$spacing-6;
+
+                    // decoration
+                    text-decoration: none;
+                    font-size: variables.$font-size-sm;
+                    font-weight: variables.$font-weight-semibold;
+                    color: variables.$color-primary-foreground;
+                    background-color: variables.$color-primary;
+                    border-radius: variables.$radius-lg;
+                    transition: all variables.$transition-base;
+
+                    &:hover {
+                        background-color: variables.$color-primary-light;
+
+                        .buttonIcon {
+                            transform: translateX(2px);
+                        }
+                    }
+
+                    .buttonIcon {
+                        // size
+                        width: variables.$spacing-4;
+                        height: variables.$spacing-4;
+
+                        // decoration
+                        transition: transform variables.$transition-base;
+                    }
+                }
+
+                .secondaryButton {
+                    // display
+                    @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+                    // margin
+                    padding: variables.$spacing-3 variables.$spacing-6;
+
+                    // decoration
+                    text-decoration: none;
+                    font-size: variables.$font-size-sm;
+                    font-weight: variables.$font-weight-medium;
+                    color: variables.$color-foreground;
+                    background-color: rgba(variables.$color-surface-elevated, 0.5);
+                    border: 1px solid variables.$color-border;
+                    border-radius: variables.$radius-lg;
+                    transition: all variables.$transition-base;
+
+                    &:hover {
+                        background-color: variables.$color-surface-elevated;
+                    }
+                }
+            }
+
+            .stats {
+                // display
+                @include mixins.flex(row, center, center, wrap, variables.$spacing-6);
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: variables.$spacing-6;
+
+                // size
+                width: 100%;
+                max-width: 32rem;
+
+                // margin
+                margin-top: variables.$spacing-16;
+
+                .statItem {
+                    // display
+                    @include mixins.flex(column, center, center, nowrap, variables.$spacing-1);
+
+                    .statValue {
+                        // display
+                        @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+                        // decoration
+                        color: variables.$color-primary;
+
+                        .statIcon {
+                            // size
+                            width: variables.$spacing-4;
+                            height: variables.$spacing-4;
+                        }
+
+                        .statNumber {
+                            // decoration
+                            font-size: variables.$font-size-2xl;
+                            font-weight: variables.$font-weight-bold;
+                            color: variables.$color-foreground;
+                        }
+                    }
+
+                    .statLabel {
+                        // decoration
+                        font-size: variables.$font-size-xs;
+                        color: variables.$color-text-muted;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.howItWorksSection {
+    // decoration
+    border-top: 1px solid rgba(variables.$color-border, 0.5);
+
+    .sectionContainer {
+        // size
+        width: 100%;
+        max-width: variables.$container-lg;
+
+        // margin
+        margin: 0 auto;
+        padding: variables.$spacing-20 variables.$spacing-4;
+
+        @media (min-width: variables.$breakpoint-sm) {
+            padding: variables.$spacing-20 variables.$spacing-6;
+        }
+
+        .sectionHeader {
+            // margin
+            margin-bottom: variables.$spacing-12;
+
+            // decoration
+            text-align: center;
+
+            .sectionTitle {
+                // margin
+                margin: 0;
+
+                // decoration
+                font-family: variables.$font-display;
+                font-size: variables.$font-size-2xl;
+                font-weight: variables.$font-weight-bold;
+                line-height: variables.$line-height-tight;
+                letter-spacing: -0.025em;
+                color: variables.$color-foreground;
+
+                @media (min-width: variables.$breakpoint-sm) {
+                    font-size: variables.$font-size-3xl;
+                }
+            }
+
+            .sectionDescription {
+                // margin
+                margin: variables.$spacing-3 0 0;
+
+                // decoration
+                font-size: variables.$font-size-base;
+                color: variables.$color-text-muted;
+            }
+        }
+
+        .featuresGrid {
+            // display
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: variables.$spacing-6;
+
+            @media (min-width: variables.$breakpoint-sm) {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .featureCard {
+                // margin
+                padding: variables.$spacing-6;
+
+                // decoration
+                border: 1px solid rgba(variables.$color-border, 0.5);
+                border-radius: variables.$radius-xl;
+                background-color: variables.$color-surface;
+                transition: all variables.$transition-base;
+
+                &:hover {
+                    border-color: rgba(variables.$color-primary, 0.2);
+                    background-color: rgba(variables.$color-surface-elevated, 0.3);
+                }
+
+                .featureIcon {
+                    // display
+                    @include mixins.flex(row, center, center, nowrap);
+
+                    // size
+                    width: variables.$spacing-10;
+                    height: variables.$spacing-10;
+
+                    // margin
+                    margin-bottom: variables.$spacing-4;
+
+                    // decoration
+                    background-color: rgba(variables.$color-primary, 0.1);
+                    border-radius: variables.$radius-lg;
+
+                    svg {
+                        // size
+                        width: variables.$spacing-5;
+                        height: variables.$spacing-5;
+
+                        // decoration
+                        color: variables.$color-primary;
+                    }
+                }
+
+                .featureTitle {
+                    // margin
+                    margin: 0 0 variables.$spacing-2 0;
+
+                    // decoration
+                    font-size: variables.$font-size-base;
+                    font-weight: variables.$font-weight-semibold;
+                    color: variables.$color-foreground;
+                }
+
+                .featureDescription {
+                    // margin
+                    margin: 0;
+
+                    // decoration
+                    font-size: variables.$font-size-sm;
+                    line-height: variables.$line-height-relaxed;
+                    color: variables.$color-text-muted;
+                }
+            }
+        }
+    }
+}
+
+.ctaSection {
+    // decoration
+    border-top: 1px solid rgba(variables.$color-border, 0.5);
+
+    .sectionContainer {
+        // size
+        width: 100%;
+        max-width: variables.$container-lg;
+
+        // margin
+        margin: 0 auto;
+        padding: variables.$spacing-20 variables.$spacing-4;
+
+        @media (min-width: variables.$breakpoint-sm) {
+            padding: variables.$spacing-20 variables.$spacing-6;
+        }
+
+        .ctaCard {
+            // margin
+            padding: variables.$spacing-8;
+
+            @media (min-width: variables.$breakpoint-sm) {
+                padding: variables.$spacing-12;
+            }
+
+            // decoration
+            border: 1px solid rgba(variables.$color-border, 0.5);
+            border-radius: variables.$radius-2xl;
+            background-color: variables.$color-surface;
+            text-align: center;
+
+            .ctaTitle {
+                // margin
+                margin: 0;
+
+                // decoration
+                font-family: variables.$font-display;
+                font-size: variables.$font-size-2xl;
+                font-weight: variables.$font-weight-bold;
+                line-height: variables.$line-height-tight;
+                letter-spacing: -0.025em;
+                color: variables.$color-foreground;
+
+                @media (min-width: variables.$breakpoint-sm) {
+                    font-size: variables.$font-size-3xl;
+                }
+            }
+
+            .ctaDescription {
+                // size
+                max-width: 28rem;
+
+                // margin
+                margin: variables.$spacing-3 auto 0;
+
+                // decoration
+                font-size: variables.$font-size-base;
+                color: variables.$color-text-muted;
+            }
+
+            .ctaButton {
+                // display
+                @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+                display: inline-flex;
+
+                // margin
+                margin-top: variables.$spacing-6;
+                padding: variables.$spacing-3 variables.$spacing-6;
+
+                // decoration
+                text-decoration: none;
+                font-size: variables.$font-size-sm;
+                font-weight: variables.$font-weight-semibold;
+                color: variables.$color-primary-foreground;
+                background-color: variables.$color-primary;
+                border-radius: variables.$radius-lg;
+                transition: all variables.$transition-base;
+
+                &:hover {
+                    background-color: variables.$color-primary-light;
+
+                    .buttonIcon {
+                        transform: translateX(2px);
+                    }
+                }
+
+                .buttonIcon {
+                    // size
+                    width: variables.$spacing-4;
+                    height: variables.$spacing-4;
+
+                    // decoration
+                    transition: transform variables.$transition-base;
+                }
+            }
+        }
+    }
+}

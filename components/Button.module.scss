@@ -1,0 +1,92 @@
+@import '../styles/variables.scss';
+@import '../styles/mixins.scss';
+
+.button {
+  @include button-base;
+  position: relative;
+  overflow: hidden;
+  
+  &::before {
+    content: '';
+    @include absolute-fill;
+    background: linear-gradient(
+      120deg,
+      transparent,
+      rgba(white, 0.2),
+      transparent
+    );
+    transform: translateX(-100%);
+    transition: transform $transition-slow;
+  }
+  
+  &:hover::before {
+    transform: translateX(100%);
+  }
+  
+  // Variants
+  &.primary {
+    @include button-variant($color-primary);
+    box-shadow: 0 4px 16px rgba($color-primary, 0.3);
+    
+    &:hover:not(:disabled) {
+      box-shadow: 0 8px 24px rgba($color-primary, 0.4);
+    }
+  }
+  
+  &.secondary {
+    @include button-variant($color-secondary);
+    box-shadow: 0 4px 16px rgba($color-secondary, 0.3);
+    
+    &:hover:not(:disabled) {
+      box-shadow: 0 8px 24px rgba($color-secondary, 0.4);
+    }
+  }
+  
+  &.outline {
+    @include button-outline($color-primary);
+  }
+  
+  &.ghost {
+    @include button-ghost($color-text-primary);
+  }
+  
+  &.danger {
+    @include button-variant($color-error);
+    box-shadow: 0 4px 16px rgba($color-error, 0.3);
+  }
+  
+  // Sizes
+  &.small {
+    padding: $spacing-2 $spacing-4;
+    font-size: $font-size-sm;
+  }
+  
+  &.medium {
+    padding: $spacing-3 $spacing-6;
+    font-size: $font-size-base;
+  }
+  
+  &.large {
+    padding: $spacing-4 $spacing-8;
+    font-size: $font-size-lg;
+  }
+  
+  // Modifiers
+  &.fullWidth {
+    width: 100%;
+  }
+  
+  &.loading {
+    pointer-events: none;
+    
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(white, 0.3);
+      border-top-color: white;
+      border-radius: $radius-full;
+      animation: rotate 0.6s linear infinite;
+    }
+  }
+}

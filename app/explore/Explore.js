@@ -1,0 +1,341 @@
+'use client'
+
+import { useEffect, useCallback, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import Link from 'next/link'
+import { 
+  Eye, 
+  Heart, 
+  ArrowRight,
+  Search,
+  ChevronLeft,
+  ChevronRight,
+  Users,
+  MessageCircle
+} from 'lucide-react'
+import styles from './page.module.scss'
+import { formatNumber } from '@/lib/utils'
+import ChatLinkCard from '@/components/ChatLinkCard'
+import ExploreFilters from '@/components/explore/ExploreFIlters'
+import { useExplore } from '@/hooks/UseExplore'
+
+const SORT_OPTIONS_CREATORS = [
+  { value: 'recent', label: 'Recently Active' },
+  { value: 'popular', label: 'Most Popular' },
+  { value: 'views', label: 'Most Viewed' },
+  { value: 'chats', label: 'Most Chats' }
+]
+
+const SORT_OPTIONS_CHATS = [
+  { value: 'recent', label: 'Most Recent' },
+  { value: 'popular', label: 'Most Popular' },
+  { value: 'views', label: 'Most Viewed' }
+]
+
+export default function ExploreClient({ initialCreators, initialChats, initialPagination, initialTab }) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Tab management
+  const [activeTab, setActiveTab] = useState(initialTab)
+
+  // Search and filters
+  const [search, setSearch] = useState('')
+  const [platform, setPlatform] = useState('all')
+  const [sort, setSort] = useState('recent')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  // Data fetching
+  const creatorsExplore = useExplore('creators')
+  const chatsExplore = useExplore('chats')
+
+  const currentExplore = activeTab === 'creators' ? creatorsExplore : chatsExplore
+
+  // Load initial data only once
+  useEffect(() => {
+    if (initialTab === 'creators' && creatorsExplore.data.length === 0) {
+      creatorsExplore.setData(initialCreators)
+      creatorsExplore.setPagination(initialPagination)
+    } else if (initialTab === 'chats' && chatsExplore.data.length === 0) {
+      chatsExplore.setData(initialChats)
+      chatsExplore.setPagination(initialPagination)
+    }
+  }, []) // Solo en mount
+
+  // Load filters from URL only on mount
+  useEffect(() => {
+    const urlSearch = searchParams.get('search') || ''
+    const urlPlatform = searchParams.get('platform') || 'all'
+    const urlSort = searchParams.get('sort') || 'recent'
+    const urlPage = parseInt(searchParams.get('page') || '1')
+
+    setSearch(urlSearch)
+    setPlatform(urlPlatform)
+    setSort(urlSort)
+    setCurrentPage(urlPage)
+  }, []) // Solo en mount
+
+  // Debounce search
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search)
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [search])
+
+  // Fetch data when filters change (but not on initial render)
+  const [isInitialRender, setIsInitialRender] = useState(true)
+
+  useEffect(() => {
+    if (isInitialRender) {
+      setIsInitialRender(false)
+      return
+    }
+
+    const filters = {
+      page: currentPage,
+      limit: 20,
+      search: debouncedSearch,
+      sort
+    }
+
+    if (activeTab === 'chats') {
+      filters.platform = platform
+    }
+
+    currentExplore.fetchData(filters)
+  }, [debouncedSearch, platform, sort, currentPage, activeTab])
+
+  // Update URL when filters change (without causing re-render)
+  useEffect(() => {
+    if (isInitialRender) return
+
+    const params = new URLSearchParams()
+    
+    if (activeTab !== 'creators') params.set('tab', activeTab)
+    if (debouncedSearch) params.set('search', debouncedSearch)
+    if (platform !== 'all' && activeTab === 'chats') params.set('platform', platform)
+    if (sort !== 'recent') params.set('sort', sort)
+    if (currentPage > 1) params.set('page', currentPage.toString())
+
+    const newUrl = params.toString() ? `/explore?${params.toString()}` : '/explore'
+    
+    // Use replace instead of push to avoid adding to history on every keystroke
+    window.history.replaceState({}, '', newUrl)
+  }, [activeTab, debouncedSearch, platform, sort, currentPage, isInitialRender])
+
+  const handleTabChange = useCallback((newTab) => {
+    setActiveTab(newTab)
+    setSearch('')
+    setPlatform('all')
+    setSort('recent')
+    setCurrentPage(1)
+  }, [])
+
+  const handleSearchChange = useCallback((value) => {
+    setSearch(value)
+    setCurrentPage(1)
+  }, [])
+
+  const handlePlatformChange = useCallback((value) => {
+    setPlatform(value)
+    setCurrentPage(1)
+  }, [])
+
+  const handleSortChange = useCallback((value) => {
+    setSort(value)
+    setCurrentPage(1)
+  }, [])
+
+  const handlePageChange = useCallback((newPage) => {
+    setCurrentPage(newPage)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
+
+  const getInitials = (name, username) => {
+    if (name) {
+      const parts = name.trim().split(' ')
+      if (parts.length >= 2) {
+        return (parts[0][0] + parts[1][0]).toUpperCase()
+      }
+      return name.substring(0, 2).toUpperCase()
+    }
+    return username.substring(0, 2).toUpperCase()
+  }
+
+  const sortOptions = activeTab === 'creators' ? SORT_OPTIONS_CREATORS : SORT_OPTIONS_CHATS
+
+  return (
+    <main className={styles.main}>
+      <div className={styles.container}>
+        {/* Header */}
+        <header className={styles.header}>
+          <h1 className={styles.title}>Explore</h1>
+          <p className={styles.subtitle}>
+            Discover creators and AI conversations
+          </p>
+        </header>
+
+        {/* Tabs */}
+        <div className={styles.tabsContainer}>
+          <button
+            onClick={() => handleTabChange('creators')}
+            className={`${styles.tab} ${activeTab === 'creators' ? styles.active : ''}`}
+          >
+            <Users />
+            Creators
+          </button>
+          <button
+            onClick={() => handleTabChange('chats')}
+            className={`${styles.tab} ${activeTab === 'chats' ? styles.active : ''}`}
+          >
+            <MessageCircle />
+            Chats
+          </button>
+        </div>
+
+        {/* Filters Component */}
+        <ExploreFilters
+          activeTab={activeTab}
+          search={search}
+          platform={platform}
+          sort={sort}
+          sortOptions={sortOptions}
+          onSearchChange={handleSearchChange}
+          onPlatformChange={handlePlatformChange}
+          onSortChange={handleSortChange}
+        />
+
+        {/* Results Info */}
+        {!currentExplore.loading && (
+          <div className={styles.resultsInfo}>
+            <p className={styles.resultsText}>
+              {currentExplore.pagination.total} {activeTab === 'creators' 
+                ? currentExplore.pagination.total === 1 ? 'creator' : 'creators'
+                : currentExplore.pagination.total === 1 ? 'chat' : 'chats'
+              } found
+            </p>
+          </div>
+        )}
+
+        {/* Loading State */}
+        {currentExplore.loading && (
+          <div className={styles.loading}>
+            <div className={styles.spinner}></div>
+            <p>Loading {activeTab}...</p>
+          </div>
+        )}
+
+        {/* Creators List */}
+        {!currentExplore.loading && activeTab === 'creators' && currentExplore.data.length > 0 && (
+          <div className={styles.creatorsList}>
+            {currentExplore.data.map((creator) => (
+              <Link
+                key={creator.id}
+                href={`/u/${creator.username}`}
+                className={styles.creatorCard}
+              >
+                <div className={styles.creatorAvatar}>
+                  {creator.avatar_url ? (
+                    <img src={creator.avatar_url} alt={creator.full_name || creator.username} />
+                  ) : (
+                    <span className={styles.avatarInitials}>
+                      {getInitials(creator.full_name, creator.username)}
+                    </span>
+                  )}
+                </div>
+
+                <div className={styles.creatorInfo}>
+                  <div className={styles.creatorHeader}>
+                    <h3 className={styles.creatorName}>
+                      {creator.full_name || creator.username}
+                    </h3>
+                    <span className={styles.creatorUsername}>@{creator.username}</span>
+                  </div>
+
+                  {creator.bio && (
+                    <p className={styles.creatorBio}>{creator.bio}</p>
+                  )}
+
+                  <div className={styles.creatorStats}>
+                    <span className={styles.stat}>
+                      <Eye />
+                      {formatNumber(creator.stats.total_views)} views
+                    </span>
+                    <span className={styles.stat}>
+                      <Heart />
+                      {formatNumber(creator.stats.total_likes)} likes
+                    </span>
+                    <span className={styles.stat}>
+                      {creator.stats.total_chats} {creator.stats.total_chats === 1 ? 'chat' : 'chats'}
+                    </span>
+                  </div>
+                </div>
+
+                <ArrowRight className={styles.arrowIcon} />
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* Chats List */}
+        {!currentExplore.loading && activeTab === 'chats' && currentExplore.data.length > 0 && (
+          <div className={styles.chatsList}>
+            {currentExplore.data.map((chat) => (
+              <ChatLinkCard 
+                key={chat.id}
+                chat={chat}
+                editable={false}
+                draggable={false}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!currentExplore.loading && currentExplore.data.length === 0 && (
+          <div className={styles.emptyState}>
+            <Search className={styles.emptyIcon} />
+            <h3 className={styles.emptyTitle}>
+              No {activeTab} found
+            </h3>
+            <p className={styles.emptyText}>
+              Try adjusting your search or filters
+            </p>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {!currentExplore.loading && currentExplore.data.length > 0 && currentExplore.pagination.totalPages > 1 && (
+          <div className={styles.pagination}>
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={!currentExplore.pagination.hasPrevPage}
+              className={styles.paginationButton}
+            >
+              <ChevronLeft />
+              Previous
+            </button>
+
+            <div className={styles.paginationInfo}>
+              <span className={styles.paginationText}>
+                Page {currentPage} of {currentExplore.pagination.totalPages}
+              </span>
+            </div>
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={!currentExplore.pagination.hasNextPage}
+              className={styles.paginationButton}
+            >
+              Next
+              <ChevronRight />
+            </button>
+          </div>
+        )}
+      </div>
+    </main>
+  )
+}

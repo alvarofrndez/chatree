@@ -1,0 +1,511 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.main {
+  // size
+  width: 100%;
+  min-height: calc(100vh - variables.$size-header-base - variables.$size-footer-base);
+
+  // display
+  @include mixins.flex(column, flex-start, center);
+
+  // decoration
+  background-color: variables.$color-background;
+
+  // margin
+  padding: variables.$spacing-10 variables.$spacing-4;
+
+  @media (min-width: variables.$breakpoint-sm) {
+    padding: variables.$spacing-10 variables.$spacing-6;
+  }
+
+  .container {
+    // size
+    width: 100%;
+    max-width: variables.$container-md;
+
+    // display
+    @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-6);
+
+    .header {
+      // display
+      @include mixins.flex(column, flex-start, flex-start, nowrap, variables.$spacing-1);
+
+      .title {
+        // decoration
+        font-size: variables.$font-size-2xl;
+        font-weight: variables.$font-weight-bold;
+        color: variables.$color-foreground;
+        letter-spacing: -0.025em;
+      }
+
+      .subtitle {
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-muted;
+      }
+    }
+
+    .tabsContainer {
+      // display
+      @include mixins.flex(row, center, flex-start, nowrap, variables.$spacing-1);
+
+      // margin
+      padding: variables.$spacing-1;
+
+      // decoration
+      background-color: variables.$color-surface;
+      border: 1px solid rgba(variables.$color-border, 0.5);
+      border-radius: variables.$radius-lg;
+
+      .tab {
+        // display
+        @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+        flex: 1;
+
+        // margin
+        padding: variables.$spacing-2 variables.$spacing-4;
+
+        // decoration
+        background: none;
+        border: none;
+        border-radius: variables.$radius-md;
+        font-size: variables.$font-size-sm;
+        font-weight: variables.$font-weight-medium;
+        color: variables.$color-text-muted;
+        cursor: pointer;
+        transition: all variables.$transition-base;
+
+        svg {
+          // size
+          width: variables.$spacing-4;
+          height: variables.$spacing-4;
+        }
+
+        &:hover {
+          color: variables.$color-foreground;
+        }
+
+        &.active {
+          background-color: variables.$color-surface-elevated;
+          color: variables.$color-foreground;
+        }
+      }
+    }
+
+    .searchContainer {
+      // size
+      width: 100%;
+
+      .searchWrapper {
+        // position
+        position: relative;
+
+        // size
+        width: 100%;
+
+        .searchIcon {
+          // position
+          position: absolute;
+          left: variables.$spacing-4;
+          top: 50%;
+          transform: translateY(-50%);
+
+          // size
+          width: variables.$spacing-4;
+          height: variables.$spacing-4;
+
+          // decoration
+          color: variables.$color-text-muted;
+          pointer-events: none;
+        }
+
+        .searchInput {
+          // size
+          width: 100%;
+
+          // margin
+          padding: variables.$spacing-3 variables.$spacing-4 variables.$spacing-3 variables.$spacing-11;
+
+          // decoration
+          background-color: variables.$color-surface;
+          border: 1px solid rgba(variables.$color-border, 0.5);
+          border-radius: variables.$radius-xl;
+          font-size: variables.$font-size-sm;
+          color: variables.$color-foreground;
+          outline: none;
+          transition: all variables.$transition-base;
+
+          &::placeholder {
+            color: variables.$color-text-muted;
+          }
+
+          &:focus {
+            border-color: rgba(variables.$color-primary, 0.5);
+            ring: 1px solid rgba(variables.$color-primary, 0.25);
+          }
+        }
+      }
+    }
+
+    .filtersContainer {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-4);
+
+      @media (min-width: variables.$breakpoint-md) {
+        // display
+        @include mixins.flex(row, flex-start, flex-start, wrap, variables.$spacing-6);
+      }
+
+      .filterGroup {
+        // display
+        @include mixins.flex(column, flex-start, flex-start, nowrap, variables.$spacing-2);
+
+        @media (min-width: variables.$breakpoint-md) {
+          flex: 1;
+        }
+
+        .filterLabel {
+          // decoration
+          font-size: variables.$font-size-xs;
+          font-weight: variables.$font-weight-semibold;
+          color: variables.$color-text-muted;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .filterButtons {
+          // display
+          @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-2);
+
+          .filterButton {
+            // margin
+            padding: variables.$spacing-2 variables.$spacing-3;
+
+            // decoration
+            background-color: variables.$color-surface;
+            border: 1px solid rgba(variables.$color-border, 0.5);
+            border-radius: variables.$radius-md;
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-medium;
+            color: variables.$color-text-muted;
+            cursor: pointer;
+            transition: all variables.$transition-base;
+
+            &:hover {
+              background-color: variables.$color-surface-elevated;
+              border-color: variables.$color-border;
+              color: variables.$color-foreground;
+            }
+
+            &.active {
+              background-color: variables.$color-primary;
+              border-color: variables.$color-primary;
+              color: variables.$color-primary-foreground;
+            }
+          }
+        }
+      }
+    }
+
+    .resultsInfo {
+      // margin
+      margin-top: variables.$spacing-2;
+
+      .resultsText {
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-muted;
+      }
+    }
+
+    .loading {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(column, center, center, nowrap, variables.$spacing-4);
+
+      // margin
+      padding: variables.$spacing-12 variables.$spacing-4;
+
+      .spinner {
+        // size
+        width: variables.$spacing-8;
+        height: variables.$spacing-8;
+
+        // decoration
+        border: 3px solid rgba(variables.$color-primary, 0.2);
+        border-top-color: variables.$color-primary;
+        border-radius: variables.$radius-full;
+
+        // animation
+        animation: spin 0.8s linear infinite;
+      }
+
+      p {
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-muted;
+      }
+    }
+
+    .creatorsList {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-3);
+
+      .creatorCard {
+        // display
+        @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-4);
+
+        // margin
+        padding: variables.$spacing-4;
+
+        // decoration
+        background-color: variables.$color-surface;
+        border: 1px solid variables.$color-border;
+        border-radius: variables.$radius-lg;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all variables.$transition-base;
+
+        &:hover {
+          background-color: transparent;
+
+          .arrowIcon {
+            transform: translateX(0.125rem);
+            color: variables.$color-primary;
+          }
+        }
+
+        .creatorAvatar {
+          // size
+          width: variables.$spacing-12;
+          height: variables.$spacing-12;
+
+          // display
+          @include mixins.flex(row, center, center);
+          flex-shrink: 0;
+
+          // decoration
+          border-radius: variables.$radius-full;
+          background-color: rgba(variables.$color-primary, 0.1);
+          ring: 1px solid rgba(variables.$color-primary, 0.2);
+          overflow: hidden;
+
+          img {
+            // size
+            width: 100%;
+            height: 100%;
+
+            // decoration
+            object-fit: cover;
+          }
+
+          .avatarInitials {
+            // decoration
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-bold;
+            color: variables.$color-primary;
+          }
+        }
+
+        .creatorInfo {
+          // size
+          min-width: 0;
+
+          // display
+          @include mixins.flex(column, flex-start, flex-start, nowrap, variables.$spacing-1-5);
+          flex: 1;
+
+          .creatorHeader {
+            // display
+            @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-2);
+
+            .creatorName {
+              // decoration
+              font-size: variables.$font-size-sm;
+              font-weight: variables.$font-weight-semibold;
+              color: variables.$color-foreground;
+            }
+
+            .creatorUsername {
+              // decoration
+              font-size: variables.$font-size-xs;
+              color: variables.$color-text-muted;
+            }
+          }
+
+          .creatorBio {
+            // decoration
+            font-size: variables.$font-size-sm;
+            color: variables.$color-text-muted;
+            line-height: variables.$line-height-relaxed;
+
+            // truncate
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+          }
+
+          .creatorStats {
+            // display
+            @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-1);
+
+            // decoration
+            font-size: variables.$font-size-xs;
+            color: rgba(variables.$color-text-muted, 0.7);
+
+            .stat {
+              // display
+              @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-1);
+
+              svg {
+                // size
+                width: variables.$spacing-3;
+                height: variables.$spacing-3;
+              }
+
+              &:not(:last-child)::after {
+                content: '•';
+                margin-left: variables.$spacing-1;
+                color: rgba(variables.$color-text-muted, 0.5);
+              }
+            }
+          }
+        }
+
+        .arrowIcon {
+          // size
+          width: variables.$spacing-4;
+          height: variables.$spacing-4;
+
+          // display
+          flex-shrink: 0;
+
+          // decoration
+          color: rgba(variables.$color-text-muted, 0.4);
+          transition: all variables.$transition-base;
+        }
+      }
+    }
+
+    .chatsList {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-3);
+    }
+
+    .emptyState {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(column, center, center, nowrap, variables.$spacing-4);
+
+      // margin
+      padding: variables.$spacing-12 variables.$spacing-4;
+
+      // decoration
+      background-color: variables.$color-surface;
+      border: 1px dashed variables.$color-border;
+      border-radius: variables.$radius-xl;
+
+      .emptyIcon {
+        // size
+        width: variables.$spacing-12;
+        height: variables.$spacing-12;
+
+        // decoration
+        color: variables.$color-text-muted;
+        opacity: 0.5;
+      }
+
+      .emptyTitle {
+        // decoration
+        font-size: variables.$font-size-base;
+        font-weight: variables.$font-weight-semibold;
+        color: variables.$color-text-secondary;
+      }
+
+      .emptyText {
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-muted;
+        text-align: center;
+      }
+    }
+
+    .pagination {
+      // display
+      @include mixins.flex(row, space-between, center, nowrap, variables.$spacing-4);
+
+      // margin
+      margin-top: variables.$spacing-6;
+      padding-top: variables.$spacing-6;
+
+      // decoration
+      border-top: 1px solid rgba(variables.$color-border, 0.5);
+
+      .paginationButton {
+        // display
+        @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+        // margin
+        padding: variables.$spacing-2 variables.$spacing-4;
+
+        // decoration
+        background-color: variables.$color-surface;
+        border: 1px solid rgba(variables.$color-border, 0.5);
+        border-radius: variables.$radius-md;
+        font-size: variables.$font-size-sm;
+        font-weight: variables.$font-weight-medium;
+        color: variables.$color-foreground;
+        cursor: pointer;
+        transition: all variables.$transition-base;
+
+        svg {
+          // size
+          width: variables.$spacing-4;
+          height: variables.$spacing-4;
+        }
+
+        &:hover:not(:disabled) {
+          background-color: variables.$color-surface-elevated;
+          border-color: variables.$color-border;
+        }
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      .paginationInfo {
+        // display
+        @include mixins.flex(row, center, center, nowrap);
+
+        .paginationText {
+          // decoration
+          font-size: variables.$font-size-sm;
+          color: variables.$color-text-muted;
+        }
+      }
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

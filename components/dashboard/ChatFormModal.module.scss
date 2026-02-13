@@ -1,0 +1,238 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.modal {
+  // position
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: variables.$z-index-modal;
+
+  // size
+  width: 100%;
+  height: 100%;
+
+  // display
+  @include mixins.flex(row, center, center);
+
+  // decoration
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+
+  .modalContent {
+    // position
+    position: relative;
+
+    // size
+    width: 90%;
+    max-width: variables.$modal-md;
+    max-height: 90vh;
+
+    // margin
+    padding: variables.$spacing-6;
+
+    // decoration
+    background-color: variables.$color-surface;
+    border: 1px solid variables.$color-border;
+    border-radius: variables.$radius-xl;
+    overflow-y: auto;
+
+    @media (min-width: variables.$breakpoint-sm) {
+      padding: variables.$spacing-8;
+    }
+
+    h2 {
+      // margin
+      margin: 0 0 variables.$spacing-6 0;
+
+      // decoration
+      font-size: variables.$font-size-xl;
+      font-weight: variables.$font-weight-bold;
+      color: variables.$color-foreground;
+
+      @media (min-width: variables.$breakpoint-sm) {
+        font-size: variables.$font-size-2xl;
+      }
+    }
+
+    .form {
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-5);
+
+      .inputWrapper {
+        // display
+        @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-2);
+
+        label {
+          // decoration
+          font-size: variables.$font-size-sm;
+          font-weight: variables.$font-weight-semibold;
+          color: variables.$color-text-secondary;
+        }
+
+        input,
+        select,
+        textarea {
+          // margin
+          padding: variables.$spacing-3;
+
+          // decoration
+          background-color: variables.$color-background;
+          border: 1px solid variables.$color-border;
+          border-radius: variables.$radius-md;
+          font-size: variables.$font-size-sm;
+          color: variables.$color-foreground;
+          outline: none;
+          transition: all variables.$transition-base;
+
+          &::placeholder {
+            color: variables.$color-text-muted;
+          }
+
+          &:focus {
+            border-color: variables.$color-primary;
+            ring: 1px solid rgba(variables.$color-primary, 0.25);
+          }
+        }
+
+        textarea {
+          // decoration
+          resize: vertical;
+          font-family: inherit;
+        }
+
+        .tagsInput {
+          // display
+          @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-2);
+
+          input {
+            // display
+            flex: 1;
+
+            // margin
+            margin: 0;
+          }
+
+          .addTagButton {
+            // display
+            @include mixins.flex(row, center, center);
+            flex-shrink: 0;
+
+            // size
+            width: 36px;
+            height: 36px;
+
+            // margin
+            padding: 0;
+
+            // decoration
+            background-color: variables.$color-primary;
+            border: none;
+            border-radius: variables.$radius-md;
+            color: variables.$color-primary-foreground;
+            cursor: pointer;
+            transition: all variables.$transition-base;
+
+            &:hover {
+              background-color: variables.$color-primary-dark;
+            }
+          }
+        }
+
+        .tagsList {
+          // display
+          @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-2);
+
+          .tag {
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-1);
+
+            // margin
+            padding: variables.$spacing-1 variables.$spacing-2;
+
+            // decoration
+            background-color: rgba(variables.$color-primary, 0.1);
+            border: 1px solid rgba(variables.$color-primary, 0.2);
+            border-radius: variables.$radius-md;
+            font-size: variables.$font-size-xs;
+            color: variables.$color-primary;
+
+            button {
+              // size
+              width: 16px;
+              height: 16px;
+
+              // display
+              @include mixins.flex(row, center, center);
+
+              // margin
+              padding: 0;
+              margin-left: variables.$spacing-1;
+
+              // decoration
+              background: none;
+              border: none;
+              font-size: variables.$font-size-lg;
+              color: variables.$color-primary;
+              cursor: pointer;
+              line-height: 1;
+              transition: all variables.$transition-base;
+
+              &:hover {
+                color: variables.$color-error;
+              }
+            }
+          }
+        }
+      }
+
+      .modalActions {
+        // display
+        @include mixins.flex(row, flex-end, center, nowrap, variables.$spacing-3);
+
+        // margin
+        margin-top: variables.$spacing-2;
+
+        button {
+          // margin
+          padding: variables.$spacing-2-5 variables.$spacing-5;
+
+          // decoration
+          border: none;
+          border-radius: variables.$radius-md;
+          font-size: variables.$font-size-sm;
+          font-weight: variables.$font-weight-medium;
+          cursor: pointer;
+          transition: all variables.$transition-base;
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+
+        .actionCancel {
+          // decoration
+          background-color: variables.$color-surface;
+          border: 1px solid variables.$color-border;
+          color: variables.$color-text-secondary;
+
+          &:hover:not(:disabled) {
+            background-color: variables.$color-surface-elevated;
+            color: variables.$color-foreground;
+          }
+        }
+
+        .actionSubmit {
+          // decoration
+          background-color: variables.$color-primary;
+          color: variables.$color-primary-foreground;
+
+          &:hover:not(:disabled) {
+            background-color: variables.$color-primary-dark;
+          }
+        }
+      }
+    }
+  }
+}

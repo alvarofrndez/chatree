@@ -1,0 +1,729 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.main {
+  // size
+  width: 100%;
+  min-height: calc(100vh - variables.$size-header-base - variables.$size-footer-base);
+
+  // display
+  @include mixins.flex(column, flex-start, center);
+
+  // decoration
+  background-color: variables.$color-background;
+
+  .loading {
+    // size
+    width: 100%;
+    min-height: calc(100vh - variables.$size-header-base - variables.$size-footer-base);
+
+    // display
+    @include mixins.flex(column, center, center, nowrap, variables.$spacing-4);
+
+    *{
+      // decoration
+      font-size: variables.$font-size-sm;
+      color: variables.$color-text-muted;
+      margin: 0;
+    }
+
+    .spinner {
+      // size
+      width: 2rem;
+      height: 2rem;
+
+      // decoration
+      border: 3px solid rgba(variables.$color-primary, 0.2);
+      border-top-color: variables.$color-primary;
+      border-radius: variables.$radius-full;
+
+      // animation
+      animation: spin 0.8s linear infinite;
+    }
+
+      
+  }
+
+  .container {
+    // size
+    width: 100%;
+    max-width: variables.$container-md;
+    height: 100%;
+
+    // margin
+    margin: 0 auto;
+    padding: variables.$spacing-8 variables.$spacing-4;
+
+    // display
+    @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-6);
+
+    @media (min-width: variables.$breakpoint-sm) {
+        padding: variables.$spacing-8 variables.$spacing-6;
+    }
+
+    .header {
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-2);
+
+      .title {
+        // decoration
+        font-size: variables.$font-size-2xl;
+        font-weight: variables.$font-weight-bold;
+        color: variables.$color-foreground;
+        letter-spacing: -0.025em;
+      }
+
+      .subtitle {
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-muted;
+      }
+    }
+
+    .statsGrid {
+      // display
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: variables.$spacing-3;
+
+      .statCard {
+        // display
+        @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-1);
+
+        // margin
+        padding: variables.$spacing-4;
+
+        // decoration
+        background-color: variables.$color-surface;
+        border: 1px solid rgba(variables.$color-border, 0.5);
+        border-radius: variables.$radius-lg;
+
+        .statHeader {
+          // display
+          @include mixins.flex(row, flex-start, flex-start, nowrap, variables.$spacing-2);
+
+          .statIcon {
+            // size
+            width: variables.$spacing-4;
+            height: variables.$spacing-4;
+
+            // decoration
+            color: variables.$color-primary;
+            flex-shrink: 0;
+          }
+
+          .statLabel {
+            // decoration
+            font-size: variables.$font-size-xs;
+            font-weight: variables.$font-weight-medium;
+            color: variables.$color-text-muted;
+          }
+        }
+
+        .statValue {
+          // decoration
+          font-size: variables.$font-size-xl;
+          font-weight: variables.$font-weight-bold;
+          color: variables.$color-foreground;
+        }
+      }
+    }
+
+    .profileCard {
+      // display
+      @include mixins.flex(row, center, space-between, nowrap, variables.$spacing-2);
+      
+      // margin
+      padding: variables.$spacing-3;
+
+      // decoration
+      background-color: variables.$color-surface;
+      border: 1px solid rgba(variables.$color-border, 0.5);
+      border-radius: variables.$radius-lg;
+
+      .profileUrl {
+          // size
+        min-width: 0;
+
+        // display
+        @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-2);
+        flex: 1;
+
+        // margin
+        padding: variables.$spacing-1 variables.$spacing-2;
+
+        // decoration
+        background-color: rgba(variables.$color-surface-elevated, 0.5);
+        border-radius: variables.$radius-lg;
+
+        .profileUrlIcon {
+          // size
+          width: variables.$spacing-4;
+          height: variables.$spacing-4;
+
+          // display
+          flex-shrink: 0;
+
+          // decoration
+          color: variables.$color-text-muted;
+        }
+
+        .profileUrlText {
+          // decoration
+          font-size: variables.$font-size-sm;
+          color: variables.$color-text-muted;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+
+      .profileActions {
+        // display
+        @include mixins.flex(row, center, flex-end, nowrap, variables.$spacing-2);
+        flex-shrink: 0;
+
+        .profileButton {
+          @include mixins.button-outline(variables.$color-border, variables.$color-foreground);
+
+          // margin
+          padding: variables.$spacing-2 variables.$spacing-4;
+
+          // decoration
+          background-color: variables.$color-surface-elevated;
+          font-size: variables.$font-size-sm;
+          font-weight: variables.$font-weight-medium;
+
+          &:hover:not(:disabled) {
+            // decoration
+            background-color: rgba(variables.$color-surface-elevated, 0.3);
+            border-color: variables.$color-border;
+          }
+
+          svg {
+            // size
+            width: variables.$spacing-4;
+            height: variables.$spacing-4;
+          }
+
+          .buttonTextHidden {
+              // display
+            display: none;
+
+            @media (min-width: variables.$breakpoint-sm) {
+              // display
+              display: inline;
+            }
+          }
+        }
+      }
+    }
+
+    .tabsContainer {
+      // display
+      @include mixins.flex(row, center, stretch, nowrap, variables.$spacing-1);
+
+      // margin
+      padding: variables.$spacing-1;
+
+      // decoration
+      background-color: variables.$color-surface;
+      border: 1px solid rgba(variables.$color-border, 0.5);
+      border-radius: variables.$radius-lg;
+
+      .tab {
+        // display
+        @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+        flex: 1;
+
+        // margin
+        padding: variables.$spacing-2 variables.$spacing-3;
+
+        // decoration
+        background: none;
+        border: none;
+        border-radius: variables.$radius-md;
+        font-size: variables.$font-size-sm;
+        font-weight: variables.$font-weight-medium;
+        color: variables.$color-text-muted;
+        cursor: pointer;
+        transition: all variables.$transition-base;
+
+        &:hover {
+          // decoration
+          color: variables.$color-foreground;
+        }
+
+        &.active {
+          // decoration
+          background-color: variables.$color-surface-elevated;
+          color: variables.$color-foreground;
+        }
+
+        svg {
+          // size
+          width: variables.$spacing-3-5;
+          height: variables.$spacing-3-5;
+        }
+      }
+    }
+
+    .addButton {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+      // margin
+      padding: variables.$spacing-4;
+
+      // decoration
+      background-color: rgba(variables.$color-surface, 0.5);
+      border: 1px dashed variables.$color-border;
+      border-radius: variables.$radius-lg;
+      font-size: variables.$font-size-sm;
+      font-weight: variables.$font-weight-medium;
+      color: variables.$color-text-muted;
+      cursor: pointer;
+      transition: all variables.$transition-base;
+
+      &:hover {
+        // decoration
+        border-color: rgba(variables.$color-primary, 0.3);
+        color: variables.$color-foreground;
+      }
+
+      svg {
+        // size
+        width: variables.$spacing-4;
+        height: variables.$spacing-4;
+      }
+    }
+
+    .emptyState {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(column, center, center, nowrap, variables.$spacing-2);
+
+      // margin
+      padding: variables.$spacing-8 variables.$spacing-4;
+
+      // decoration
+      text-align: center;
+      color: variables.$color-text-muted;
+      background-color: variables.$color-surface;
+      border: 1px solid variables.$color-border;
+      border-radius: variables.$radius-lg;
+
+      svg{
+        // size
+        width: variables.$spacing-8;
+        height: variables.$spacing-8;
+      }
+
+      .emptyStateInfo{
+        width: 100%;
+
+        // display
+        @include mixins.flex(column, center, center);
+
+        h4{
+          // decoration
+          font-size: variables.$font-size-sm;
+          font-weight: variables.$font-weight-normal;
+          color: variables.$color-text-secondary;
+        }
+
+        p {
+          // decoration
+          font-size: variables.$font-size-xs;
+          color: variables.$color-text-muted;
+        }
+      }
+    }
+
+    .chatsList {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-3);
+    }
+  }
+
+  .modal {
+    // position
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+
+    // decoration
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+
+    // display
+    @include mixins.flex(row, center, center, nowrap);
+
+    // margin
+    padding: variables.$spacing-4;
+
+    // animation
+    animation: fadeIn 0.2s ease-out;
+
+    .modalContent {
+      // size
+      width: 100%;
+      max-width: variables.$modal-md;
+      max-height: 90vh;
+
+      // display
+      @include mixins.flex(column, flex-start, flex-start, nowrap, variables.$spacing-2);
+
+      // margin
+      padding: variables.$spacing-6;
+
+      // decoration
+      background-color: variables.$color-surface;
+      border: 1px solid rgba(variables.$color-border, 0.5);
+      border-radius: variables.$radius-lg;
+      box-shadow: variables.$shadow-lg;
+      overflow-y: auto;
+
+      // animation
+      animation: slideUp 0.3s ease-out;
+
+      h2 {
+        // size
+        width: 100%;
+
+        // decoration
+        font-size: variables.$font-size-xl;
+        font-weight: variables.$font-weight-bold;
+        color: variables.$color-foreground;
+      }
+
+      .form {
+        // size
+        width: 100%;
+
+        // display
+        @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-4);
+
+        .inputWrapper {
+          // display
+          @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-1-5);
+
+          label {
+            // decoration
+            @include mixins.label-base;
+          }
+
+          input,
+          select,
+          textarea {
+            // decoration
+            @include mixins.input-base;
+          }
+
+          textarea {
+            // size
+            resize: vertical;
+            min-height: 5rem;
+
+            // decoration
+            font-family: inherit;
+          }
+
+          .tagsInput {
+            // display
+            @include mixins.flex(row, space-between, center, nowrap, variables.$spacing-2);
+
+            input {
+              // display
+              flex: 1;
+
+              // decoration
+              @include mixins.input-base;
+            }
+
+            .addTagButton {
+              // size
+              min-width: variables.$spacing-10;
+              height: variables.$spacing-10;
+
+              // display
+              @include mixins.flex(row, center, center);
+
+              // decoration
+              border-radius: variables.$radius-md;
+              background-color: variables.$color-surface-elevated;
+              border: 1px solid variables.$color-border;
+              color: variables.$color-text-muted;
+
+              transition: all 0.15s ease;
+
+              &:hover {
+                background-color: variables.$color-primary;
+                color: variables.$color-primary-foreground;
+                border-color: variables.$color-primary;
+              }
+
+              svg {
+                width: variables.$spacing-4;
+                height: variables.$spacing-4;
+              }
+            }
+          }
+
+          .tagsList {
+            // display
+            @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-1-5);
+
+            margin-top: variables.$spacing-1;
+          }
+
+          .tag {
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-1);
+
+            // decoration
+            padding: 0 variables.$spacing-2;
+            height: 1.75rem;
+            border-radius: variables.$radius-full;
+            font-size: variables.$font-size-xs;
+            font-weight: variables.$font-weight-medium;
+
+            background-color: rgba(variables.$color-primary, 0.08);
+            color: variables.$color-primary;
+            border: 1px solid rgba(variables.$color-primary, 0.2);
+
+            transition: all 0.15s ease;
+
+            button {
+              // reset
+              all: unset;
+
+              // display
+              cursor: pointer;
+              @include mixins.flex(row, center, center);
+
+              // decoration
+              color: inherit;
+              font-size: variables.$font-size-sm;
+              opacity: 0.6;
+
+              &:hover {
+                opacity: 1;
+              }
+            }
+
+            &:hover {
+              background-color: rgba(variables.$color-primary, 0.15);
+            }
+          }
+        }
+
+        .modalActions {
+          // size
+          width: 100%;
+          // display
+          @include mixins.flex(row, flex-end, flex-end, nowrap, variables.$spacing-2);
+
+          .actionCancel{
+            // decoration
+            @include mixins.button-outline(variables.$color-border, variables.$color-foreground);
+            
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+            // decoration
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-medium;
+            background-color: rgba(variables.$color-surface-elevated, 0.3);
+            color: variables.$color-text-muted;
+
+            &:hover:not(:disabled) {
+              background-color: variables.$color-surface-elevated;
+              color: variables.$color-foreground;
+            }
+
+          }
+
+          .actionSubmit{
+            // decoration
+            @include mixins.button-variant(variables.$color-primary, variables.$color-primary-foreground);
+            
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+            // decoration
+            font-size: variables.$font-size-sm;
+
+            &:disabled {
+              opacity: 0.6;
+            }
+
+            svg {
+              // size
+              width: variables.$spacing-4;
+              height: variables.$spacing-4;
+            }
+          }
+        }
+      }
+    }
+
+    .deleteModalContent {
+      // size
+      width: 100%;
+      max-width: variables.$modal-md;
+      max-height: 90vh;
+
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-5);
+
+      // margin
+      padding: variables.$spacing-6;
+
+      // decoration
+      background-color: variables.$color-surface;
+      border: 1px solid rgba(variables.$color-border, 0.5);
+      border-radius: variables.$radius-lg;
+      box-shadow: variables.$shadow-lg;
+
+      // animation
+      animation: slideUp 0.3s ease-out;
+
+      .deleteModalHeader {
+        // display
+        @include mixins.flex(column, flex-start, flex-start, nowrap, variables.$spacing-3);
+
+        .warningIcon {
+          // size
+          width: variables.$spacing-12;
+          height: variables.$spacing-12;
+
+          // display
+          @include mixins.flex(row, center, center);
+
+          // decoration
+          background-color: rgba(variables.$color-error, 0.1);
+          border-radius: variables.$radius-full;
+          color: variables.$color-error;
+
+          svg {
+            // size
+            width: variables.$spacing-6;
+            height: variables.$spacing-6;
+          }
+        }
+
+        h2 {
+          // decoration
+          font-size: variables.$font-size-xl;
+          font-weight: variables.$font-weight-bold;
+          color: variables.$color-foreground;
+          text-align: center;
+        }
+      }
+
+      .deleteModalBody {
+        // display
+        @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-4);
+
+        .warningText {
+          // decoration
+          font-size: variables.$font-size-sm;
+          color: variables.$color-text-muted;
+          text-align: center;
+          line-height: variables.$line-height-relaxed;
+        }
+      }
+
+      .modalActions {
+          // size
+          width: 100%;
+          // display
+          @include mixins.flex(row, flex-end, flex-end, nowrap, variables.$spacing-2);
+
+          .actionCancel{
+            // decoration
+            @include mixins.button-outline(variables.$color-border, variables.$color-foreground);
+            
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+            // decoration
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-medium;
+            background-color: rgba(variables.$color-surface-elevated, 0.3);
+            color: variables.$color-text-muted;
+
+            &:hover:not(:disabled) {
+              background-color: variables.$color-surface-elevated;
+              color: variables.$color-foreground;
+            }
+
+          }
+
+          .actionDelete {
+            // decoration
+            @include mixins.button-variant(variables.$color-error, variables.$color-foreground);
+            
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+            // decoration
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-medium;
+
+            &:hover:not(:disabled) {
+              background-color: variables.$color-error;
+            }
+
+            &:disabled {
+              opacity: 0.6;
+            }
+
+            svg {
+              // size
+              width: variables.$spacing-4;
+              height: variables.$spacing-4;
+            }
+          }
+        }
+    }
+  }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(variables.$spacing-4);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

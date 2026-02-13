@@ -1,0 +1,161 @@
+$color-primary: #19E6D5;
+$color-primary-light: #19E6D5;
+$color-primary-dark: darken($color-primary, 10%);
+$color-primary-foreground: #080A12;
+
+$color-secondary: #6366f1;
+$color-secondary-light: #818cf8;
+$color-secondary-dark: #4f46e5;
+$color-secondary-foreground: #ffffff;
+
+$color-accent: #fbbf24;
+$color-accent-light: #fcd34d;
+$color-accent-dark: #f59e0b;
+$color-accent-foreground: #0a0a0f;
+
+// Neutrals with depth
+$color-background: #0a0a0f;
+$color-surface: #0f1115;
+$color-surface-elevated: #1a1d23;
+$color-border: #1f2229;
+$color-foreground: #f8f9fa;
+
+$color-text-primary: #f8f9fa;
+$color-text-secondary: #a0a0b0;
+$color-text-muted: #7B899D;
+
+// Semantic colors
+$color-success: #10b981;
+$color-success-foreground: #ffffff;
+$color-warning: #f59e0b;
+$color-warning-foreground: #ffffff;
+$color-error: #ef4444;
+$color-error-foreground: #ffffff;
+$color-info: #3b82f6;
+$color-info-foreground: #ffffff;
+
+// AI Platform colors
+$color-chatgpt: #10a37f;
+$color-claude: #d97757;
+$color-gemini: #4285f4;
+$color-copilot: #7160e8;
+$color-perplexity: #2dd4bf;
+
+// Typography - Distinctive font choices
+$font-display: 'Space Grotesk', 'Inter', -apple-system, sans-serif;
+$font-body: 'Inter', 'Inter Fallback', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+$font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+// Font sizes with modular scale
+$font-size-xs: 0.75rem;    // 12px
+$font-size-sm: 0.875rem;   // 14px
+$font-size-base: 1rem;     // 16px
+$font-size-lg: 1.125rem;   // 18px
+$font-size-xl: 1.25rem;    // 20px
+$font-size-2xl: 1.5rem;    // 24px
+$font-size-3xl: 1.875rem;  // 30px
+$font-size-4xl: 2.25rem;   // 36px
+$font-size-5xl: 3rem;      // 48px
+$font-size-6xl: 3.75rem;   // 60px
+
+// predeterminated sizes
+$size-header-base: 7.5vh;
+$size-footer-base: 5vh;
+
+
+// Font weights
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-extrabold: 800;
+
+// Line heights
+$line-height-tight: 1.2;
+$line-height-normal: 1.5;
+$line-height-relaxed: 1.75;
+$line-height-loose: 2;
+
+// Spacing scale
+$spacing-0: 0;
+$spacing-0-5: 0.125rem; // 2px
+$spacing-1: 0.25rem;    // 4px
+$spacing-1-5: 0.375rem; // 6px
+$spacing-2: 0.5rem;     // 8px
+$spacing-2-5: 0.625rem; // 10px
+$spacing-3: 0.75rem;    // 12px
+$spacing-3-5: 0.875rem; // 14px
+$spacing-4: 1rem;       // 16px
+$spacing-5: 1.25rem;    // 20px
+$spacing-6: 1.5rem;     // 24px
+$spacing-7: 1.75rem;    // 28px
+$spacing-8: 2rem;       // 32px
+$spacing-9: 2.25rem;    // 36px
+$spacing-10: 2.5rem;    // 40px
+$spacing-11: 2.75rem;   // 44px
+$spacing-12: 3rem;      // 48px
+$spacing-16: 4rem;      // 64px
+$spacing-20: 5rem;      // 80px
+$spacing-24: 6rem;      // 96px
+
+// Border radius
+$radius-none: 0;
+$radius-sm: 0.25rem;
+$radius-base: 0.5rem;
+$radius-md: 0.75rem;
+$radius-lg: 1rem;
+$radius-xl: 1.5rem;
+$radius-2xl: 2rem;
+$radius-full: 9999px;
+
+// Shadows - Dramatic depth
+$shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+$shadow-base: 0 4px 16px rgba(0, 0, 0, 0.25);
+$shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+$shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.45);
+$shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.55);
+$shadow-glow: 0 0 32px rgba(255, 51, 102, 0.3);
+$shadow-glow-secondary: 0 0 32px rgba(99, 102, 241, 0.3);
+
+// Transitions
+$transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+$transition-bounce: 500ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+// Z-index layers
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+// Breakpoints
+$breakpoint-2xs: 360px;
+$breakpoint-xs: 480px;
+$breakpoint-sm: 640px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 1024px;
+$breakpoint-xl: 1280px;
+$breakpoint-2xl: 1536px;
+
+// Container widths
+$container-sm: 24rem;
+$container-md: 768px;
+$container-lg: 1024px;
+$container-xl: 1280px;
+
+// Modal widths
+$modal-sm: 24rem;
+$modal-md: 32rem;
+$modal-lg: 1024px;
+$modal-xl: 1280px;
+
+
+// Form specific
+$input-height: 2.75rem;
+$input-height-sm: 2.25rem;
+$input-height-lg: 3.25rem;

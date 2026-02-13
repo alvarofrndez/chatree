@@ -1,0 +1,72 @@
+@import '../styles/variables.scss';
+@import '../styles/mixins.scss';
+
+.card {
+  @include card($spacing-4);
+  @include flex-between;
+  cursor: pointer;
+  transition: all $transition-base;
+  background: linear-gradient(
+    135deg,
+    $color-surface 0%,
+    lighten($color-surface, 3%) 100%
+  );
+  
+  &:hover {
+    transform: translateX(2px);
+  }
+  
+  &.editable {
+    cursor: default;
+    
+    &:hover {
+      transform: none;
+    }
+  }
+}
+
+.content {
+  @include flex(row, flex-start, center);
+  gap: $spacing-3;
+  flex: 1;
+  min-width: 0;
+}
+
+.icon {
+  font-size: $font-size-2xl;
+  flex-shrink: 0;
+}
+
+.label {
+  font-size: $font-size-base;
+  font-weight: $font-weight-medium;
+  color: $color-text-primary;
+  @include truncate;
+}
+
+.actions {
+  @include flex(row, flex-end, center);
+  gap: $spacing-2;
+  flex-shrink: 0;
+}
+
+.actionBtn {
+  width: 32px;
+  height: 32px;
+  @include flex-center;
+  background: $color-surface-elevated;
+  border: 1px solid $color-border;
+  border-radius: $radius-base;
+  cursor: pointer;
+  transition: all $transition-base;
+  font-size: $font-size-base;
+  
+  &:hover {
+    background: $color-border;
+    transform: scale(1.1);
+  }
+  
+  &:active {
+    transform: scale(0.95);
+  }
+}

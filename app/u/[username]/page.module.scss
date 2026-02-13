@@ -1,0 +1,276 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.main {
+  // position
+  position: relative;
+
+  // size
+  width: 100%;
+  min-height: 100vh;
+
+  // display
+  @include mixins.flex(column, flex-start, stretch);
+
+  // decoration
+  background-color: variables.$color-background;
+
+  .backgroundGradient {
+    // position
+    position: absolute;
+    left: 50%;
+    top: 0;
+    transform: translateX(-50%) translateY(-50%);
+
+    // size
+    width: 600px;
+    height: 300px;
+
+    // decoration
+    background: radial-gradient(circle, rgba(variables.$color-primary, 0.05) 0%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+  }
+
+  .container {
+    // position
+    position: relative;
+
+    // size
+    width: 100%;
+    max-width: variables.$container-md;
+
+    // display
+    @include mixins.flex(column, flex-start, stretch);
+
+    // margin
+    margin: 0 auto;
+    padding: variables.$spacing-10 variables.$spacing-4;
+
+    @media (min-width: variables.$breakpoint-sm) {
+      padding: variables.$spacing-10 variables.$spacing-6;
+    }
+
+    .profileHeader {
+      // display
+      @include mixins.flex(column, flex-start, center);
+
+      // decoration
+      text-align: center;
+
+      .avatar {
+        // size
+        width: 80px;
+        height: 80px;
+
+        // display
+        @include mixins.flex(row, center, center);
+
+        // decoration
+        background-color: rgba(variables.$color-primary, 0.1);
+        border-radius: variables.$radius-full;
+        ring: 2px solid rgba(variables.$color-primary, 0.2);
+        overflow: hidden;
+
+        @media (min-width: variables.$breakpoint-sm) {
+          // size
+          width: 96px;
+          height: 96px;
+        }
+
+        img {
+          // size
+          width: 100%;
+          height: 100%;
+
+          // decoration
+          object-fit: cover;
+        }
+
+        .avatarInitials {
+          // decoration
+          font-size: variables.$font-size-2xl;
+          font-weight: variables.$font-weight-bold;
+          color: variables.$color-primary;
+
+          @media (min-width: variables.$breakpoint-sm) {
+            font-size: variables.$font-size-3xl;
+          }
+        }
+      }
+
+      .name {
+        // margin
+        margin: variables.$spacing-4 0 0 0;
+
+        // decoration
+        font-size: variables.$font-size-xl;
+        font-weight: variables.$font-weight-bold;
+        color: variables.$color-foreground;
+
+        @media (min-width: variables.$breakpoint-sm) {
+          font-size: variables.$font-size-2xl;
+        }
+      }
+
+      .username {
+        // margin
+        margin: variables.$spacing-0-5 0 0 0;
+
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-muted;
+      }
+
+      .bio {
+        // size
+        max-width: 448px;
+
+        // margin
+        margin: variables.$spacing-3 0 0 0;
+
+        // decoration
+        font-size: variables.$font-size-sm;
+        line-height: variables.$line-height-relaxed;
+        color: variables.$color-text-muted;
+        text-align: center;
+      }
+
+      .stats {
+        // display
+        @include mixins.flex(row, center, center, wrap, variables.$spacing-5);
+
+        // margin
+        margin-top: variables.$spacing-5;
+
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-muted;
+
+        .stat {
+          // display
+          @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-1-5);
+
+          .statIcon {
+            // size
+            width: 14px;
+            height: 14px;
+
+            // decoration
+            color: variables.$color-primary;
+          }
+        }
+      }
+    }
+
+    .filtersBar {
+      // display
+      @include mixins.flex(row, space-between, center, nowrap, variables.$spacing-4);
+
+      // margin
+      margin-top: variables.$spacing-8;
+
+      .filterButtons {
+        // display
+        @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-2);
+
+        .filterButton {
+          // margin
+          padding: variables.$spacing-1-5 variables.$spacing-3;
+
+          // decoration
+          background-color: variables.$color-surface;
+          border: none;
+          border-radius: variables.$radius-lg;
+          font-size: variables.$font-size-xs;
+          font-weight: variables.$font-weight-medium;
+          color: variables.$color-text-muted;
+          cursor: pointer;
+          transition: all variables.$transition-base;
+
+          &:hover {
+            color: variables.$color-foreground;
+          }
+
+          &.active {
+            background-color: rgba(variables.$color-primary, 0.1);
+            color: variables.$color-primary;
+          }
+        }
+      }
+
+      .resultsCount {
+        // display
+        flex-shrink: 0;
+
+        // decoration
+        font-size: variables.$font-size-xs;
+        color: variables.$color-text-muted;
+      }
+    }
+
+    .chatsList {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-3);
+
+      // margin
+      margin-top: variables.$spacing-4;
+    }
+
+    .emptyState {
+      // size
+      width: 100%;
+
+      // display
+      @include mixins.flex(column, center, center, nowrap, variables.$spacing-4);
+
+      // margin
+      margin-top: variables.$spacing-4;
+      padding: variables.$spacing-12 variables.$spacing-4;
+
+      // decoration
+      background-color: variables.$color-surface;
+      border: 1px dashed variables.$color-border;
+      border-radius: variables.$radius-xl;
+
+      .emptyIcon {
+        // size
+        width: variables.$spacing-12;
+        height: variables.$spacing-12;
+
+        // decoration
+        color: variables.$color-text-muted;
+        opacity: 0.5;
+
+        svg {
+          // size
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .emptyTitle {
+        // margin
+        margin: 0;
+
+        // decoration
+        font-size: variables.$font-size-base;
+        font-weight: variables.$font-weight-semibold;
+        color: variables.$color-text-secondary;
+      }
+
+      .emptyText {
+        // margin
+        margin: 0;
+
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-muted;
+        text-align: center;
+      }
+    }
+  }
+}

@@ -1,0 +1,195 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.header {
+    // position
+    position: sticky;
+    top: 0;
+    z-index: variables.$z-index-sticky;
+
+    // decoration
+    border-bottom: 1px solid rgba(variables.$color-border, 0.5);
+    background-color: rgba(variables.$color-background, 0.8);
+    backdrop-filter: blur(12px);
+
+    .nav {
+        // size
+        width: 100%;
+        max-width: variables.$container-lg;
+
+        // display
+        @include mixins.flex(row, space-between, center, nowrap);
+
+        // margin
+        margin: 0 auto;
+        padding: variables.$spacing-3 variables.$spacing-4;
+
+        @media (min-width: variables.$breakpoint-sm) {
+            padding: variables.$spacing-3 variables.$spacing-6;
+        }
+
+        .brandLink {
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+            // decoration
+            text-decoration: none;
+            color: variables.$color-foreground;
+            transition: color variables.$transition-base;
+
+            &:hover {
+                color: variables.$color-primary;
+            }
+
+            .brandIcon {
+                // size
+                width: variables.$spacing-6;
+                height: variables.$spacing-6;
+
+                // decoration
+                color: variables.$color-primary;
+            }
+
+            .brandName {
+                // decoration
+                font-size: variables.$font-size-lg;
+                font-weight: variables.$font-weight-bold;
+                font-family: variables.$font-display;
+                letter-spacing: -0.025em;
+            }
+        }
+
+        .desktopMenu {
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-1);
+            display: none;
+
+            @media (min-width: variables.$breakpoint-sm) {
+                display: flex;
+            }
+
+            .navLink {
+                // margin
+                padding: variables.$spacing-2 variables.$spacing-3;
+
+                // decoration
+                text-decoration: none;
+                font-size: variables.$font-size-sm;
+                font-weight: variables.$font-weight-medium;
+                color: variables.$color-text-muted;
+                border-radius: variables.$radius-md;
+                transition: all variables.$transition-base;
+
+                &:hover {
+                    background-color: variables.$color-surface-elevated;
+                    color: variables.$color-foreground;
+                }
+            }
+
+            .ctaButton {
+                // margin
+                margin-left: variables.$spacing-1;
+                padding: variables.$spacing-2 variables.$spacing-4;
+
+                // decoration
+                text-decoration: none;
+                font-size: variables.$font-size-sm;
+                font-weight: variables.$font-weight-semibold;
+                color: variables.$color-primary-foreground;
+                background-color: variables.$color-primary;
+                border-radius: variables.$radius-md;
+                transition: all variables.$transition-base;
+
+                &:hover {
+                    background-color: variables.$color-primary-light;
+                }
+            }
+        }
+
+        .mobileMenuButton {
+            // display
+            @include mixins.flex(row, center, center, nowrap);
+            display: flex;
+
+            @media (min-width: variables.$breakpoint-sm) {
+                display: none;
+            }
+
+            // margin
+            padding: variables.$spacing-2;
+
+            // decoration
+            background: none;
+            border: none;
+            color: variables.$color-text-muted;
+            border-radius: variables.$radius-md;
+            cursor: pointer;
+            transition: all variables.$transition-base;
+
+            &:hover {
+                background-color: variables.$color-surface-elevated;
+                color: variables.$color-foreground;
+            }
+
+            svg {
+                // size
+                width: variables.$spacing-5;
+                height: variables.$spacing-5;
+            }
+        }
+    }
+
+    .mobileMenu {
+        // display
+        @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-2);
+
+        // margin
+        padding: variables.$spacing-4;
+
+        // decoration
+        border-top: 1px solid rgba(variables.$color-border, 0.5);
+        background-color: variables.$color-background;
+
+        @media (min-width: variables.$breakpoint-sm) {
+            display: none;
+        }
+
+        .mobileNavLink {
+            // margin
+            padding: variables.$spacing-3;
+
+            // decoration
+            text-decoration: none;
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-medium;
+            color: variables.$color-text-muted;
+            border-radius: variables.$radius-md;
+            transition: all variables.$transition-base;
+            text-align: center;
+
+            &:hover {
+                background-color: variables.$color-surface-elevated;
+                color: variables.$color-foreground;
+            }
+        }
+
+        .mobileCtaButton {
+            // margin
+            padding: variables.$spacing-3 variables.$spacing-4;
+
+            // decoration
+            text-decoration: none;
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-semibold;
+            color: variables.$color-primary-foreground;
+            background-color: variables.$color-primary;
+            border-radius: variables.$radius-md;
+            transition: all variables.$transition-base;
+            text-align: center;
+
+            &:hover {
+                background-color: variables.$color-primary-light;
+            }
+        }
+    }
+}

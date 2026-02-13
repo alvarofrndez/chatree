@@ -1,0 +1,75 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.footer {
+    // decoration
+    border-top: 1px solid rgba(variables.$color-border, 0.5);
+    background-color: variables.$color-background;
+
+    .container {
+        // size
+        width: 100%;
+        max-width: variables.$container-lg;
+
+        // display
+        @include mixins.flex(column, center, center, nowrap, variables.$spacing-4);
+
+        @media (min-width: variables.$breakpoint-sm) {
+            @include mixins.flex(row, space-between, center, nowrap);
+        }
+
+        // margin
+        margin: 0 auto;
+        padding: variables.$spacing-8 variables.$spacing-4;
+
+        @media (min-width: variables.$breakpoint-sm) {
+            padding: variables.$spacing-8 variables.$spacing-6;
+        }
+
+        .brand {
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+            // decoration
+            color: variables.$color-text-muted;
+
+            .brandIcon {
+                // size
+                width: variables.$spacing-4;
+                height: variables.$spacing-4;
+
+                // decoration
+                color: variables.$color-primary;
+            }
+
+            .brandName {
+                // decoration
+                font-size: variables.$font-size-sm;
+                font-weight: variables.$font-weight-medium;
+            }
+        }
+
+        .links {
+            // display
+            @include mixins.flex(row, center, center, nowrap, variables.$spacing-6);
+
+            .link {
+                // decoration
+                text-decoration: none;
+                font-size: variables.$font-size-sm;
+                color: variables.$color-text-muted;
+                transition: color variables.$transition-base;
+
+                &:hover {
+                    color: variables.$color-foreground;
+                }
+            }
+
+            .tagline {
+                // decoration
+                font-size: variables.$font-size-sm;
+                color: variables.$color-text-muted;
+            }
+        }
+    }
+}

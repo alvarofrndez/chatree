@@ -1,0 +1,331 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.container {
+    // size
+    width: 100%;
+    min-height: calc(100vh - variables.$size-header-base - variables.$size-footer-base);
+
+    // display
+    @include mixins.flex(column, center, center, nowrap);
+
+    // margin
+    padding: variables.$spacing-4;
+
+    // decoration
+    background-color: variables.$color-background;
+    position: relative;
+
+    .backgroundGlow {
+        // position
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        overflow: hidden;
+        pointer-events: none;
+
+        .glowOrb {
+            // position
+            position: absolute;
+            left: 50%;
+            top: 33%;
+            transform: translate(-50%, -50%);
+
+            // size
+            width: 900px;
+            height: 600px;
+
+            // decoration
+            background: radial-gradient(circle, rgba(variables.$color-primary, 0.15) 0%, transparent 70%);
+            border-radius: variables.$radius-full;
+            filter: blur(80px);
+        }
+    }
+
+    .wrapper {
+        // size
+        width: 100%;
+        max-width: variables.$container-sm;
+
+        // position
+        position: relative;
+        z-index: 1;
+
+        // display
+        @include mixins.flex(column, flex-start, center, nowrap);
+
+        .brand {
+            // size
+            width: 100%;
+
+            // display
+            @include mixins.flex(column, center, center, nowrap, variables.$spacing-2);
+
+            // margin
+            margin-bottom: variables.$spacing-8;
+
+            .brandLink {
+                // display
+                @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+                // decoration
+                text-decoration: none;
+                color: variables.$color-foreground;
+                transition: opacity variables.$transition-base;
+
+                &:hover {
+                    opacity: 0.8;
+                }
+
+                .brandIcon {
+                    // size
+                    width: variables.$spacing-7;
+                    height: variables.$spacing-7;
+
+                    // decoration
+                    color: variables.$color-primary;
+                }
+
+                .brandName {
+                    // decoration
+                    font-size: variables.$font-size-xl;
+                    font-weight: variables.$font-weight-bold;
+                    font-family: variables.$font-display;
+                    letter-spacing: -0.025em;
+                }
+            }
+
+            .brandDescription {
+                // decoration
+                font-size: variables.$font-size-sm;
+                color: variables.$color-text-muted;
+                text-align: center;
+            }
+        }
+
+        .card {
+            // size
+            width: 100%;
+
+            // decoration
+            background-color: variables.$color-surface;
+            border: 1px solid rgba(variables.$color-border, 0.5);
+            border-radius: variables.$radius-xl;
+
+            // margin
+            padding: variables.$spacing-6;
+
+            // effects
+            box-shadow: variables.$shadow-md;
+
+            .form {
+                // display
+                @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-4);
+
+                .formField {
+                    // display
+                    @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-1-5);
+
+                    .label {
+                        // decoration
+                        @include mixins.label-base;
+                    }
+
+                    .input {
+                        // decoration
+                        @include mixins.input-base;
+                    }
+
+                    .passwordWrapper {
+                        // position
+                        position: relative;
+
+                        .input {
+                            // margin
+                            padding-right: variables.$spacing-10;
+                        }
+
+                        .toggleButton {
+                            // position
+                            position: absolute;
+                            right: variables.$spacing-3;
+                            top: 50%;
+                            transform: translateY(-50%);
+
+                            // decoration
+                            background: none;
+                            border: none;
+                            color: variables.$color-text-muted;
+                            cursor: pointer;
+                            transition: color variables.$transition-base;
+
+                            // display
+                            @include mixins.flex(row, center, center, nowrap);
+
+                            &:hover {
+                                color: variables.$color-foreground;
+                            }
+
+                            svg {
+                                // size
+                                width: 1rem;
+                                height: 1rem;
+                            }
+                        }
+                    }
+                }
+
+                .forgotPassword {
+                    // margin
+                    margin-top: calc(-1 * variables.$spacing-2);
+
+                    // decoration
+                    text-align: right;
+
+                    .forgotPasswordLink {
+                        // decoration
+                        font-size: variables.$font-size-sm;
+                        color: variables.$color-primary;
+                        text-decoration: none;
+                        font-weight: variables.$font-weight-medium;
+                        transition: color variables.$transition-base;
+
+                        &:hover {
+                            color: variables.$color-primary-light;
+                        }
+                    }
+                }
+
+                .submitButton {
+                    // margin
+                    margin-top: variables.$spacing-2;
+
+                    // decoration
+                    @include mixins.button-variant(variables.$color-primary, variables.$color-primary-foreground);
+                    
+                    // display
+                    @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+                    // decoration
+                    font-size: variables.$font-size-sm;
+
+                    &:disabled {
+                        opacity: 0.6;
+                    }
+                }
+            }
+
+            .divider {
+                // margin
+                margin: variables.$spacing-5 0;
+
+                // display
+                @include mixins.flex(row, center, center, nowrap, variables.$spacing-3);
+
+                &::before,
+                &::after {
+                    // decoration
+                    content: '';
+                    flex: 1;
+                    height: 1px;
+                    background-color: variables.$color-border;
+                }
+
+                span {
+                    // decoration
+                    font-size: variables.$font-size-xs;
+                    color: variables.$color-text-muted;
+                }
+            }
+
+            .oauthButtonsContainer{
+                // size
+                width: 100%;
+
+                // display
+                @include mixins.flex(column, flex-start, flex-start, nowrap, variables.$spacing-2);
+
+                .oauthButton {
+                    // size
+                    width: 100%;
+
+                    // decoration
+                    @include mixins.button-outline(variables.$color-border, variables.$color-foreground);
+                    background-color: rgba(variables.$color-surface-elevated, 0.3);
+                    
+                    // display
+                    @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+                    // decoration
+                    font-size: variables.$font-size-sm;
+                    font-weight: variables.$font-weight-medium;
+
+                    &:hover:not(:disabled) {
+                        background-color: variables.$color-surface-elevated;
+                    }
+
+                    svg {
+                        // size
+                        width: variables.$spacing-4;
+                        height: variables.$spacing-4;
+                    }
+                }
+            }
+        }
+
+        .footer {
+            // margin
+            margin-top: variables.$spacing-6;
+
+            // decoration
+            text-align: center;
+
+            p {
+                // decoration
+                font-size: variables.$font-size-sm;
+                color: variables.$color-text-muted;
+                margin: 0;
+
+                a {
+                    // decoration
+                    color: variables.$color-primary;
+                    text-decoration: none;
+                    font-weight: variables.$font-weight-medium;
+                    transition: color variables.$transition-base;
+
+                    &:hover {
+                        color: variables.$color-primary-light;
+                    }
+                }
+            }
+        }
+    }
+
+    .alert {
+        // margin
+        margin-bottom: variables.$spacing-4;
+
+        // margin
+        padding: variables.$spacing-3 variables.$spacing-4;
+
+        // decoration
+        border-radius: variables.$radius-md;
+        font-size: variables.$font-size-sm;
+        font-weight: variables.$font-weight-medium;
+
+        &.error {
+            background-color: rgba(variables.$color-error, 0.1);
+            color: variables.$color-error;
+            border: 1px solid rgba(variables.$color-error, 0.3);
+        }
+
+        &.success {
+            background-color: rgba(variables.$color-success, 0.1);
+            color: variables.$color-success;
+            border: 1px solid rgba(variables.$color-success, 0.3);
+        }
+    }
+}

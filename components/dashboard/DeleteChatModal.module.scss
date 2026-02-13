@@ -1,0 +1,136 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.modal {
+  // position
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: variables.$z-index-modal;
+
+  // size
+  width: 100%;
+  height: 100%;
+
+  // display
+  @include mixins.flex(row, center, center);
+
+  // decoration
+  background-color: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+
+  .modalContent {
+    // position
+    position: relative;
+
+    // size
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+
+    // margin
+    padding: variables.$spacing-6;
+
+    // decoration
+    background-color: variables.$color-surface;
+    border: 1px solid variables.$color-border;
+    border-radius: variables.$radius-xl;
+    overflow-y: auto;
+
+    @media (min-width: variables.$breakpoint-sm) {
+      padding: variables.$spacing-8;
+    }
+
+    .modalHeader {
+      // margin
+      margin-bottom: variables.$spacing-6;
+
+      h2 {
+        // margin
+        margin: 0;
+
+        // decoration
+        font-size: variables.$font-size-xl;
+        font-weight: variables.$font-weight-bold;
+        color: variables.$color-foreground;
+
+        @media (min-width: variables.$breakpoint-sm) {
+          font-size: variables.$font-size-2xl;
+        }
+      }
+    }
+
+    .modalBody {
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-4);
+
+      .warningText {
+        // margin
+        margin: 0;
+
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-secondary;
+        line-height: variables.$line-height-relaxed;
+      }
+
+      .chatPreview {
+        // margin
+        padding: variables.$spacing-4;
+
+        // decoration
+        background-color: variables.$color-background;
+        border: 1px solid variables.$color-border;
+        border-radius: variables.$radius-lg;
+      }
+    }
+
+    .modalActions {
+      // display
+      @include mixins.flex(row, flex-end, center, nowrap, variables.$spacing-3);
+
+      // margin
+      margin-top: variables.$spacing-6;
+
+      button {
+        // margin
+        padding: variables.$spacing-2-5 variables.$spacing-5;
+
+        // decoration
+        border: none;
+        border-radius: variables.$radius-md;
+        font-size: variables.$font-size-sm;
+        font-weight: variables.$font-weight-medium;
+        cursor: pointer;
+        transition: all variables.$transition-base;
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      .actionCancel {
+        // decoration
+        background-color: variables.$color-surface;
+        border: 1px solid variables.$color-border;
+        color: variables.$color-text-secondary;
+
+        &:hover:not(:disabled) {
+          background-color: variables.$color-surface-elevated;
+          color: variables.$color-foreground;
+        }
+      }
+
+      .actionDelete {
+        // decoration
+        background-color: variables.$color-error;
+        color: variables.$color-error-foreground;
+
+        &:hover:not(:disabled) {
+          background-color: darken(variables.$color-error, 10%);
+        }
+      }
+    }
+  }
+}

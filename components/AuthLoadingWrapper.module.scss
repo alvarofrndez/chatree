@@ -1,0 +1,46 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.loadingContainer {
+  // size
+  width: 100%;
+  min-height: 100vh;
+
+  // display
+  @include mixins.flex(column, center, center);
+
+  // decoration
+  background-color: variables.$color-background;
+
+  .loadingContent {
+    // display
+    @include mixins.flex(column, center, center, nowrap, variables.$spacing-4);
+
+    *{
+      // decoration
+      font-size: variables.$font-size-sm;
+      color: variables.$color-text-muted;
+      margin: 0;
+    }
+
+    .spinner {
+      // size
+      width: 2.5rem;
+      height: 2.5rem;
+
+      // decoration
+      border: 3px solid rgba(variables.$color-primary, 0.2);
+      border-top-color: variables.$color-primary;
+      border-radius: variables.$radius-full;
+
+      // animation
+      animation: spin 0.8s linear infinite;
+    }
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
