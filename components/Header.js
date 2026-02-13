@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth'
-import styles from './Header.module.scss'
+import styles from './header.module.scss'
 import { PiTree } from 'react-icons/pi'
 
 export default function Header() {

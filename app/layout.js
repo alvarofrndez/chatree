@@ -8,7 +8,7 @@ import AuthLoadingWrapper from '@/components/AuthLoadingWrapper'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
-  title: process.env.NEXT_PUBLIC_APP_NAME || 'ChatLinks',
+  title: process.env.NEXT_PUBLIC_APP_NAME || 'Chatree',
   description: 'Share and discover AI conversations',
 }
 

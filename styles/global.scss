@@ -1,9 +1,8 @@
 @use '@/styles/variables.scss' as variables;
 @use '@/styles/mixins.scss' as mixins;
-@import "tailwindcss";
-
-// Import fonts
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 // CSS Reset & Base Styles
 *,
