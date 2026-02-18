@@ -4,9 +4,13 @@ import { useState } from 'react'
 import ChatLinkCard from '@/components/ChatLinkCard'
 import styles from './page.module.scss'
 import { Calendar, Eye, Link2 } from 'lucide-react'
+import { useAuth } from '@/contexts/auth'
 
-export default function ProfilePage({ profile, chatLinks: initialChatLinks }) {
+export default function ProfilePage({ profile, chatLinks: initialChatLinks, likeStatuses = [] }) {
   const [selectedPlatform, setSelectedPlatform] = useState('all')
+
+  const { user } = useAuth()
+  const currentUserId = user?.id
   
   // Calculate stats
   const totalViews = initialChatLinks?.reduce((sum, chat) => sum + (chat.views_count || 0), 0) || 0
@@ -110,7 +114,14 @@ export default function ProfilePage({ profile, chatLinks: initialChatLinks }) {
         {filteredChats && filteredChats.length > 0 ? (
           <div className={styles.chatsList}>
             {filteredChats.map(chat => (
-              <ChatLinkCard key={chat.id} chat={chat} />
+              <ChatLinkCard 
+                key={chat.id}
+                chat={chat}
+                editable={false}
+                draggable={false}
+                initialLiked={likeStatuses[chat.id] ?? null}
+                isOwner={currentUserId != null && currentUserId === chat.user_id}
+              />
             ))}
           </div>
         ) : (

@@ -3,9 +3,9 @@
 import { useEffect, useCallback, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  Eye, 
-  Heart, 
+import {
+  Eye,
+  Heart,
   ArrowRight,
   Search,
   ChevronLeft,
@@ -18,6 +18,8 @@ import { formatNumber } from '@/lib/utils'
 import ChatLinkCard from '@/components/ChatLinkCard'
 import ExploreFilters from '@/components/explore/ExploreFIlters'
 import { useExplore } from '@/hooks/UseExplore'
+import { getChatLikeStatuses } from '@/lib/services/like.service'
+import { useAuth } from '@/contexts/auth'
 
 const SORT_OPTIONS_CREATORS = [
   { value: 'recent', label: 'Recently Active' },
@@ -32,9 +34,17 @@ const SORT_OPTIONS_CHATS = [
   { value: 'views', label: 'Most Viewed' }
 ]
 
-export default function ExploreClient({ initialCreators, initialChats, initialPagination, initialTab }) {
+export default function ExploreClient({
+  initialCreators,
+  initialChats,
+  initialPagination,
+  initialTab,
+  initialLikeStatuses = {}
+}) {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { user } = useAuth()
+  const currentUserId = user?.id
 
   // Tab management
   const [activeTab, setActiveTab] = useState(initialTab)
@@ -45,6 +55,9 @@ export default function ExploreClient({ initialCreators, initialChats, initialPa
   const [sort, setSort] = useState('recent')
   const [currentPage, setCurrentPage] = useState(1)
   const [debouncedSearch, setDebouncedSearch] = useState('')
+
+  // Like statuses map for the current chats page: { chatId: boolean }
+  const [likeStatuses, setLikeStatuses] = useState(initialLikeStatuses)
 
   // Data fetching
   const creatorsExplore = useExplore('creators')
@@ -61,7 +74,7 @@ export default function ExploreClient({ initialCreators, initialChats, initialPa
       chatsExplore.setData(initialChats)
       chatsExplore.setPagination(initialPagination)
     }
-  }, []) // Solo en mount
+  }, []) // Only on mount
 
   // Load filters from URL only on mount
   useEffect(() => {
@@ -74,7 +87,7 @@ export default function ExploreClient({ initialCreators, initialChats, initialPa
     setPlatform(urlPlatform)
     setSort(urlSort)
     setCurrentPage(urlPage)
-  }, []) // Solo en mount
+  }, []) // Only on mount
 
   // Debounce search
   useEffect(() => {
@@ -105,15 +118,34 @@ export default function ExploreClient({ initialCreators, initialChats, initialPa
       filters.platform = platform
     }
 
-    currentExplore.fetchData(filters)
+    currentExplore.fetchData(filters).then(() => {
+      // After fetching chats, bulk-load like statuses for the new page
+      if (activeTab === 'chats') {
+        fetchLikeStatusesForCurrentChats()
+      }
+    })
   }, [debouncedSearch, platform, sort, currentPage, activeTab])
+
+  /**
+   * Fetch like statuses for whatever chats are currently loaded.
+   * Called after every chats data refresh.
+   */
+  const fetchLikeStatusesForCurrentChats = useCallback(async () => {
+    const ids = chatsExplore.data.map(c => c.id)
+    if (ids.length === 0) return
+
+    const result = await getChatLikeStatuses(ids)
+    if (result.success) {
+      setLikeStatuses(result.data)
+    }
+  }, [chatsExplore.data])
 
   // Update URL when filters change (without causing re-render)
   useEffect(() => {
     if (isInitialRender) return
 
     const params = new URLSearchParams()
-    
+
     if (activeTab !== 'creators') params.set('tab', activeTab)
     if (debouncedSearch) params.set('search', debouncedSearch)
     if (platform !== 'all' && activeTab === 'chats') params.set('platform', platform)
@@ -121,8 +153,6 @@ export default function ExploreClient({ initialCreators, initialChats, initialPa
     if (currentPage > 1) params.set('page', currentPage.toString())
 
     const newUrl = params.toString() ? `/explore?${params.toString()}` : '/explore'
-    
-    // Use replace instead of push to avoid adding to history on every keystroke
     window.history.replaceState({}, '', newUrl)
   }, [activeTab, debouncedSearch, platform, sort, currentPage, isInitialRender])
 
@@ -212,7 +242,7 @@ export default function ExploreClient({ initialCreators, initialChats, initialPa
         {!currentExplore.loading && (
           <div className={styles.resultsInfo}>
             <p className={styles.resultsText}>
-              {currentExplore.pagination.total} {activeTab === 'creators' 
+              {currentExplore.pagination.total} {activeTab === 'creators'
                 ? currentExplore.pagination.total === 1 ? 'creator' : 'creators'
                 : currentExplore.pagination.total === 1 ? 'chat' : 'chats'
               } found
@@ -284,11 +314,13 @@ export default function ExploreClient({ initialCreators, initialChats, initialPa
         {!currentExplore.loading && activeTab === 'chats' && currentExplore.data.length > 0 && (
           <div className={styles.chatsList}>
             {currentExplore.data.map((chat) => (
-              <ChatLinkCard 
+              <ChatLinkCard
                 key={chat.id}
                 chat={chat}
                 editable={false}
                 draggable={false}
+                initialLiked={likeStatuses[chat.id] ?? null}
+                isOwner={currentUserId != null && currentUserId === chat.user_id}
               />
             ))}
           </div>

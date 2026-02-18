@@ -11,42 +11,52 @@ export default function ChatLinkCard({
   chat,
   editable = false,
   draggable = false,
+  initialLiked = null,
+  isOwner = false,
   onEdit,
   onDelete,
 }) {
   const data = PLATAFORM_DATA[chat.ai_platform] || PLATAFORM_DATA.other
   const Logo = data.icon
 
-  // Hook para manejar likes con optimistic updates
-  const { liked, likesCount, loading: likeLoading, isCheckingStatus, toggleLike } = useChatLike(
-    chat.id,
-    chat.likes_count
-  )
+  const {
+    liked,
+    likesCount,
+    loading: likeLoading,
+    isCheckingStatus,
+    toggleLike
+  } = useChatLike(chat.id, chat.likes_count, initialLiked)
 
   const handleCardClick = async (e) => {
-    // Evitar abrir si se hace clic en botones o enlaces
+    // Avoid opening when clicking buttons or links
     if (e.target.closest('button') || e.target.closest('a[href]')) {
       return
     }
 
-    // Incrementar vistas
     incrementChatViews(chat.id)
-    
-    // Abrir en nueva pestaña
     window.open(chat.url, '_blank', 'noopener,noreferrer')
   }
 
   const handleLikeClick = async (e) => {
+    console.log(isOwner)
     e.stopPropagation()
-    
+
+    if (isOwner) return
+
     if (likeLoading || isCheckingStatus) return
 
     const result = await toggleLike()
-    
+
     if (!result.success && result.error) {
       // toast.error(result.error)
     }
   }
+
+  const likeButtonTitle = isOwner
+    ? "You can't like your own chat"
+    : liked
+    ? 'Unlike'
+    : 'Like this chat'
 
   return (
     <div
@@ -64,7 +74,7 @@ export default function ChatLinkCard({
           </div>
         )}
 
-        <div 
+        <div
           className={styles.platformIcon}
           style={{
             backgroundColor: `rgba(${data.rgb}, 0.1)`,
@@ -72,7 +82,7 @@ export default function ChatLinkCard({
           }}
         >
           {Logo ? (
-            <Logo 
+            <Logo
               className={styles.svgLogo}
               style={{ color: data.color }}
             />
@@ -85,7 +95,7 @@ export default function ChatLinkCard({
           <div className={styles.chatHeader}>
             <div className={styles.chatHeaderContent}>
               <h3 className={styles.chatTitle}>{chat.title}</h3>
-              <span 
+              <span
                 className={styles.platformBadge}
                 style={{
                   backgroundColor: `rgba(${data.rgb}, 0.1)`,
@@ -142,8 +152,8 @@ export default function ChatLinkCard({
                 <span className={styles.emptyTags}>Without tags</span>
               ) : (
                 chat.tags.slice(0, 3).map((tag, i) => (
-                  <span 
-                    key={i} 
+                  <span
+                    key={i}
                     className={styles.tag}
                     style={{
                       backgroundColor: `rgba(${data.rgb}, 0.08)`,
@@ -162,16 +172,25 @@ export default function ChatLinkCard({
                 <Eye />
                 {formatNumber(chat.views_count || 0)}
               </span>
-              
+
               <button
                 onClick={handleLikeClick}
-                className={`${styles.stat} ${styles.likeButton} ${liked ? styles.liked : ''} ${likeLoading ? styles.loading : ''}`}
-                disabled={likeLoading || isCheckingStatus}
-                aria-label={liked ? 'Unlike' : 'Like'}
-                title={liked ? 'Unlike' : 'Like this chat'}
+                className={`
+                  ${styles.stat}
+                  ${styles.likeButton}
+                  ${liked ? styles.liked : ''}
+                  ${likeLoading ? styles.loading : ''}
+                  ${isOwner ? styles.ownerDisabled : ''}
+                `}
+                disabled={likeLoading || isCheckingStatus || isOwner}
+                aria-label={likeButtonTitle}
+                title={likeButtonTitle}
               >
-                <Heart 
-                  className={`${liked ? styles.heartFilled : ''} ${likeLoading ? styles.heartPulsing : ''}`} 
+                <Heart
+                  className={`
+                    ${liked ? styles.heartFilled : ''}
+                    ${likeLoading ? styles.heartPulsing : ''}
+                  `}
                 />
                 {formatNumber(likesCount || 0)}
               </button>
@@ -180,7 +199,7 @@ export default function ChatLinkCard({
         </div>
       </div>
 
-      <div 
+      <div
         className={styles.glow}
         style={{
           background: `radial-gradient(circle at 50% 0%, rgba(${data.rgb}, 0.15) 0%, transparent 70%)`,

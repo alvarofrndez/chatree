@@ -25,6 +25,7 @@ import { useChatForm } from '@/hooks/UseChatForm'
 export default function DashboardPage({ initialProfile, initialStats, initialChats }) {
     const router = useRouter()
     const { user, loading: authLoading } = useAuth()
+    const currentUserId = user?.id
     
     const [profile] = useState(initialProfile)
     const [stats] = useState(initialStats)
@@ -246,6 +247,7 @@ export default function DashboardPage({ initialProfile, initialStats, initialCha
                         chat={chat}
                         editable={true}
                         draggable={true}
+                        isOwner={currentUserId != null && currentUserId === chat.user_id}
                         onEdit={() => handleEditChat(chat)}
                         onDelete={() => openDeleteModal(chat)}
                     />
@@ -279,10 +281,10 @@ export default function DashboardPage({ initialProfile, initialStats, initialCha
 
         {showDeleteModal && chatToDelete && (
             <DeleteChatModal
-            chat={chatToDelete}
-            loading={chatsLoading}
-            onConfirm={handleDeleteChat}
-            onClose={closeDeleteModal}
+                chat={chatToDelete}
+                loading={chatsLoading}
+                onConfirm={handleDeleteChat}
+                onClose={closeDeleteModal}
             />
         )}
         </main>
