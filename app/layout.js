@@ -11,6 +11,9 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME || 'Chatree',
   description: 'Share and discover AI conversations',
+  icons: {
+    icon: '/favicon.ico'
+  },
 }
 
 export default function RootLayout({ children }) {
