@@ -5,7 +5,8 @@ import {
   getUserChats, 
   createChat, 
   updateChat, 
-  deleteChat 
+  deleteChat, 
+  incrementChatViews
 } from '@/lib/services/chat.service'
 
 /**
@@ -120,6 +121,23 @@ export function useChats(initialChats = []) {
     }
   }, [])
 
+  const incrementViews = useCallback(async (chatId) => {
+    try {
+      const result = await incrementChatViews(chatId)
+
+      if (result.success) {
+        return { success: true }
+      } else {
+        return { success: false, error: result.error }
+      }
+    } catch (err) {
+      const errorMessage = err.message || 'Failed to increment the chat views'
+      return { success: false, error: errorMessage }
+    } finally {
+      return { success: false, error: errorMessage }
+    }
+  }, [])
+
   return {
     chats,
     loading,
@@ -127,6 +145,7 @@ export function useChats(initialChats = []) {
     refreshChats,
     addChat,
     editChat,
-    removeChat
+    removeChat,
+    incrementViews
   }
 }

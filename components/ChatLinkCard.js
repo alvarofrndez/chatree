@@ -4,6 +4,8 @@ import styles from './ChatLinkCard.module.scss'
 import { Trash2, Pencil, Eye, Heart, ExternalLink, GripVertical, Cloud } from 'lucide-react'
 import { PLATAFORM_DATA } from '@/lib/utils/constants'
 import { formatNumber } from '@/lib/utils'
+import { incrementChatViews } from '@/lib/services/chat.service'
+import { useChatLike } from '@/hooks/UseChatLike.js'
 
 export default function ChatLinkCard({
   chat,
@@ -15,12 +17,35 @@ export default function ChatLinkCard({
   const data = PLATAFORM_DATA[chat.ai_platform] || PLATAFORM_DATA.other
   const Logo = data.icon
 
-  const openLink = (e) => {
-    // Solo abrir si no se clickeó un botón de acción
+  // Hook para manejar likes con optimistic updates
+  const { liked, likesCount, loading: likeLoading, isCheckingStatus, toggleLike } = useChatLike(
+    chat.id,
+    chat.likes_count
+  )
+
+  const handleCardClick = async (e) => {
+    // Evitar abrir si se hace clic en botones o enlaces
     if (e.target.closest('button') || e.target.closest('a[href]')) {
       return
     }
+
+    // Incrementar vistas
+    incrementChatViews(chat.id)
+    
+    // Abrir en nueva pestaña
     window.open(chat.url, '_blank', 'noopener,noreferrer')
+  }
+
+  const handleLikeClick = async (e) => {
+    e.stopPropagation()
+    
+    if (likeLoading || isCheckingStatus) return
+
+    const result = await toggleLike()
+    
+    if (!result.success && result.error) {
+      // toast.error(result.error)
+    }
   }
 
   return (
@@ -30,7 +55,7 @@ export default function ChatLinkCard({
         '--platform-color': data.color,
         '--platform-color-rgb': data.rgb,
       }}
-      onClick={openLink}
+      onClick={handleCardClick}
     >
       <div className={styles.content}>
         {draggable && (
@@ -74,15 +99,15 @@ export default function ChatLinkCard({
 
             {editable && (
               <div className={styles.chatActions}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onDelete(chat)
-                    }}
-                    className={styles.deleteButton}
-                  >
-                    <Trash2 />
-                  </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onDelete(chat)
+                  }}
+                  className={styles.deleteButton}
+                >
+                  <Trash2 />
+                </button>
 
                 <button
                   onClick={(e) => {
@@ -137,10 +162,19 @@ export default function ChatLinkCard({
                 <Eye />
                 {formatNumber(chat.views_count || 0)}
               </span>
-              <span className={styles.stat}>
-                <Heart />
-                {formatNumber(chat.likes_count || 0)}
-              </span>
+              
+              <button
+                onClick={handleLikeClick}
+                className={`${styles.stat} ${styles.likeButton} ${liked ? styles.liked : ''} ${likeLoading ? styles.loading : ''}`}
+                disabled={likeLoading || isCheckingStatus}
+                aria-label={liked ? 'Unlike' : 'Like'}
+                title={liked ? 'Unlike' : 'Like this chat'}
+              >
+                <Heart 
+                  className={`${liked ? styles.heartFilled : ''} ${likeLoading ? styles.heartPulsing : ''}`} 
+                />
+                {formatNumber(likesCount || 0)}
+              </button>
             </div>
           </div>
         </div>

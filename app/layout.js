@@ -4,6 +4,7 @@ import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import { AuthProvider } from '@/contexts/auth'
 import AuthLoadingWrapper from '@/components/AuthLoadingWrapper'
+import NextTopLoader from 'nextjs-toploader';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,6 +19,17 @@ export default function RootLayout({ children }) {
       <body className={inter.className}>
         <AuthProvider>
           <AuthLoadingWrapper>
+            <NextTopLoader 
+              color="#19E6D5"
+              initialPosition={0.08}
+              crawlSpeed={200}
+              height={3}
+              crawl={true}
+              showSpinner={false}
+              easing="ease"
+              speed={200}
+              shadow="0 0 10px #19E6D5,0 0 5px #19E6D5"
+            />
             <Header />
             {children}
             <Footer />

@@ -1,0 +1,120 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.main {
+    // size
+    width: 100%;
+    min-height: 100vh;
+
+    // position
+    position: relative;
+
+    // display
+    @include mixins.flex(column, center, center);
+
+    // decoration
+    background-color: variables.$color-background;
+    overflow: hidden;
+
+    .backgroundGradient {
+        // size
+        width: 600px;
+        height: 600px;
+
+        // position
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+
+
+        // decoration
+        background: radial-gradient(circle, rgba(variables.$color-primary, 0.08) 0%, transparent 70%);
+        filter: blur(100px);
+        pointer-events: none;
+    }
+
+    .container {
+        // size
+        width: 100%;
+        max-width: variables.$container-md;
+
+        // position
+        position: relative;
+        z-index: 1;
+
+        // display
+        @include mixins.flex(column, center, center);
+
+        // margin & padding
+        padding: variables.$spacing-10 variables.$spacing-6;
+        text-align: center;
+
+        .errorCode {
+            // decoration
+            font-size: 8rem;
+            font-weight: variables.$font-weight-bold;
+            line-height: 1;
+            color: variables.$color-primary;
+            margin: 0;
+            opacity: 0.8;
+
+            @media (min-width: variables.$breakpoint-sm) {
+                font-size: 12rem;
+            }
+        }
+
+        .title {
+            // margin
+            margin: variables.$spacing-4 0 0 0;
+
+            // decoration
+            font-size: variables.$font-size-2xl;
+            font-weight: variables.$font-weight-bold;
+            color: variables.$color-foreground;
+
+            @media (min-width: variables.$breakpoint-sm) {
+                font-size: variables.$font-size-3xl;
+            }
+        }
+
+        .description {
+            // size
+            max-width: variables.$container-sm;
+
+            // margin
+            margin: variables.$spacing-4 0 variables.$spacing-8 0;
+
+            // decoration
+            font-size: variables.$font-size-base;
+            line-height: variables.$line-height-relaxed;
+            color: variables.$color-text-muted;
+        }
+
+        .homeButton {
+            // display
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            // margin
+            padding: variables.$spacing-3 variables.$spacing-8;
+
+            // decoration
+            background-color: variables.$color-primary;
+            color: variables.$color-primary-foreground;
+            font-weight: variables.$font-weight-semibold;
+            font-size: variables.$font-size-sm;
+            border-radius: variables.$radius-lg;
+            text-decoration: none;
+            transition: all variables.$transition-base;
+
+            &:hover {
+                // decoration
+                opacity: 0.9;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(variables.$color-primary, 0.2);
+            }
+        }
+    }
+}
