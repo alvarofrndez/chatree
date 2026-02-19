@@ -10,6 +10,8 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import styles from './page.module.scss'
+import { getGlobalStats } from '@/lib/services/stats.service'
+import { formatNumber } from '@/lib/utils'
 
 export const metadata = {
   title: {
@@ -33,7 +35,6 @@ export const metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com'
   ),
-
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -51,16 +52,13 @@ export const metadata = {
       },
     ],
   },
-
   twitter: {
     card: 'summary_large_image',
     title: `${process.env.NEXT_PUBLIC_APP_NAME} – Share Your AI Conversations`,
     description:
       'The Linktree for your AI conversations. Create your profile and show the world your prompt engineering skills.',
     images: ['/og-image.png'],
-    // creator: '@yourhandle',
   },
-
   robots: {
     index: true,
     follow: true,
@@ -72,13 +70,12 @@ export const metadata = {
       'max-snippet': -1,
     },
   },
-
   alternates: {
     canonical: '/',
   },
 }
 
-function JsonLd() {
+function JsonLd({ stats }) {
   const schema = {
     '@context': 'https://schema.org',
     '@graph': [
@@ -140,11 +137,13 @@ function JsonLd() {
           price: '0',
           priceCurrency: 'USD',
         },
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4.8',
-          reviewCount: '2400',
-        },
+        ...(stats && {
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: '4.8',
+            reviewCount: String(stats.total_creators),
+          },
+        }),
       },
     ],
   }
@@ -157,10 +156,17 @@ function JsonLd() {
   )
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const statsResult = await getGlobalStats()
+  const stats = statsResult.data ?? {
+    total_creators: 0,
+    total_chats: 0,
+    total_views: 0,
+  }
+
   return (
     <>
-      <JsonLd />
+      <JsonLd stats={stats} />
 
       <div className={styles.pageWrapper}>
 
@@ -173,14 +179,8 @@ export default function HomePage() {
             <div className={styles.heroContent}>
 
               <div className={styles.badge} role="note">
-                <Code2
-                  size={18}
-                  className={styles.badgeIcon}
-                  aria-hidden="true"
-                />
-                <span className={styles.badgeText}>
-                  The Linktree for AI Chats
-                </span>
+                <Code2 size={18} className={styles.badgeIcon} aria-hidden="true" />
+                <span className={styles.badgeText}>The Linktree for AI Chats</span>
               </div>
 
               <h1 className={styles.heroTitle}>
@@ -190,8 +190,8 @@ export default function HomePage() {
               </h1>
 
               <p className={styles.heroDescription}>
-                Create your profile, curate your most insightful ChatGPT,
-                Claude, and Gemini chats, and build a public portfolio of your
+                Create your profile, curate your most insightful ChatGPT, Claude,
+                and Gemini chats, and build a public portfolio of your
                 prompt&nbsp;engineering skills.
               </p>
 
@@ -199,7 +199,7 @@ export default function HomePage() {
                 <Link
                   href="/signup"
                   className={styles.primaryButton}
-                  aria-label={`Create your free profile`}
+                  aria-label="Create your free profile"
                 >
                   Create Your {process.env.NEXT_PUBLIC_APP_NAME}
                   <ArrowRight size={18} className={styles.buttonIcon} aria-hidden="true" />
@@ -217,7 +217,9 @@ export default function HomePage() {
                 <div className={styles.statItem}>
                   <dd className={styles.statValue}>
                     <Users size={18} className={styles.statIcon} aria-hidden="true" />
-                    <span className={styles.statNumber}>2.4k</span>
+                    <span className={styles.statNumber}>
+                      {formatNumber(stats.total_creators)}
+                    </span>
                   </dd>
                   <dt className={styles.statLabel}>Creators</dt>
                 </div>
@@ -225,7 +227,9 @@ export default function HomePage() {
                 <div className={styles.statItem}>
                   <dd className={styles.statValue}>
                     <LinkIcon size={18} className={styles.statIcon} aria-hidden="true" />
-                    <span className={styles.statNumber}>18k</span>
+                    <span className={styles.statNumber}>
+                      {formatNumber(stats.total_chats)}
+                    </span>
                   </dd>
                   <dt className={styles.statLabel}>Chats Shared</dt>
                 </div>
@@ -233,7 +237,9 @@ export default function HomePage() {
                 <div className={styles.statItem}>
                   <dd className={styles.statValue}>
                     <Eye size={18} className={styles.statIcon} aria-hidden="true" />
-                    <span className={styles.statNumber}>1.2M</span>
+                    <span className={styles.statNumber}>
+                      {formatNumber(stats.total_views)}
+                    </span>
                   </dd>
                   <dt className={styles.statLabel}>Profile Views</dt>
                 </div>
@@ -286,8 +292,8 @@ export default function HomePage() {
                 </div>
                 <h3 className={styles.featureTitle}>Beautiful Public Profile</h3>
                 <p className={styles.featureDescription}>
-                  Your own public page showcasing your curated AI
-                  conversations. Clean, fast, and easy to share.
+                  Your own public page showcasing your curated AI conversations.
+                  Clean, fast, and easy to share.
                 </p>
               </li>
 
@@ -312,8 +318,8 @@ export default function HomePage() {
                 Start sharing your AI conversations today
               </h2>
               <p className={styles.ctaDescription}>
-                Join creators, developers, and researchers building their
-                public AI prompt engineering portfolios.
+                Join creators, developers, and researchers building their public
+                AI prompt engineering portfolios.
               </p>
               <Link
                 href="/signup"
