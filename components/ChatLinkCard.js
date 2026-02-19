@@ -6,13 +6,20 @@ import { PLATAFORM_DATA } from '@/lib/utils/constants'
 import { formatNumber } from '@/lib/utils'
 import { incrementChatViews } from '@/lib/services/chat.service'
 import { useChatLike } from '@/hooks/UseChatLike.js'
+import { toast } from 'sonner'
 
 export default function ChatLinkCard({
   chat,
-  editable = false,
-  draggable = false,
+  editable     = false,
+  draggable    = false,
   initialLiked = null,
-  isOwner = false,
+  isOwner      = false,
+  // isOwner es true  → usuario logueado y es el dueño del chat
+  // isOwner es false → puede ser usuario logueado (no dueño) O anónimo
+  // Para distinguir anónimos, el padre pasa currentUserId:
+  //   - string  → logueado (no dueño)
+  //   - null    → no logueado
+  currentUserId = null,
   onEdit,
   onDelete,
 }) {
@@ -28,31 +35,62 @@ export default function ChatLinkCard({
   } = useChatLike(chat.id, chat.likes_count, initialLiked)
 
   const handleCardClick = async (e) => {
-    // Avoid opening when clicking buttons or links
-    if (e.target.closest('button') || e.target.closest('a[href]')) {
-      return
-    }
-
+    if (e.target.closest('button') || e.target.closest('a[href]')) return
     incrementChatViews(chat.id)
     window.open(chat.url, '_blank', 'noopener,noreferrer')
   }
 
   const handleLikeClick = async (e) => {
-    console.log(isOwner)
     e.stopPropagation()
 
-    if (isOwner) return
+    // ── Usuario no logueado ──────────────────────────────────────────────────
+    if (!isOwner && currentUserId === null) {
+      toast.info('Sign in to like chats', {
+        description: 'Create a free account or sign in to like and save your favourite conversations.',
+        action: {
+          label: 'Sign in',
+          onClick: () => window.location.href = '/signin',
+        },
+        duration: 5000,
+      })
+      return
+    }
+
+    // ── Dueño del chat ───────────────────────────────────────────────────────
+    if (isOwner) {
+      toast.info("You can't like your own chat", {
+        description: 'Share your profile link so others can like your conversations.',
+        duration: 3000,
+      })
+      return
+    }
 
     if (likeLoading || isCheckingStatus) return
 
     const result = await toggleLike()
 
     if (!result.success && result.error) {
-      // toast.error(result.error)
+      const msg = result.error?.toLowerCase() || ''
+
+      if (msg.includes('not found')) {
+        toast.error('Chat not found', {
+          description: 'This conversation may have been removed.',
+        })
+      } else if (msg.includes('network') || msg.includes('fetch')) {
+        toast.error('Connection error', {
+          description: 'Check your internet connection and try again.',
+        })
+      } else {
+        toast.error('Could not update like', {
+          description: result.error || 'Please try again.',
+        })
+      }
     }
   }
 
-  const likeButtonTitle = isOwner
+  const likeButtonTitle = currentUserId === null
+    ? 'Sign in to like this chat'
+    : isOwner
     ? "You can't like your own chat"
     : liked
     ? 'Unlike'
@@ -62,7 +100,7 @@ export default function ChatLinkCard({
     <div
       className={`${styles.card} ${editable ? styles.editable : ''}`}
       style={{
-        '--platform-color': data.color,
+        '--platform-color':     data.color,
         '--platform-color-rgb': data.rgb,
       }}
       onClick={handleCardClick}
@@ -78,14 +116,11 @@ export default function ChatLinkCard({
           className={styles.platformIcon}
           style={{
             backgroundColor: `rgba(${data.rgb}, 0.1)`,
-            borderColor: `rgba(${data.rgb}, 0.2)`,
+            borderColor:     `rgba(${data.rgb}, 0.2)`,
           }}
         >
           {Logo ? (
-            <Logo
-              className={styles.svgLogo}
-              style={{ color: data.color }}
-            />
+            <Logo className={styles.svgLogo} style={{ color: data.color }} />
           ) : (
             <span className={styles.fallbackIcon}><Cloud /></span>
           )}
@@ -99,8 +134,8 @@ export default function ChatLinkCard({
                 className={styles.platformBadge}
                 style={{
                   backgroundColor: `rgba(${data.rgb}, 0.1)`,
-                  color: data.color,
-                  borderColor: `rgba(${data.rgb}, 0.3)`,
+                  color:           data.color,
+                  borderColor:     `rgba(${data.rgb}, 0.3)`,
                 }}
               >
                 {chat.ai_platform}
@@ -110,25 +145,17 @@ export default function ChatLinkCard({
             {editable && (
               <div className={styles.chatActions}>
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onDelete(chat)
-                  }}
+                  onClick={(e) => { e.stopPropagation(); onDelete(chat) }}
                   className={styles.deleteButton}
                 >
                   <Trash2 />
                 </button>
-
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    onEdit(chat)
-                  }}
+                  onClick={(e) => { e.stopPropagation(); onEdit(chat) }}
                   className={styles.editButton}
                 >
                   <Pencil />
                 </button>
-
                 <a
                   href={chat.url}
                   target="_blank"
@@ -157,8 +184,8 @@ export default function ChatLinkCard({
                     className={styles.tag}
                     style={{
                       backgroundColor: `rgba(${data.rgb}, 0.08)`,
-                      color: data.color,
-                      borderColor: `rgba(${data.rgb}, 0.2)`,
+                      color:           data.color,
+                      borderColor:     `rgba(${data.rgb}, 0.2)`,
                     }}
                   >
                     #{tag}
@@ -178,17 +205,18 @@ export default function ChatLinkCard({
                 className={`
                   ${styles.stat}
                   ${styles.likeButton}
-                  ${liked ? styles.liked : ''}
-                  ${likeLoading ? styles.loading : ''}
-                  ${isOwner ? styles.ownerDisabled : ''}
+                  ${liked            ? styles.liked         : ''}
+                  ${likeLoading      ? styles.loading        : ''}
+                  ${isOwner          ? styles.ownerDisabled  : ''}
+                  ${currentUserId === null ? styles.guestDisabled : ''}
                 `}
-                disabled={likeLoading || isCheckingStatus || isOwner}
+                disabled={likeLoading || isCheckingStatus}
                 aria-label={likeButtonTitle}
                 title={likeButtonTitle}
               >
                 <Heart
                   className={`
-                    ${liked ? styles.heartFilled : ''}
+                    ${liked      ? styles.heartFilled  : ''}
                     ${likeLoading ? styles.heartPulsing : ''}
                   `}
                 />

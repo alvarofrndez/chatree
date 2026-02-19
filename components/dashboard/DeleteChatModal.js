@@ -33,6 +33,7 @@ export default function DeleteChatModal({
               editable={false}
               draggable={false}
               isOwner={current_user_id != null && current_user_id === chat.user_id}
+              currentUserId={current_user_id}
             />
           </div>
         </div>

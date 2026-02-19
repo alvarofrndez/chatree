@@ -175,6 +175,7 @@ export default function ProfilePage({
                 draggable={false}
                 initialLiked={likeStatuses[chat.id] ?? null}
                 isOwner={currentUserId != null && currentUserId === chat.user_id}
+                currentUserId={currentUserId}
               />
             ))}
           </section>

@@ -280,6 +280,7 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
                     isOwner={currentUserId != null && currentUserId === chat.user_id}
                     onEdit={() => handleEditChat(chat)}
                     onDelete={() => openDeleteModal(chat)}
+                    currentUserId={currentUserId}
                   />
                 ))}
               </div>
