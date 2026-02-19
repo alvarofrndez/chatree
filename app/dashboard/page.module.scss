@@ -359,9 +359,93 @@
         // display
         @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-3);
       }
-    }
 
-    
+      .chatCardSkeleton {
+        // size
+        width: 100%;
+
+        // display
+        @include mixins.flex(row, flex-start, flex-start, nowrap, variables.$spacing-3);
+
+        // margin
+        padding: variables.$spacing-4;
+
+        // decoration
+        background-color: variables.$color-surface;
+        border: 1px solid rgba(variables.$color-border, 0.5);
+        border-radius: variables.$radius-lg;
+
+        // animation
+        animation: skeletonPulse 1.6s ease-in-out infinite;
+
+        .skeletonChatIcon {
+          // size
+          width: 2.75rem;
+          height: 2.75rem;
+          flex-shrink: 0;
+
+          // decoration
+          background-color: rgba(variables.$color-border, 0.5);
+          border-radius: variables.$radius-md;
+        }
+
+        .skeletonChatBody {
+          // size
+          flex: 1;
+          min-width: 0;
+
+          // display
+          @include mixins.flex(column, flex-start, stretch, nowrap, 0);
+
+          .skeletonChatHeader {
+            // display
+            @include mixins.flex(row, space-between, center, nowrap, variables.$spacing-2);
+          }
+
+          .skeletonChatFooter {
+            // display
+            @include mixins.flex(row, space-between, center, nowrap, variables.$spacing-2);
+
+            // margin
+            margin-top: variables.$spacing-3;
+
+            .skeletonChatTags {
+              // display
+              @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-1-5);
+            }
+
+            .skeletonChatStats {
+              // display
+              @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-2);
+            }
+          }
+        }
+      }
+
+      .skeletonLine {
+        // display
+        display: block;
+
+        // decoration
+        background-color: rgba(variables.$color-border, 0.5);
+        border-radius: variables.$radius-sm;
+      }
+
+      .skeletonPill {
+        // display
+        display: inline-block;
+        height: 1.5rem;
+
+        // decoration
+        background-color: rgba(variables.$color-border, 0.5);
+        border-radius: variables.$radius-full;
+      }
+
+      @keyframes skeletonPulse {
+        0%,  100% { opacity: 1;    }
+        50%        { opacity: 0.45; }
+      }
+    }
   }
 
   .modal {

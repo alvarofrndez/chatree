@@ -509,3 +509,102 @@
     transform: rotate(360deg);
   }
 }
+
+.skeletonLine {
+  // display
+  display: block;
+
+  // decoration
+  background-color: rgba(variables.$color-border, 0.5);
+  border-radius: variables.$radius-sm;
+
+  // animation
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.skeletonPill {
+  // display
+  display: inline-block;
+  height: 1.5rem;
+
+  // decoration
+  background-color: rgba(variables.$color-border, 0.5);
+  border-radius: variables.$radius-full;
+
+  // animation
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.skeletonCircle {
+  // decoration
+  background-color: rgba(variables.$color-border, 0.5) !important;
+  border-color: transparent !important;
+
+  // animation
+  animation: shimmer 1.6s ease-in-out infinite;
+
+  // Quita las iniciales si las hubiera
+  * { visibility: hidden; }
+}
+
+.skeletonChatCard {
+  // size
+  width: 100%;
+
+  // display
+  @include mixins.flex(row, flex-start, flex-start, nowrap, variables.$spacing-3);
+
+  // margin
+  padding: variables.$spacing-4;
+
+  // decoration
+  background-color: variables.$color-surface;
+  border: 1px solid rgba(variables.$color-border, 0.5);
+  border-radius: variables.$radius-lg;
+
+  // animation
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.skeletonChatIcon {
+  // size — matches .platformIcon in ChatLinkCard
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+
+  // decoration
+  background-color: rgba(variables.$color-border, 0.5);
+  border-radius: variables.$radius-md;
+}
+
+.skeletonChatBody {
+  // size
+  flex: 1;
+  min-width: 0;
+
+  // display
+  @include mixins.flex(column, flex-start, stretch, nowrap, 0);
+}
+
+.skeletonChatHeader {
+  // display
+  @include mixins.flex(row, space-between, center, nowrap, variables.$spacing-2);
+}
+
+.skeletonChatFooter {
+  // display
+  @include mixins.flex(row, space-between, center, nowrap, variables.$spacing-2);
+
+  // margin
+  margin-top: variables.$spacing-3;
+}
+
+// ─── Shimmer keyframe ─────────────────────────────────────────────────────────
+// Añade este @keyframes una sola vez al final del archivo,
+// junto a los que ya tengas.
+
+@keyframes shimmer {
+  0%   { opacity: 1;   }
+  50%  { opacity: 0.4; }
+  100% { opacity: 1;   }
+}

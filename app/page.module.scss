@@ -250,6 +250,56 @@
                         font-size: variables.$font-size-xs;
                         color: variables.$color-text-muted;
                     }
+
+                    .skeletonIcon {
+                        // size —
+                        display: inline-block;
+                        width: 1.125rem;
+                        height: 1.125rem;
+
+                        // decoration
+                        background-color: rgba(variables.$color-border, 0.5);
+                        border-radius: variables.$radius-sm;
+
+                        // animation
+                        animation: shimmer 1.6s ease-in-out infinite;
+                    }
+
+                    .skeletonNumber {
+                        // size 
+                        display: inline-block;
+                        width: 3.5rem;
+                        height: 1.25rem;
+
+                        // decoration
+                        background-color: rgba(variables.$color-border, 0.5);
+                        border-radius: variables.$radius-sm;
+
+                        // animation
+                        animation: shimmer 1.6s ease-in-out infinite;
+                        animation-delay: 0.1s;
+                    }
+
+                    .skeletonLabel {
+                        // size 
+                        display: block;
+                        width: 4rem;
+                        height: 0.75rem;
+
+                        // decoration
+                        background-color: rgba(variables.$color-border, 0.35);
+                        border-radius: variables.$radius-sm;
+
+                        // animation
+                        animation: shimmer 1.6s ease-in-out infinite;
+                        animation-delay: 0.2s;
+                    }
+
+                    @keyframes shimmer {
+                        0%   { opacity: 1;    }
+                        50%  { opacity: 0.4;  }
+                        100% { opacity: 1;    }
+                    }
                 }
             }
         }

@@ -1,10 +1,16 @@
 @use '@/styles/variables.scss' as variables;
 @use '@/styles/mixins.scss' as mixins;
 
-.loadingContainer {
+// ─── Overlay ──────────────────────────────────────────────────────────────────
+.overlay {
+  // position
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+
   // size
   width: 100%;
-  min-height: 100vh;
+  height: 100%;
 
   // display
   @include mixins.flex(column, center, center);
@@ -12,35 +18,193 @@
   // decoration
   background-color: variables.$color-background;
 
-  .loadingContent {
-    // display
-    @include mixins.flex(column, center, center, nowrap, variables.$spacing-4);
+  // animation — fade in instantly, fade out smoothly
+  animation: fadeIn 0.15s ease-out both;
+}
 
-    *{
-      // decoration
-      font-size: variables.$font-size-sm;
-      color: variables.$color-text-muted;
-      margin: 0;
-    }
+// ─── Ambient orbs ────────────────────────────────────────────────────────────
+// Two large blurred color blobs that pulse slowly in the background.
+// Pure CSS, no JS, works in all browsers via opacity animation.
+.orb1 {
+  // position
+  position: absolute;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-60%);
 
-    .spinner {
-      // size
-      width: 2.5rem;
-      height: 2.5rem;
+  // size
+  width: 28rem;
+  height: 28rem;
 
-      // decoration
-      border: 3px solid rgba(variables.$color-primary, 0.2);
-      border-top-color: variables.$color-primary;
-      border-radius: variables.$radius-full;
+  // decoration
+  background: radial-gradient(
+    circle at center,
+    rgba(variables.$color-primary, 0.12) 0%,
+    transparent 70%
+  );
+  border-radius: variables.$radius-full;
+  pointer-events: none;
 
-      // animation
-      animation: spin 0.8s linear infinite;
-    }
+  // animation
+  animation: pulse 3.5s ease-in-out infinite;
+}
+
+.orb2 {
+  // position
+  position: absolute;
+  bottom: 25%;
+  right: 50%;
+  transform: translateX(60%);
+
+  // size
+  width: 20rem;
+  height: 20rem;
+
+  // decoration
+  background: radial-gradient(
+    circle at center,
+    rgba(variables.$color-primary, 0.07) 0%,
+    transparent 70%
+  );
+  border-radius: variables.$radius-full;
+  pointer-events: none;
+
+  // animation — offset so it doesn't pulse in sync with orb1
+  animation: pulse 3.5s ease-in-out 1.75s infinite;
+}
+
+// ─── Content ──────────────────────────────────────────────────────────────────
+.content {
+  // position
+  position: relative;
+  z-index: 1;
+
+  // display
+  @include mixins.flex(column, center, center, nowrap, variables.$spacing-5);
+
+  // animation
+  animation: riseIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
+}
+
+// ─── Logo mark ────────────────────────────────────────────────────────────────
+.logoMark {
+  // size
+  width: 3rem;
+  height: 3rem;
+
+  // display
+  @include mixins.flex(row, center, center);
+
+  // decoration
+  background-color: variables.$color-surface;
+  border: 1px solid rgba(variables.$color-border, 0.6);
+  border-radius: variables.$radius-lg;
+
+  // animation
+  animation: breathe 2.8s ease-in-out infinite;
+}
+
+.logoIcon {
+  // size
+  width: 1.5rem;
+  height: 1.5rem;
+
+  // decoration
+  color: variables.$color-primary;
+}
+
+// ─── Progress bar ─────────────────────────────────────────────────────────────
+// Indeterminate bar — a fill that slides back and forth inside a track.
+// Uses transform: translateX so it's GPU-accelerated and silky smooth
+// across all browsers including Safari.
+.barTrack {
+  // size
+  width: 8rem;
+  height: 2px;
+
+  // decoration
+  background-color: rgba(variables.$color-border, 0.4);
+  border-radius: variables.$radius-full;
+
+  // clip the fill to stay inside the track
+  overflow: hidden;
+}
+
+.barFill {
+  // size
+  width: 45%;
+  height: 100%;
+
+  // decoration
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    variables.$color-primary 40%,
+    variables.$color-primary 60%,
+    transparent 100%
+  );
+  border-radius: variables.$radius-full;
+
+  // animation — slides from -100% to +222% so the fill enters and exits cleanly
+  animation: slide 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+
+  // GPU hint — forces compositing in all browsers
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+// ─── Label ────────────────────────────────────────────────────────────────────
+.label {
+  // decoration
+  font-size: variables.$font-size-xs;
+  font-weight: variables.$font-weight-medium;
+  color: variables.$color-text-muted;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  // animation — subtle fade-pulse so it doesn't feel static
+  animation: textPulse 2.8s ease-in-out infinite;
+}
+
+// ─── Keyframes ────────────────────────────────────────────────────────────────
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes riseIn {
+  from {
+    opacity:   0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity:   1;
+    transform: translateY(0);
   }
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+// Logo breathe — scale pulses very subtly so it feels alive
+@keyframes breathe {
+  0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(variables.$color-primary, 0);    }
+  50%       { transform: scale(1.04); box-shadow: 0 0 0 6px rgba(variables.$color-primary, 0.08); }
+}
+
+// Background orbs — opacity only, no transform, avoids layout thrashing
+@keyframes pulse {
+  0%, 100% { opacity: 1;   }
+  50%       { opacity: 0.4; }
+}
+
+// Bar fill slide — translateX drives the animation (GPU only, no layout)
+@keyframes slide {
+  0%   { transform: translateX(-222%); }
+  100% { transform: translateX(222%);  }
+}
+
+// Label subtle fade
+@keyframes textPulse {
+  0%, 100% { opacity: 0.5; }
+  50%       { opacity: 1;   }
 }

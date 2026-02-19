@@ -437,6 +437,9 @@ a, button, input, textarea, select {
   min-width: 280px;
   max-width: 380px;
 
+  // position
+  z-index: variables.$z-index-toast;
+
   // display
   display: flex;
   flex-direction: row;
@@ -451,12 +454,11 @@ a, button, input, textarea, select {
   border: 1px solid rgba(variables.$color-border, 0.6);
   border-radius: variables.$radius-lg;
   box-shadow: variables.$shadow-lg;
-
+  backdrop-filter: blur(15px);
   font-size: variables.$font-size-sm;
   font-weight: variables.$font-weight-medium;
   color: variables.$color-foreground;
   font-family: inherit;
-
   will-change: transform, opacity;
 
   [data-icon] {
