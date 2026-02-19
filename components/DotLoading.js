@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
+import styles from './DotLoading.module.scss'
 
 export default function DotLoading({
-    text = 'Creating',
-    maxDots = 3,
+    text     = 'Creating',
+    maxDots  = 3,
     interval = 500,
 }) {
     const [dots, setDots] = useState(1)
@@ -16,9 +17,18 @@ export default function DotLoading({
     }, [maxDots, interval])
 
     return (
-        <span>
+        <span className={styles.dotLoading}>
             {text}
-            {'.'.repeat(dots)}
+            <span className={styles.dots} aria-hidden="true">
+                {Array.from({ length: maxDots }, (_, i) => (
+                    <span
+                        key={i}
+                        className={`${styles.dot} ${i < dots ? styles.visible : ''}`}
+                    >
+                        .
+                    </span>
+                ))}
+            </span>
         </span>
     )
 }

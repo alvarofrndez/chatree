@@ -1,0 +1,23 @@
+.dotLoading {
+    // display
+    display: inline-flex;
+    align-items: center;
+
+    .dots {
+        // display
+        display: inline-flex;
+    }
+
+    .dot {
+        // decoration
+        opacity: 0;
+
+        // animation
+        transition: opacity 0.15s ease;
+
+        &.visible {
+            // decoration
+            opacity: 1;
+        }
+    }
+}

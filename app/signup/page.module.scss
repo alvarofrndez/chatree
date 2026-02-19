@@ -178,6 +178,46 @@
                         // decoration
                         @include mixins.form-hint;
                     }
+
+                    &.formFieldError {
+
+                        .label {
+                            // decoration
+                            color: variables.$color-error;
+                        }
+                    }
+
+                    .inputError {
+                        // decoration — override del estado normal del input
+                        border-color: rgba(variables.$color-error, 0.5) !important;
+                        background-color: rgba(variables.$color-error, 0.03);
+
+                        &:focus {
+                            // decoration
+                            border-color: variables.$color-error !important;
+                            box-shadow: 0 0 0 3px rgba(variables.$color-error, 0.1);
+                            outline: none;
+                        }
+                    }
+
+                    .fieldError {
+                        // display
+                        display: flex;
+                        align-items: center;
+                        gap: variables.$spacing-1;
+
+                        // decoration
+                        font-size: variables.$font-size-xs;
+                        font-weight: variables.$font-weight-medium;
+                        color: variables.$color-error;
+
+                        svg {
+                            // size
+                            width: variables.$spacing-3;
+                            height: variables.$spacing-3;
+                            flex-shrink: 0;
+                        }
+                    }
                 }
 
                 .submitButton {

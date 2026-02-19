@@ -402,7 +402,7 @@ export default function SettingsTab({ profile, onProfileUpdate }) {
           >
             {saving
               ? <DotLoading text="Saving" />
-              : <><Check size={16} aria-hidden="true" /> Save changes</>
+              : <>Save changes</>
             }
           </button>
         </div>
