@@ -19,8 +19,10 @@ import { useAuth } from '@/contexts/auth'
 import ChatLinkCard from '@/components/ChatLinkCard'
 import ChatFormModal from '@/components/dashboard/ChatFormMOdal'
 import DeleteChatModal from '@/components/dashboard/DeleteChatModal'
+import SettingsTab from '@/components/dashboard/SettingsTab'
 import { useChats } from '@/hooks/UseChats'
 import { useChatForm } from '@/hooks/UseChatForm'
+import { toast } from 'sonner'
 
 function StatCard({ icon: Icon, label, value }) {
   return (
@@ -38,9 +40,7 @@ function ProfileUrlBar({ username }) {
   const [copiedUrl, setCopiedUrl] = useState(false)
   const [origin, setOrigin] = useState('')
 
-  useEffect(() => {
-    setOrigin(window.location.host)
-  }, [])
+  useEffect(() => { setOrigin(window.location.host) }, [])
 
   const handleCopyUrl = async () => {
     if (!username) return
@@ -49,6 +49,16 @@ function ProfileUrlBar({ username }) {
     if (success) {
       setCopiedUrl(true)
       setTimeout(() => setCopiedUrl(false), 2000)
+      // Confirmación visual inline (el botón cambia a check) +
+      // toast sutil para reforzar sin ser repetitivo
+      toast.success('Link copied!', {
+        description: `${url}`,
+        duration: 2500,
+      })
+    } else {
+      toast.error('Could not copy link', {
+        description: 'Try selecting and copying the URL manually.',
+      })
     }
   }
 
@@ -60,7 +70,6 @@ function ProfileUrlBar({ username }) {
           {origin}/u/{username || '…'}
         </span>
       </div>
-
       <div className={styles.profileActions}>
         <button
           onClick={handleCopyUrl}
@@ -72,11 +81,8 @@ function ProfileUrlBar({ username }) {
             ? <Check size={16} aria-hidden="true" />
             : <Copy size={16} aria-hidden="true" />
           }
-          <span className={styles.buttonTextHidden}>
-            {copiedUrl ? 'Copied!' : 'Copy'}
-          </span>
+          <span className={styles.buttonTextHidden}>{copiedUrl ? 'Copied!' : 'Copy'}</span>
         </button>
-
         <Link
           href={`/u/${username}`}
           target="_blank"
@@ -114,13 +120,14 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
   const { user, loading: authLoading } = useAuth()
   const currentUserId = user?.id
 
-  const [profile] = useState(initialProfile)
-  const [stats] = useState(initialStats)
+  const [profile, setProfile] = useState(initialProfile)
+  const [stats]   = useState(initialStats)
   const [activeTab, setActiveTab] = useState('chats')
-  const [showChatModal, setShowChatModal] = useState(false)
+
+  const [showChatModal,   setShowChatModal]   = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [editingChat, setEditingChat] = useState(null)
-  const [chatToDelete, setChatToDelete] = useState(null)
+  const [editingChat,     setEditingChat]     = useState(null)
+  const [chatToDelete,    setChatToDelete]    = useState(null)
 
   const { chats, loading: chatsLoading, addChat, editChat, removeChat } = useChats(initialChats)
   const { formData, tagInput, setTagInput, updateField, addTag, removeTag, resetForm, loadData } = useChatForm()
@@ -129,9 +136,20 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
     if (!authLoading && !user) router.push('/signin')
   }, [user, authLoading, router])
 
+  // ── Save chat (add or edit) ────────────────────────────────────────────────
   const handleSaveChat = async (e) => {
     e.preventDefault()
-    const result = editingChat
+
+    // Warn if the URL doesn't look like a chat link
+    if (formData.url && !formData.url.includes('claude.ai') && !formData.url.includes('chatgpt.com') && !formData.url.includes('chat.openai.com')) {
+      toast.info('Heads up', {
+        description: "This URL doesn't look like a known AI chat link. Make sure it's shareable.",
+        duration: 4000,
+      })
+    }
+
+    const isEditing = !!editingChat
+    const result    = isEditing
       ? await editChat(editingChat.id, formData)
       : await addChat(formData)
 
@@ -139,24 +157,42 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
       setShowChatModal(false)
       resetForm()
       setEditingChat(null)
+
+      toast.success(isEditing ? 'Chat updated' : 'Chat added', {
+        description: isEditing
+          ? 'Your changes have been saved.'
+          : 'Your conversation is now live on your profile.',
+      })
     } else {
-      alert(result.error || 'Failed to save chat')
+      toast.error(isEditing ? 'Could not update chat' : 'Could not add chat', {
+        description: result.error || 'Please try again.',
+      })
     }
   }
 
+  // ── Delete chat ───────────────────────────────────────────────────────────
   const handleDeleteChat = async () => {
     if (!chatToDelete) return
+
     const result = await removeChat(chatToDelete.id)
+
     if (result.success) {
       setShowDeleteModal(false)
       setChatToDelete(null)
+
+      toast.success('Chat deleted', {
+        description: `"${chatToDelete.title || 'Untitled chat'}" has been removed from your profile.`,
+      })
     } else {
-      alert(result.error || 'Failed to delete chat')
+      toast.error('Could not delete chat', {
+        description: result.error || 'Please try again.',
+      })
     }
   }
 
-  const openDeleteModal = (chat) => { setChatToDelete(chat); setShowDeleteModal(true) }
-  const closeDeleteModal = () => { setShowDeleteModal(false); setChatToDelete(null) }
+  // ── Modal helpers ─────────────────────────────────────────────────────────
+  const openDeleteModal  = (chat) => { setChatToDelete(chat); setShowDeleteModal(true) }
+  const closeDeleteModal = ()     => { setShowDeleteModal(false); setChatToDelete(null) }
 
   const handleEditChat = (chat) => {
     setEditingChat(chat)
@@ -176,6 +212,13 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
     setEditingChat(null)
   }
 
+  // ── Profile update ────────────────────────────────────────────────────────
+  // Toast is fired from SettingsTab itself (it owns the save logic),
+  // so here we only sync local state.
+  const handleProfileUpdate = (updatedProfile) => {
+    setProfile(updatedProfile)
+  }
+
   if (!authLoading && !user) return null
 
   return (
@@ -188,18 +231,14 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
         </header>
 
         <dl className={styles.statsGrid}>
-          <StatCard icon={Link2}      label="Chats" value={stats.total_chats} />
-          <StatCard icon={Eye}        label="Views" value={formatNumber(stats.total_views)} />
+          <StatCard icon={Link2}       label="Chats" value={stats.total_chats} />
+          <StatCard icon={Eye}         label="Views" value={formatNumber(stats.total_views)} />
           <StatCard icon={ChartColumn} label="Likes" value={formatNumber(stats.total_likes)} />
         </dl>
 
         <ProfileUrlBar username={profile?.username} />
 
-        <nav
-          className={styles.tabsContainer}
-          role="tablist"
-          aria-label="Dashboard sections"
-        >
+        <nav className={styles.tabsContainer} role="tablist" aria-label="Dashboard sections">
           <button
             role="tab"
             aria-selected={activeTab === 'chats'}
@@ -222,7 +261,7 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
         </nav>
 
         {activeTab === 'chats' && (
-          <section className={styles.containerChats} id="dashboard-panel" aria-label="My AI chats">
+          <section id="dashboard-panel" aria-label="My AI chats" className={styles.containerChats}>
             <button className={styles.addButton} onClick={handleOpenAddModal}>
               <Plus size={16} aria-hidden="true" />
               Add AI Chat
@@ -249,17 +288,17 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
         )}
 
         {activeTab === 'settings' && (
-          <section
-            id="dashboard-panel"
-            className={styles.emptyState}
-            aria-label="Settings"
-          >
-            <p>Settings coming soon…</p>
+          <section id="dashboard-panel" aria-label="Profile settings">
+            <SettingsTab
+              profile={profile}
+              onProfileUpdate={handleProfileUpdate}
+            />
           </section>
         )}
 
       </div>
 
+      {/* ── Modals ── */}
       {showChatModal && (
         <ChatFormModal
           isEditing={!!editingChat}

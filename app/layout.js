@@ -5,6 +5,7 @@ import Footer from '@/components/Footer'
 import { AuthProvider } from '@/contexts/auth'
 import AuthLoadingWrapper from '@/components/AuthLoadingWrapper'
 import NextTopLoader from 'nextjs-toploader'
+import { Toaster } from 'sonner'
 
 const geist = Geist({
   subsets: ['latin'],
@@ -119,6 +120,19 @@ export default function RootLayout({ children }) {
               {children}
             </main>
             <Footer />
+            <Toaster
+              position="top-right"
+              offset={24}
+              toastOptions={{
+                unstyled: true,
+                classNames: {
+                  toast:   'toast',
+                  success: 'toast--success',
+                  error:   'toast--error',
+                  info:    'toast--info',
+                },
+              }}
+            />
           </AuthLoadingWrapper>
         </AuthProvider>
       </body>

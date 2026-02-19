@@ -1,0 +1,369 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.settings {
+  // size
+  width: 100%;
+
+  // display
+  @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-6);
+
+  .banner {
+    // size
+    width: 100%;
+
+    // display
+    @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-2);
+
+    // margin
+    padding: variables.$spacing-3 variables.$spacing-4;
+
+    // decoration
+    border-radius: variables.$radius-md;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-medium;
+    border: 1px solid transparent;
+
+    svg {
+      // size
+      width: variables.$spacing-4;
+      height: variables.$spacing-4;
+      flex-shrink: 0;
+    }
+
+    &.bannerSuccess {
+      // decoration
+      background-color: rgba(variables.$color-success, 0.08);
+      border-color: rgba(variables.$color-success, 0.2);
+      color: variables.$color-success;
+    }
+
+    &.bannerError {
+      // decoration
+      background-color: rgba(variables.$color-error, 0.08);
+      border-color: rgba(variables.$color-error, 0.2);
+      color: variables.$color-error;
+    }
+  }
+
+  .form {
+    // size
+    width: 100%;
+
+    // display
+    @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-6);
+
+    .avatarSection {
+      // display
+      @include mixins.flex(column, flex-start, center, nowrap, variables.$spacing-3);
+
+      .avatarWrapper {
+        // position
+        position: relative;
+
+        // size
+        width: variables.$spacing-24;
+        height: variables.$spacing-24;
+
+
+        .avatarPreview {
+          // size
+          width: 100%;
+          height: 100%;
+
+          // decoration
+          border-radius: variables.$radius-full;
+          object-fit: cover;
+          border: 2px solid rgba(variables.$color-border, 0.5);
+        }
+
+        .avatarPlaceholder {
+          // size
+          width: 100%;
+          height: 100%;
+
+          // display
+          @include mixins.flex(row, center, center);
+
+          // decoration
+          background-color: variables.$color-surface;
+          border: 2px solid rgba(variables.$color-border, 0.5);
+          border-radius: variables.$radius-full;
+          color: variables.$color-text-muted;
+        }
+
+        .avatarOverlay {
+          // position
+          position: absolute;
+          bottom: 0;
+          right: 0;
+
+          // size
+          width: variables.$spacing-8;
+          height: variables.$spacing-8;
+
+          // display
+          @include mixins.flex(row, center, center);
+
+          // decoration
+          background-color: variables.$color-primary;
+          color: variables.$color-primary-foreground;
+          border: 2px solid variables.$color-surface;
+          border-radius: variables.$radius-full;
+          cursor: pointer;
+          transition: all variables.$transition-base;
+
+          &:hover:not(:disabled) {
+            // decoration
+            background-color: rgba(variables.$color-primary, 0.85);
+            transform: scale(1.05);
+          }
+
+          &:disabled {
+            // decoration
+            opacity: 0.7;
+            cursor: not-allowed;
+          }
+
+          svg {
+            // size
+            width: variables.$spacing-4;
+            height: variables.$spacing-4;
+          }
+        }
+      }
+
+      .avatarActions {
+        // display
+        @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-2);
+
+        .avatarChangeBtn {
+          // decoration
+          @include mixins.button-outline(variables.$color-border, variables.$color-foreground);
+
+          // margin
+          padding: variables.$spacing-2 variables.$spacing-4;
+
+          // decoration
+          background-color: variables.$color-surface-elevated;
+          font-size: variables.$font-size-sm;
+          font-weight: variables.$font-weight-medium;
+
+          &:hover:not(:disabled) {
+            // decoration
+            background-color: rgba(variables.$color-surface-elevated, 0.3);
+            border-color: variables.$color-border;
+          }
+
+          &:disabled {
+            // decoration
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+        }
+
+        .avatarRemoveBtn {
+          // display
+          @include mixins.flex(row, center, center, nowrap, variables.$spacing-1-5);
+
+          // margin
+          padding: variables.$spacing-2 variables.$spacing-3;
+
+          // decoration
+          background: none;
+          border: 1px solid transparent;
+          border-radius: variables.$radius-md;
+          font-size: variables.$font-size-sm;
+          font-weight: variables.$font-weight-medium;
+          color: variables.$color-error;
+          cursor: pointer;
+          transition: all variables.$transition-base;
+
+          &:hover:not(:disabled) {
+            // decoration
+            background-color: rgba(variables.$color-error, 0.08);
+            border-color: rgba(variables.$color-error, 0.2);
+          }
+
+          &:disabled {
+            // decoration
+            opacity: 0.5;
+            cursor: not-allowed;
+          }
+
+          svg {
+            // size
+            width: variables.$spacing-3-5;
+            height: variables.$spacing-3-5;
+          }
+        }
+      }
+
+      .avatarHint {
+        // decoration
+        font-size: variables.$font-size-xs;
+        color: variables.$color-text-muted;
+        margin: 0;
+      }
+
+      .hiddenInput {
+        // display
+        display: none;
+      }
+    }
+
+    .divider {
+      // size
+      width: 100%;
+      height: 1px;
+
+      // decoration
+      background-color: rgba(variables.$color-border, 0.5);
+      border: none;
+      margin: 0;
+    }
+
+    .field {
+      // display
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-1-5);
+
+      .label {
+        // decoration
+        @include mixins.label-base;
+      }
+
+      .labelRow {
+        // display
+        @include mixins.flex(row, space-between, center, nowrap);
+      }
+
+      .hint {
+        // decoration
+        font-size: variables.$font-size-xs;
+        color: variables.$color-text-muted;
+        margin: 0;
+
+        strong {
+          // decoration
+          color: variables.$color-foreground;
+          font-weight: variables.$font-weight-medium;
+        }
+      }
+
+      // ── Input with prefix ────────────────────────────────────────────
+      .inputWrapper {
+        // position
+        position: relative;
+
+        // display
+        @include mixins.flex(row, flex-start, center, nowrap);
+
+        .inputPrefix {
+          // position
+          position: absolute;
+          left: variables.$spacing-3;
+
+          // decoration
+          font-size: variables.$font-size-sm;
+          color: variables.$color-text-muted;
+          pointer-events: none;
+          user-select: none;
+        }
+
+        .input {
+          // size
+          width: 100%;
+
+          // decoration
+          @include mixins.input-base;
+          padding-left: variables.$spacing-7;
+        }
+      }
+
+      .input {
+        // size
+        width: 100%;
+
+        // decoration
+        @include mixins.input-base;
+      }
+
+      .textarea {
+        // size
+        width: 100%;
+        resize: vertical;
+        min-height: 5rem;
+
+        // decoration
+        @include mixins.input-base;
+        font-family: inherit;
+        line-height: variables.$line-height-relaxed;
+      }
+
+      .charCount {
+        // decoration
+        font-size: variables.$font-size-xs;
+        color: variables.$color-text-muted;
+        font-variant-numeric: tabular-nums;
+        transition: color variables.$transition-base;
+
+        &.charCountOver {
+          // decoration
+          color: variables.$color-error;
+          font-weight: variables.$font-weight-medium;
+        }
+      }
+    }
+
+    // ── Actions ────────────────────────────────────────────────────────────
+    .actions {
+      // display
+      @include mixins.flex(row, flex-end, center, nowrap);
+
+      // margin
+      padding-top: variables.$spacing-2;
+
+      .saveButton {
+        // size
+        min-width: initial;
+
+        // display
+        @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
+        // margin
+        padding: variables.$spacing-2-5 variables.$spacing-5;
+
+        // decoration
+        @include mixins.button-variant(variables.$color-primary, variables.$color-primary-foreground);
+        font-size: variables.$font-size-sm;
+        font-weight: variables.$font-weight-medium;
+
+        &:disabled {
+          // decoration
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
+        svg {
+          // size
+          width: variables.$spacing-4;
+          height: variables.$spacing-4;
+        }
+      }
+    }
+  }
+}
+
+// ─── Spinner ──────────────────────────────────────────────────────────────────
+// Global utility — used on overlays and buttons across the tab
+.spin {
+  // animation
+  animation: spin 0.8s linear infinite;
+}
+
+// ─── Animations ───────────────────────────────────────────────────────────────
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
