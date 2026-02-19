@@ -87,7 +87,6 @@ function CreatorCard({ creator }) {
             <dt>views</dt>
           </div>
           <div className={styles.stat}>
-            <Heart size={14} aria-hidden="true" />
             <dd>{formatNumber(creator.stats.total_likes)}</dd>
             <dt>likes</dt>
           </div>
