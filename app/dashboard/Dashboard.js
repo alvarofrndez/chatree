@@ -3,18 +3,18 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { 
-  Eye, 
-  Link2, 
-  Copy, 
-  ExternalLink, 
-  Plus, 
+import {
+  Eye,
+  Link2,
+  Copy,
+  Check,
+  ExternalLink,
+  Plus,
   Settings,
-  ChartColumn
+  ChartColumn,
 } from 'lucide-react'
 import styles from './page.module.scss'
 import { formatNumber, copyToClipboard } from '@/lib/utils'
-import DotLoading from '@/components/DotLoading'
 import { useAuth } from '@/contexts/auth'
 import ChatLinkCard from '@/components/ChatLinkCard'
 import ChatFormModal from '@/components/dashboard/ChatFormMOdal'
@@ -22,271 +22,267 @@ import DeleteChatModal from '@/components/dashboard/DeleteChatModal'
 import { useChats } from '@/hooks/UseChats'
 import { useChatForm } from '@/hooks/UseChatForm'
 
-export default function DashboardPage({ initialProfile, initialStats, initialChats }) {
-    const router = useRouter()
-    const { user, loading: authLoading } = useAuth()
-    const currentUserId = user?.id
-    
-    const [profile] = useState(initialProfile)
-    const [stats] = useState(initialStats)
-    const [activeTab, setActiveTab] = useState('chats')
-    const [showChatModal, setShowChatModal] = useState(false)
-    const [showDeleteModal, setShowDeleteModal] = useState(false)
-    const [editingChat, setEditingChat] = useState(null)
-    const [chatToDelete, setChatToDelete] = useState(null)
-    const [copiedUrl, setCopiedUrl] = useState(false)
+function StatCard({ icon: Icon, label, value }) {
+  return (
+    <div className={styles.statCard}>
+      <div className={styles.statHeader}>
+        <Icon className={styles.statIcon} size={16} aria-hidden="true" />
+        <dt className={styles.statLabel}>{label}</dt>
+      </div>
+      <dd className={styles.statValue}>{value}</dd>
+    </div>
+  )
+}
 
-    const { 
-        chats, 
-        loading: chatsLoading, 
-        addChat, 
-        editChat, 
-        removeChat 
-    } = useChats(initialChats)
+function ProfileUrlBar({ username }) {
+  const [copiedUrl, setCopiedUrl] = useState(false)
+  const [origin, setOrigin] = useState('')
 
-    const {
-        formData,
-        tagInput,
-        setTagInput,
-        updateField,
-        addTag,
-        removeTag,
-        resetForm,
-        loadData
-    } = useChatForm()
+  useEffect(() => {
+    setOrigin(window.location.host)
+  }, [])
 
-    useEffect(() => {
-        if (!authLoading && !user) {
-        router.push('/signin')
-        }
-    }, [user, authLoading, router])
-
-    const handleCopyUrl = async () => {
-        if (!profile?.username) return
-        
-        const url = `${window.location.origin}/u/${profile.username}`
-        const success = await copyToClipboard(url)
-        
-        if (success) {
-        setCopiedUrl(true)
-        setTimeout(() => setCopiedUrl(false), 2000)
-        }
+  const handleCopyUrl = async () => {
+    if (!username) return
+    const url = `${window.location.origin}/u/${username}`
+    const success = await copyToClipboard(url)
+    if (success) {
+      setCopiedUrl(true)
+      setTimeout(() => setCopiedUrl(false), 2000)
     }
-    
-    const handleSaveChat = async (e) => {
-        e.preventDefault()
+  }
 
-        let result
+  return (
+    <div className={styles.profileCard} aria-label="Your public profile URL">
+      <div className={styles.profileUrl}>
+        <Link2 className={styles.profileUrlIcon} size={14} aria-hidden="true" />
+        <span className={styles.profileUrlText}>
+          {origin}/u/{username || '…'}
+        </span>
+      </div>
 
-        if (editingChat) {
-        result = await editChat(editingChat.id, formData)
-        } else {
-        result = await addChat(formData)
-        }
+      <div className={styles.profileActions}>
+        <button
+          onClick={handleCopyUrl}
+          className={styles.profileButton}
+          aria-label={copiedUrl ? 'URL copied!' : 'Copy profile URL'}
+          title={copiedUrl ? 'Copied!' : 'Copy URL'}
+        >
+          {copiedUrl
+            ? <Check size={16} aria-hidden="true" />
+            : <Copy size={16} aria-hidden="true" />
+          }
+          <span className={styles.buttonTextHidden}>
+            {copiedUrl ? 'Copied!' : 'Copy'}
+          </span>
+        </button>
 
-        if (result.success) {
-        setShowChatModal(false)
-        resetForm()
-        setEditingChat(null)
-        } else {
-        alert(result.error || 'Failed to save chat')
-        }
+        <Link
+          href={`/u/${username}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={styles.profileButton}
+          aria-label="View your public profile (opens in new tab)"
+          title="View profile"
+        >
+          <ExternalLink size={16} aria-hidden="true" />
+          <span className={styles.buttonTextHidden}>View</span>
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+function EmptyChats({ onAdd }) {
+  return (
+    <div className={styles.emptyState} role="status">
+      <Link2 size={24} aria-hidden="true" />
+      <div className={styles.emptyStateInfo}>
+        <h2 className={styles.emptyStateTitle}>No chats yet</h2>
+        <p>Add your first AI conversation to get started</p>
+      </div>
+      <button className={styles.addButton} onClick={onAdd}>
+        <Plus size={16} aria-hidden="true" />
+        Add your first chat
+      </button>
+    </div>
+  )
+}
+
+export default function DashboardClient({ initialProfile, initialStats, initialChats }) {
+  const router = useRouter()
+  const { user, loading: authLoading } = useAuth()
+  const currentUserId = user?.id
+
+  const [profile] = useState(initialProfile)
+  const [stats] = useState(initialStats)
+  const [activeTab, setActiveTab] = useState('chats')
+  const [showChatModal, setShowChatModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [editingChat, setEditingChat] = useState(null)
+  const [chatToDelete, setChatToDelete] = useState(null)
+
+  const { chats, loading: chatsLoading, addChat, editChat, removeChat } = useChats(initialChats)
+  const { formData, tagInput, setTagInput, updateField, addTag, removeTag, resetForm, loadData } = useChatForm()
+
+  useEffect(() => {
+    if (!authLoading && !user) router.push('/signin')
+  }, [user, authLoading, router])
+
+  const handleSaveChat = async (e) => {
+    e.preventDefault()
+    const result = editingChat
+      ? await editChat(editingChat.id, formData)
+      : await addChat(formData)
+
+    if (result.success) {
+      setShowChatModal(false)
+      resetForm()
+      setEditingChat(null)
+    } else {
+      alert(result.error || 'Failed to save chat')
     }
-    
-    const handleDeleteChat = async () => {
-        if (!chatToDelete) return
-        
-        const result = await removeChat(chatToDelete.id)
+  }
 
-        if (result.success) {
-        setShowDeleteModal(false)
-        setChatToDelete(null)
-        } else {
-        alert(result.error || 'Failed to delete chat')
-        }
+  const handleDeleteChat = async () => {
+    if (!chatToDelete) return
+    const result = await removeChat(chatToDelete.id)
+    if (result.success) {
+      setShowDeleteModal(false)
+      setChatToDelete(null)
+    } else {
+      alert(result.error || 'Failed to delete chat')
     }
+  }
 
-    const openDeleteModal = (chat) => {
-        setChatToDelete(chat)
-        setShowDeleteModal(true)
-    }
+  const openDeleteModal = (chat) => { setChatToDelete(chat); setShowDeleteModal(true) }
+  const closeDeleteModal = () => { setShowDeleteModal(false); setChatToDelete(null) }
 
-    const closeDeleteModal = () => {
-        setShowDeleteModal(false)
-        setChatToDelete(null)
-    }
-    
-    const handleEditChat = (chat) => {
-        setEditingChat(chat)
-        loadData(chat)
-        setShowChatModal(true)
-    }
-    
-    const handleOpenAddModal = () => {
-        resetForm()
-        setEditingChat(null)
-        setShowChatModal(true)
-    }
+  const handleEditChat = (chat) => {
+    setEditingChat(chat)
+    loadData(chat)
+    setShowChatModal(true)
+  }
 
-    const handleCloseModal = () => {
-        setShowChatModal(false)
-        resetForm()
-        setEditingChat(null)
-    }
+  const handleOpenAddModal = () => {
+    resetForm()
+    setEditingChat(null)
+    setShowChatModal(true)
+  }
 
-    if (!authLoading && !user) {
-        return null
-    }
+  const handleCloseModal = () => {
+    setShowChatModal(false)
+    resetForm()
+    setEditingChat(null)
+  }
 
-    return (
-        <main className={styles.main}>
-        <div className={styles.container}>
-            <header className={styles.header}>
-            <h1 className={styles.title}>Dashboard</h1>
-            <p className={styles.subtitle}>Manage your shared AI chats and profile</p>
-            </header>
-            
-            <div className={styles.statsGrid}>
-            <div className={styles.statCard}>
-                <div className={styles.statHeader}>
-                <Link2 className={styles.statIcon} />
-                <span className={styles.statLabel}>Chats</span>
-                </div>
-                <p className={styles.statValue}>{stats.total_chats}</p>
-            </div>
-            
-            <div className={styles.statCard}>
-                <div className={styles.statHeader}>
-                <Eye className={styles.statIcon} />
-                <span className={styles.statLabel}>Views</span>
-                </div>
-                <p className={styles.statValue}>{formatNumber(stats.total_views)}</p>
-            </div>
-            
-            <div className={styles.statCard}>
-                <div className={styles.statHeader}>
-                <ChartColumn className={styles.statIcon} />
-                <span className={styles.statLabel}>Likes</span>
-                </div>
-                <p className={styles.statValue}>{formatNumber(stats.total_likes)}</p>
-            </div>
-            </div>
-            
-            <div className={styles.profileCard}>
-            <div className={styles.profileUrl}>
-                <Link2 className={styles.profileUrlIcon} />
-                <span className={styles.profileUrlText}>
-                {typeof window !== 'undefined' && window.location.host}/u/{profile?.username || '...'}
-                </span>
-            </div>
-            
-            <div className={styles.profileActions}>
-                <button 
-                onClick={handleCopyUrl}
-                className={styles.profileButton}
-                title="Copy profile URL"
-                >
-                <Copy />
-                <span className={styles.buttonTextHidden}>
-                    {copiedUrl ? 'Copied!' : 'Copy'}
-                </span>
-                </button>
-                
-                <Link 
-                href={`/u/${profile?.username}`} 
-                target="_blank"
-                className={styles.profileButton}
-                title="View profile"
-                >
-                <ExternalLink />
-                <span className={styles.buttonTextHidden}>View</span>
-                </Link>
-            </div>
-            </div>
-            
-            <div className={styles.tabsContainer}>
-            <button
-                className={`${styles.tab} ${activeTab === 'chats' ? styles.active : ''}`}
-                onClick={() => setActiveTab('chats')}
-            >
-                My Chats ({stats.total_chats})
+  if (!authLoading && !user) return null
+
+  return (
+    <main className={styles.main}>
+      <div className={styles.container}>
+
+        <header className={styles.header}>
+          <h1 className={styles.title}>Dashboard</h1>
+          <p className={styles.subtitle}>Manage your shared AI chats and profile</p>
+        </header>
+
+        <dl className={styles.statsGrid}>
+          <StatCard icon={Link2}      label="Chats" value={stats.total_chats} />
+          <StatCard icon={Eye}        label="Views" value={formatNumber(stats.total_views)} />
+          <StatCard icon={ChartColumn} label="Likes" value={formatNumber(stats.total_likes)} />
+        </dl>
+
+        <ProfileUrlBar username={profile?.username} />
+
+        <nav
+          className={styles.tabsContainer}
+          role="tablist"
+          aria-label="Dashboard sections"
+        >
+          <button
+            role="tab"
+            aria-selected={activeTab === 'chats'}
+            aria-controls="dashboard-panel"
+            className={`${styles.tab} ${activeTab === 'chats' ? styles.active : ''}`}
+            onClick={() => setActiveTab('chats')}
+          >
+            My Chats ({stats.total_chats})
+          </button>
+          <button
+            role="tab"
+            aria-selected={activeTab === 'settings'}
+            aria-controls="dashboard-panel"
+            className={`${styles.tab} ${activeTab === 'settings' ? styles.active : ''}`}
+            onClick={() => setActiveTab('settings')}
+          >
+            <Settings size={14} aria-hidden="true" />
+            Settings
+          </button>
+        </nav>
+
+        {activeTab === 'chats' && (
+          <section className={styles.containerChats} id="dashboard-panel" aria-label="My AI chats">
+            <button className={styles.addButton} onClick={handleOpenAddModal}>
+              <Plus size={16} aria-hidden="true" />
+              Add AI Chat
             </button>
-            
-            <button
-                className={`${styles.tab} ${activeTab === 'settings' ? styles.active : ''}`}
-                onClick={() => setActiveTab('settings')}
-            >
-                <Settings />
-                Settings
-            </button>
-            </div>
-            
-            {activeTab === 'chats' && (
-            <>
-                <button 
-                className={styles.addButton}
-                onClick={handleOpenAddModal}
-                >
-                <Plus />
-                Add AI Chat
-                </button>
-                
-                {chats.length === 0 ? (
-                <article className={styles.emptyState}>
-                    <Link2 />
-                    <div className={styles.emptyStateInfo}>
-                    <h4>No chats yet</h4>
-                    <p>Add your first AI conversation to get started</p>
-                    </div>
-                </article>
-                ) : (
-                <div className={styles.chatsList}>
-                    {chats.map((chat) => (
-                    <ChatLinkCard
-                        key={chat.id}
-                        chat={chat}
-                        editable={true}
-                        draggable={true}
-                        isOwner={currentUserId != null && currentUserId === chat.user_id}
-                        onEdit={() => handleEditChat(chat)}
-                        onDelete={() => openDeleteModal(chat)}
-                    />
-                    ))}
-                </div>
-                )}
-            </>
+
+            {chats.length === 0 ? (
+              <EmptyChats onAdd={handleOpenAddModal} />
+            ) : (
+              <div className={styles.chatsList}>
+                {chats.map((chat) => (
+                  <ChatLinkCard
+                    key={chat.id}
+                    chat={chat}
+                    editable
+                    draggable
+                    isOwner={currentUserId != null && currentUserId === chat.user_id}
+                    onEdit={() => handleEditChat(chat)}
+                    onDelete={() => openDeleteModal(chat)}
+                  />
+                ))}
+              </div>
             )}
-            
-            {activeTab === 'settings' && (
-            <div className={styles.emptyState}>
-                <p>Settings coming soon...</p>
-            </div>
-            )}
-        </div>
-        
-        {showChatModal && (
-            <ChatFormModal
-                isEditing={!!editingChat}
-                formData={formData}
-                tagInput={tagInput}
-                loading={chatsLoading}
-                onSubmit={handleSaveChat}
-                onClose={handleCloseModal}
-                onFieldChange={updateField}
-                onTagInputChange={setTagInput}
-                onAddTag={addTag}
-                onRemoveTag={removeTag}
-            />
+          </section>
         )}
 
-        {showDeleteModal && chatToDelete && (
-            <DeleteChatModal
-                chat={chatToDelete}
-                loading={chatsLoading}
-                onConfirm={handleDeleteChat}
-                onClose={closeDeleteModal}
-            />
+        {activeTab === 'settings' && (
+          <section
+            id="dashboard-panel"
+            className={styles.emptyState}
+            aria-label="Settings"
+          >
+            <p>Settings coming soon…</p>
+          </section>
         )}
-        </main>
-    )
+
+      </div>
+
+      {showChatModal && (
+        <ChatFormModal
+          isEditing={!!editingChat}
+          formData={formData}
+          tagInput={tagInput}
+          loading={chatsLoading}
+          onSubmit={handleSaveChat}
+          onClose={handleCloseModal}
+          onFieldChange={updateField}
+          onTagInputChange={setTagInput}
+          onAddTag={addTag}
+          onRemoveTag={removeTag}
+        />
+      )}
+
+      {showDeleteModal && chatToDelete && (
+        <DeleteChatModal
+          chat={chatToDelete}
+          loading={chatsLoading}
+          onConfirm={handleDeleteChat}
+          onClose={closeDeleteModal}
+        />
+      )}
+    </main>
+  )
 }

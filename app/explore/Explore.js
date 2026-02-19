@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useCallback, useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import {
   Eye,
@@ -11,7 +11,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Users,
-  MessageCircle
+  MessageCircle,
+  Loader2,
 } from 'lucide-react'
 import styles from './page.module.scss'
 import { formatNumber } from '@/lib/utils'
@@ -25,47 +26,106 @@ const SORT_OPTIONS_CREATORS = [
   { value: 'recent', label: 'Recently Active' },
   { value: 'popular', label: 'Most Popular' },
   { value: 'views', label: 'Most Viewed' },
-  { value: 'chats', label: 'Most Chats' }
+  { value: 'chats', label: 'Most Chats' },
 ]
 
 const SORT_OPTIONS_CHATS = [
   { value: 'recent', label: 'Most Recent' },
   { value: 'popular', label: 'Most Popular' },
-  { value: 'views', label: 'Most Viewed' }
+  { value: 'views', label: 'Most Viewed' },
 ]
+
+function CreatorCard({ creator }) {
+  const getInitials = (name, username) => {
+    if (name) {
+      const parts = name.trim().split(' ')
+      return parts.length >= 2
+        ? (parts[0][0] + parts[1][0]).toUpperCase()
+        : name.substring(0, 2).toUpperCase()
+    }
+    return username.substring(0, 2).toUpperCase()
+  }
+
+  return (
+    <Link
+      href={`/u/${creator.username}`}
+      className={styles.creatorCard}
+      aria-label={`View ${creator.full_name || creator.username}'s AI conversation profile`}
+    >
+      <div className={styles.creatorAvatar}>
+        {creator.avatar_url ? (
+          <img
+            src={creator.avatar_url}
+            alt={`${creator.full_name || creator.username} profile picture`}
+            width={48}
+            height={48}
+            loading="lazy"
+          />
+        ) : (
+          <span className={styles.avatarInitials} aria-hidden="true">
+            {getInitials(creator.full_name, creator.username)}
+          </span>
+        )}
+      </div>
+
+      <div className={styles.creatorInfo}>
+        <div className={styles.creatorHeader}>
+          <h2 className={styles.creatorName}>
+            {creator.full_name || creator.username}
+          </h2>
+          <span className={styles.creatorUsername}>@{creator.username}</span>
+        </div>
+
+        {creator.bio && (
+          <p className={styles.creatorBio}>{creator.bio}</p>
+        )}
+
+        <dl className={styles.creatorStats}>
+          <div className={styles.stat}>
+            <Eye size={14} aria-hidden="true" />
+            <dd>{formatNumber(creator.stats.total_views)}</dd>
+            <dt>views</dt>
+          </div>
+          <div className={styles.stat}>
+            <Heart size={14} aria-hidden="true" />
+            <dd>{formatNumber(creator.stats.total_likes)}</dd>
+            <dt>likes</dt>
+          </div>
+          <div className={styles.stat}>
+            <dd>{creator.stats.total_chats}</dd>
+            <dt>{creator.stats.total_chats === 1 ? 'chat' : 'chats'}</dt>
+          </div>
+        </dl>
+      </div>
+
+      <ArrowRight className={styles.arrowIcon} size={18} aria-hidden="true" />
+    </Link>
+  )
+}
 
 export default function ExploreClient({
   initialCreators,
   initialChats,
   initialPagination,
   initialTab,
-  initialLikeStatuses = {}
+  initialLikeStatuses = {},
 }) {
-  const router = useRouter()
   const searchParams = useSearchParams()
   const { user } = useAuth()
   const currentUserId = user?.id
 
-  // Tab management
   const [activeTab, setActiveTab] = useState(initialTab)
-
-  // Search and filters
   const [search, setSearch] = useState('')
   const [platform, setPlatform] = useState('all')
   const [sort, setSort] = useState('recent')
   const [currentPage, setCurrentPage] = useState(1)
   const [debouncedSearch, setDebouncedSearch] = useState('')
-
-  // Like statuses map for the current chats page: { chatId: boolean }
   const [likeStatuses, setLikeStatuses] = useState(initialLikeStatuses)
 
-  // Data fetching
   const creatorsExplore = useExplore('creators')
   const chatsExplore = useExplore('chats')
-
   const currentExplore = activeTab === 'creators' ? creatorsExplore : chatsExplore
 
-  // Load initial data only once
   useEffect(() => {
     if (initialTab === 'creators' && creatorsExplore.data.length === 0) {
       creatorsExplore.setData(initialCreators)
@@ -74,31 +134,20 @@ export default function ExploreClient({
       chatsExplore.setData(initialChats)
       chatsExplore.setPagination(initialPagination)
     }
-  }, []) // Only on mount
+  }, [])
 
-  // Load filters from URL only on mount
   useEffect(() => {
-    const urlSearch = searchParams.get('search') || ''
-    const urlPlatform = searchParams.get('platform') || 'all'
-    const urlSort = searchParams.get('sort') || 'recent'
-    const urlPage = parseInt(searchParams.get('page') || '1')
+    setSearch(searchParams.get('search') || '')
+    setPlatform(searchParams.get('platform') || 'all')
+    setSort(searchParams.get('sort') || 'recent')
+    setCurrentPage(parseInt(searchParams.get('page') || '1'))
+  }, [])
 
-    setSearch(urlSearch)
-    setPlatform(urlPlatform)
-    setSort(urlSort)
-    setCurrentPage(urlPage)
-  }, []) // Only on mount
-
-  // Debounce search
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(search)
-    }, 500)
-
+    const timer = setTimeout(() => setDebouncedSearch(search), 500)
     return () => clearTimeout(timer)
   }, [search])
 
-  // Fetch data when filters change (but not on initial render)
   const [isInitialRender, setIsInitialRender] = useState(true)
 
   useEffect(() => {
@@ -111,47 +160,30 @@ export default function ExploreClient({
       page: currentPage,
       limit: 20,
       search: debouncedSearch,
-      sort
-    }
-
-    if (activeTab === 'chats') {
-      filters.platform = platform
+      sort,
+      ...(activeTab === 'chats' && { platform }),
     }
 
     currentExplore.fetchData(filters).then(() => {
-      // After fetching chats, bulk-load like statuses for the new page
-      if (activeTab === 'chats') {
-        fetchLikeStatusesForCurrentChats()
-      }
+      if (activeTab === 'chats') fetchLikeStatusesForCurrentChats()
     })
   }, [debouncedSearch, platform, sort, currentPage, activeTab])
 
-  /**
-   * Fetch like statuses for whatever chats are currently loaded.
-   * Called after every chats data refresh.
-   */
   const fetchLikeStatusesForCurrentChats = useCallback(async () => {
-    const ids = chatsExplore.data.map(c => c.id)
-    if (ids.length === 0) return
-
+    const ids = chatsExplore.data.map((c) => c.id)
+    if (!ids.length) return
     const result = await getChatLikeStatuses(ids)
-    if (result.success) {
-      setLikeStatuses(result.data)
-    }
+    if (result.success) setLikeStatuses(result.data)
   }, [chatsExplore.data])
 
-  // Update URL when filters change (without causing re-render)
   useEffect(() => {
     if (isInitialRender) return
-
     const params = new URLSearchParams()
-
     if (activeTab !== 'creators') params.set('tab', activeTab)
     if (debouncedSearch) params.set('search', debouncedSearch)
     if (platform !== 'all' && activeTab === 'chats') params.set('platform', platform)
     if (sort !== 'recent') params.set('sort', sort)
     if (currentPage > 1) params.set('page', currentPage.toString())
-
     const newUrl = params.toString() ? `/explore?${params.toString()}` : '/explore'
     window.history.replaceState({}, '', newUrl)
   }, [activeTab, debouncedSearch, platform, sort, currentPage, isInitialRender])
@@ -184,23 +216,18 @@ export default function ExploreClient({
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
-  const getInitials = (name, username) => {
-    if (name) {
-      const parts = name.trim().split(' ')
-      if (parts.length >= 2) {
-        return (parts[0][0] + parts[1][0]).toUpperCase()
-      }
-      return name.substring(0, 2).toUpperCase()
-    }
-    return username.substring(0, 2).toUpperCase()
-  }
+  const sortOptions =
+    activeTab === 'creators' ? SORT_OPTIONS_CREATORS : SORT_OPTIONS_CHATS
 
-  const sortOptions = activeTab === 'creators' ? SORT_OPTIONS_CREATORS : SORT_OPTIONS_CHATS
+  const totalLabel =
+    activeTab === 'creators'
+      ? currentExplore.pagination.total === 1 ? 'creator' : 'creators'
+      : currentExplore.pagination.total === 1 ? 'chat' : 'chats'
 
   return (
     <main className={styles.main}>
       <div className={styles.container}>
-        {/* Header */}
+
         <header className={styles.header}>
           <h1 className={styles.title}>Explore</h1>
           <p className={styles.subtitle}>
@@ -208,25 +235,33 @@ export default function ExploreClient({
           </p>
         </header>
 
-        {/* Tabs */}
-        <div className={styles.tabsContainer}>
+        <nav
+          className={styles.tabsContainer}
+          role="tablist"
+          aria-label="Explore sections"
+        >
           <button
+            role="tab"
+            aria-selected={activeTab === 'creators'}
+            aria-controls="explore-panel"
             onClick={() => handleTabChange('creators')}
             className={`${styles.tab} ${activeTab === 'creators' ? styles.active : ''}`}
           >
-            <Users />
+            <Users size={16} aria-hidden="true" />
             Creators
           </button>
           <button
+            role="tab"
+            aria-selected={activeTab === 'chats'}
+            aria-controls="explore-panel"
             onClick={() => handleTabChange('chats')}
             className={`${styles.tab} ${activeTab === 'chats' ? styles.active : ''}`}
           >
-            <MessageCircle />
+            <MessageCircle size={16} aria-hidden="true" />
             Chats
           </button>
-        </div>
+        </nav>
 
-        {/* Filters Component */}
         <ExploreFilters
           activeTab={activeTab}
           search={search}
@@ -238,81 +273,41 @@ export default function ExploreClient({
           onSortChange={handleSortChange}
         />
 
-        {/* Results Info */}
         {!currentExplore.loading && (
-          <div className={styles.resultsInfo}>
-            <p className={styles.resultsText}>
-              {currentExplore.pagination.total} {activeTab === 'creators'
-                ? currentExplore.pagination.total === 1 ? 'creator' : 'creators'
-                : currentExplore.pagination.total === 1 ? 'chat' : 'chats'
-              } found
-            </p>
-          </div>
+          <p
+            className={styles.resultsText}
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {currentExplore.pagination.total.toLocaleString()} {totalLabel} found
+          </p>
         )}
 
-        {/* Loading State */}
         {currentExplore.loading && (
-          <div className={styles.loading}>
-            <div className={styles.spinner}></div>
-            <p>Loading {activeTab}...</p>
+          <div className={styles.loading} role="status" aria-label={`Loading ${activeTab}...`}>
+            <div className={styles.spinner}/>
+            <p>Loading {activeTab}…</p>
           </div>
         )}
 
-        {/* Creators List */}
         {!currentExplore.loading && activeTab === 'creators' && currentExplore.data.length > 0 && (
-          <div className={styles.creatorsList}>
+          <section
+            id="explore-panel"
+            aria-label="Creators list"
+            className={styles.creatorsList}
+          >
             {currentExplore.data.map((creator) => (
-              <Link
-                key={creator.id}
-                href={`/u/${creator.username}`}
-                className={styles.creatorCard}
-              >
-                <div className={styles.creatorAvatar}>
-                  {creator.avatar_url ? (
-                    <img src={creator.avatar_url} alt={creator.full_name || creator.username} />
-                  ) : (
-                    <span className={styles.avatarInitials}>
-                      {getInitials(creator.full_name, creator.username)}
-                    </span>
-                  )}
-                </div>
-
-                <div className={styles.creatorInfo}>
-                  <div className={styles.creatorHeader}>
-                    <h3 className={styles.creatorName}>
-                      {creator.full_name || creator.username}
-                    </h3>
-                    <span className={styles.creatorUsername}>@{creator.username}</span>
-                  </div>
-
-                  {creator.bio && (
-                    <p className={styles.creatorBio}>{creator.bio}</p>
-                  )}
-
-                  <div className={styles.creatorStats}>
-                    <span className={styles.stat}>
-                      <Eye />
-                      {formatNumber(creator.stats.total_views)} views
-                    </span>
-                    <span className={styles.stat}>
-                      <Heart />
-                      {formatNumber(creator.stats.total_likes)} likes
-                    </span>
-                    <span className={styles.stat}>
-                      {creator.stats.total_chats} {creator.stats.total_chats === 1 ? 'chat' : 'chats'}
-                    </span>
-                  </div>
-                </div>
-
-                <ArrowRight className={styles.arrowIcon} />
-              </Link>
+              <CreatorCard key={creator.id} creator={creator} />
             ))}
-          </div>
+          </section>
         )}
 
-        {/* Chats List */}
         {!currentExplore.loading && activeTab === 'chats' && currentExplore.data.length > 0 && (
-          <div className={styles.chatsList}>
+          <section
+            id="explore-panel"
+            aria-label="AI chats list"
+            className={styles.chatsList}
+          >
             {currentExplore.data.map((chat) => (
               <ChatLinkCard
                 key={chat.id}
@@ -323,50 +318,52 @@ export default function ExploreClient({
                 isOwner={currentUserId != null && currentUserId === chat.user_id}
               />
             ))}
-          </div>
+          </section>
         )}
 
-        {/* Empty State */}
         {!currentExplore.loading && currentExplore.data.length === 0 && (
-          <div className={styles.emptyState}>
-            <Search className={styles.emptyIcon} />
-            <h3 className={styles.emptyTitle}>
-              No {activeTab} found
-            </h3>
+          <div className={styles.emptyState} role="status">
+            <Search className={styles.emptyIcon} size={32} aria-hidden="true" />
+            <h2 className={styles.emptyTitle}>No {activeTab} found</h2>
             <p className={styles.emptyText}>
               Try adjusting your search or filters
             </p>
           </div>
         )}
 
-        {/* Pagination */}
-        {!currentExplore.loading && currentExplore.data.length > 0 && currentExplore.pagination.totalPages > 1 && (
-          <div className={styles.pagination}>
+        {!currentExplore.loading &&
+          currentExplore.data.length > 0 &&
+          currentExplore.pagination.totalPages > 1 && (
+          <nav
+            className={styles.pagination}
+            aria-label="Pagination"
+          >
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={!currentExplore.pagination.hasPrevPage}
               className={styles.paginationButton}
+              aria-label="Go to previous page"
             >
-              <ChevronLeft />
+              <ChevronLeft size={16} aria-hidden="true" />
               Previous
             </button>
 
-            <div className={styles.paginationInfo}>
-              <span className={styles.paginationText}>
-                Page {currentPage} of {currentExplore.pagination.totalPages}
-              </span>
-            </div>
+            <span className={styles.paginationText} aria-current="page">
+              Page {currentPage} of {currentExplore.pagination.totalPages}
+            </span>
 
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={!currentExplore.pagination.hasNextPage}
               className={styles.paginationButton}
+              aria-label="Go to next page"
             >
               Next
-              <ChevronRight />
+              <ChevronRight size={16} aria-hidden="true" />
             </button>
-          </div>
+          </nav>
         )}
+
       </div>
     </main>
   )

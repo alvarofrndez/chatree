@@ -3,6 +3,7 @@
 import ChatLinkCard from '@/components/ChatLinkCard'
 import DotLoading from '@/components/DotLoading'
 import styles from './DeleteChatModal.module.scss'
+import { useAuth } from '@/contexts/auth'
 
 export default function DeleteChatModal({
   chat,
@@ -10,6 +11,10 @@ export default function DeleteChatModal({
   onConfirm,
   onClose
 }) {
+
+  const { user } = useAuth()
+  const current_user_id = user?.id
+
   return (
     <div className={styles.modal} onClick={onClose}>
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -27,6 +32,7 @@ export default function DeleteChatModal({
               chat={chat}
               editable={false}
               draggable={false}
+              isOwner={current_user_id != null && current_user_id === chat.user_id}
             />
           </div>
         </div>

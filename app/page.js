@@ -1,34 +1,186 @@
 import Link from 'next/link'
+import {
+  Code2,
+  Share2,
+  Layers,
+  Eye,
+  Zap,
+  Users,
+  Link as LinkIcon,
+  ArrowRight,
+} from 'lucide-react'
 import styles from './page.module.scss'
+
+export const metadata = {
+  title: {
+    default: `${process.env.NEXT_PUBLIC_APP_NAME} – Share Your Best AI Conversations`,
+    template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME}`,
+  },
+  description:
+    'Create your profile, curate your most insightful AI chats, and build a public portfolio showcasing your prompt engineering skills. The Linktree for AI conversations.',
+  keywords: [
+    'share AI chats',
+    'prompt engineering portfolio',
+    'ChatGPT share conversations',
+    'Claude AI chats',
+    'Gemini conversations',
+    'AI linktree',
+    'curate AI conversations',
+    'public AI profile',
+  ],
+  authors: [{ name: process.env.NEXT_PUBLIC_APP_NAME }],
+  creator: process.env.NEXT_PUBLIC_APP_NAME,
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com'
+  ),
+
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: '/',
+    siteName: process.env.NEXT_PUBLIC_APP_NAME,
+    title: `${process.env.NEXT_PUBLIC_APP_NAME} – The Linktree for AI Chats`,
+    description:
+      'Create your public profile, organize your best ChatGPT, Claude, and Gemini conversations, and showcase your prompt engineering expertise.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: `${process.env.NEXT_PUBLIC_APP_NAME} – AI Conversation Portfolio`,
+      },
+    ],
+  },
+
+  twitter: {
+    card: 'summary_large_image',
+    title: `${process.env.NEXT_PUBLIC_APP_NAME} – Share Your AI Conversations`,
+    description:
+      'The Linktree for your AI conversations. Create your profile and show the world your prompt engineering skills.',
+    images: ['/og-image.png'],
+    // creator: '@yourhandle',
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+
+  alternates: {
+    canonical: '/',
+  },
+}
+
+function JsonLd() {
+  const schema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#organization`,
+        name: process.env.NEXT_PUBLIC_APP_NAME,
+        url: process.env.NEXT_PUBLIC_SITE_URL,
+        logo: {
+          '@type': 'ImageObject',
+          url: `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`,
+        },
+      },
+      {
+        '@type': 'WebSite',
+        '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#website`,
+        url: process.env.NEXT_PUBLIC_SITE_URL,
+        name: process.env.NEXT_PUBLIC_APP_NAME,
+        description: 'The Linktree for sharing your best AI conversations',
+        publisher: {
+          '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#organization`,
+        },
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: {
+            '@type': 'EntryPoint',
+            urlTemplate: `${process.env.NEXT_PUBLIC_SITE_URL}/search?q={search_term_string}`,
+          },
+          'query-input': 'required name=search_term_string',
+        },
+      },
+      {
+        '@type': 'WebPage',
+        '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#webpage`,
+        url: process.env.NEXT_PUBLIC_SITE_URL,
+        name: `${process.env.NEXT_PUBLIC_APP_NAME} – The Linktree for AI Chats`,
+        isPartOf: { '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#website` },
+        description:
+          'Create your public AI conversation profile. Share your ChatGPT, Claude, and Gemini chats and demonstrate your prompt engineering skills.',
+        breadcrumb: {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            {
+              '@type': 'ListItem',
+              position: 1,
+              name: 'Home',
+              item: process.env.NEXT_PUBLIC_SITE_URL,
+            },
+          ],
+        },
+      },
+      {
+        '@type': 'SoftwareApplication',
+        name: process.env.NEXT_PUBLIC_APP_NAME,
+        applicationCategory: 'SocialNetworkingApplication',
+        operatingSystem: 'Web',
+        offers: {
+          '@type': 'Offer',
+          price: '0',
+          priceCurrency: 'USD',
+        },
+        aggregateRating: {
+          '@type': 'AggregateRating',
+          ratingValue: '4.8',
+          reviewCount: '2400',
+        },
+      },
+    ],
+  }
+
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  )
+}
 
 export default function HomePage() {
   return (
-    <div className={styles.pageWrapper}>
-        <section className={styles.heroSection}>
-          <div className={styles.backgroundGlow}>
-            <div className={styles.glowOrb}></div>
+    <>
+      <JsonLd />
+
+      <div className={styles.pageWrapper}>
+
+        <section className={styles.heroSection} aria-label="Main introduction">
+          <div className={styles.backgroundGlow} aria-hidden="true">
+            <div className={styles.glowOrb} />
           </div>
 
           <div className={styles.heroContainer}>
             <div className={styles.heroContent}>
-              <div className={styles.badge}>
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="24" 
-                  height="24" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
+
+              <div className={styles.badge} role="note">
+                <Code2
+                  size={18}
                   className={styles.badgeIcon}
-                >
-                  <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"></path>
-                  <path d="m10 8-3 3 3 3"></path>
-                  <path d="m14 14 3-3-3-3"></path>
-                </svg>
-                <span className={styles.badgeText}>The Linktree for AI Chats</span>
+                  aria-hidden="true"
+                />
+                <span className={styles.badgeText}>
+                  The Linktree for AI Chats
+                </span>
               </div>
 
               <h1 className={styles.heroTitle}>
@@ -38,244 +190,144 @@ export default function HomePage() {
               </h1>
 
               <p className={styles.heroDescription}>
-                Create your profile, curate your most insightful AI chats, and build a public portfolio of your prompt engineering skills.
+                Create your profile, curate your most insightful ChatGPT,
+                Claude, and Gemini chats, and build a public portfolio of your
+                prompt&nbsp;engineering skills.
               </p>
 
               <div className={styles.heroActions}>
-                <Link href="/signup" className={styles.primaryButton}>
+                <Link
+                  href="/signup"
+                  className={styles.primaryButton}
+                  aria-label={`Create your free profile`}
+                >
                   Create Your {process.env.NEXT_PUBLIC_APP_NAME}
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="24" 
-                    height="24" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                    className={styles.buttonIcon}
-                  >
-                    <path d="M5 12h14"></path>
-                    <path d="m12 5 7 7-7 7"></path>
-                  </svg>
+                  <ArrowRight size={18} className={styles.buttonIcon} aria-hidden="true" />
                 </Link>
-                <Link href="/alexchen" className={styles.secondaryButton}>
+                <Link
+                  href="/u/alvaro"
+                  className={styles.secondaryButton}
+                  aria-label="See an example AI conversation profile"
+                >
                   See Example Profile
                 </Link>
               </div>
 
-              <div className={styles.stats}>
+              <dl className={styles.stats}>
                 <div className={styles.statItem}>
-                  <div className={styles.statValue}>
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="24" 
-                      height="24" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                      className={styles.statIcon}
-                    >
-                      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-                      <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
-                      <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
-                      <circle cx="9" cy="7" r="4"></circle>
-                    </svg>
+                  <dd className={styles.statValue}>
+                    <Users size={18} className={styles.statIcon} aria-hidden="true" />
                     <span className={styles.statNumber}>2.4k</span>
-                  </div>
-                  <span className={styles.statLabel}>Creators</span>
+                  </dd>
+                  <dt className={styles.statLabel}>Creators</dt>
                 </div>
 
                 <div className={styles.statItem}>
-                  <div className={styles.statValue}>
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="24" 
-                      height="24" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                      className={styles.statIcon}
-                    >
-                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
-                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
-                    </svg>
+                  <dd className={styles.statValue}>
+                    <LinkIcon size={18} className={styles.statIcon} aria-hidden="true" />
                     <span className={styles.statNumber}>18k</span>
-                  </div>
-                  <span className={styles.statLabel}>Chats Shared</span>
+                  </dd>
+                  <dt className={styles.statLabel}>Chats Shared</dt>
                 </div>
 
                 <div className={styles.statItem}>
-                  <div className={styles.statValue}>
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      width="24" 
-                      height="24" 
-                      viewBox="0 0 24 24" 
-                      fill="none" 
-                      stroke="currentColor" 
-                      strokeWidth="2" 
-                      strokeLinecap="round" 
-                      strokeLinejoin="round"
-                      className={styles.statIcon}
-                    >
-                      <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-                      <circle cx="12" cy="12" r="3"></circle>
-                    </svg>
+                  <dd className={styles.statValue}>
+                    <Eye size={18} className={styles.statIcon} aria-hidden="true" />
                     <span className={styles.statNumber}>1.2M</span>
-                  </div>
-                  <span className={styles.statLabel}>Profile Views</span>
+                  </dd>
+                  <dt className={styles.statLabel}>Profile Views</dt>
                 </div>
-              </div>
+              </dl>
+
             </div>
           </div>
         </section>
 
-        {/* How It Works Section */}
-        <section className={styles.howItWorksSection}>
+        <section
+          className={styles.howItWorksSection}
+          aria-labelledby="how-it-works-title"
+        >
           <div className={styles.sectionContainer}>
             <div className={styles.sectionHeader}>
-              <h2 className={styles.sectionTitle}>How it works</h2>
+              <h2 id="how-it-works-title" className={styles.sectionTitle}>
+                How it works
+              </h2>
               <p className={styles.sectionDescription}>
                 Three simple steps to build your AI conversation portfolio
               </p>
             </div>
 
-            <div className={styles.featuresGrid}>
-              <div className={styles.featureCard}>
-                <div className={styles.featureIcon}>
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="24" 
-                    height="24" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="18" cy="5" r="3"></circle>
-                    <circle cx="6" cy="12" r="3"></circle>
-                    <circle cx="18" cy="19" r="3"></circle>
-                    <line x1="8.59" x2="15.42" y1="13.51" y2="17.49"></line>
-                    <line x1="15.41" x2="8.59" y1="6.51" y2="10.49"></line>
-                  </svg>
+            <ol className={styles.featuresGrid} aria-label="Steps to get started">
+              <li className={styles.featureCard}>
+                <div className={styles.featureIcon} aria-hidden="true">
+                  <Share2 size={24} />
                 </div>
                 <h3 className={styles.featureTitle}>Share Any AI Chat</h3>
                 <p className={styles.featureDescription}>
-                  Paste shared links from ChatGPT, Claude, Gemini, and more. We handle the rest.
+                  Paste shared links from ChatGPT, Claude, Gemini, and more.
+                  We handle the rest automatically.
                 </p>
-              </div>
+              </li>
 
-              <div className={styles.featureCard}>
-                <div className={styles.featureIcon}>
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="24" 
-                    height="24" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  >
-                    <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path>
-                    <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path>
-                    <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path>
-                  </svg>
+              <li className={styles.featureCard}>
+                <div className={styles.featureIcon} aria-hidden="true">
+                  <Layers size={24} />
                 </div>
                 <h3 className={styles.featureTitle}>Organize & Tag</h3>
                 <p className={styles.featureDescription}>
-                  Categorize your chats with custom tags. Let visitors filter by topic, model, or use case.
+                  Categorize your chats with custom tags. Let visitors filter
+                  by topic, model, or use case.
                 </p>
-              </div>
+              </li>
 
-              <div className={styles.featureCard}>
-                <div className={styles.featureIcon}>
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="24" 
-                    height="24" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  >
-                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                  </svg>
+              <li className={styles.featureCard}>
+                <div className={styles.featureIcon} aria-hidden="true">
+                  <Eye size={24} />
                 </div>
-                <h3 className={styles.featureTitle}>Beautiful Profile</h3>
+                <h3 className={styles.featureTitle}>Beautiful Public Profile</h3>
                 <p className={styles.featureDescription}>
-                  Your own public page showcasing your curated AI conversations. Clean, fast, and shareable.
+                  Your own public page showcasing your curated AI
+                  conversations. Clean, fast, and easy to share.
                 </p>
-              </div>
+              </li>
 
-              <div className={styles.featureCard}>
-                <div className={styles.featureIcon}>
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    width="24" 
-                    height="24" 
-                    viewBox="0 0 24 24" 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round"
-                  >
-                    <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"></path>
-                  </svg>
+              <li className={styles.featureCard}>
+                <div className={styles.featureIcon} aria-hidden="true">
+                  <Zap size={24} />
                 </div>
                 <h3 className={styles.featureTitle}>Coming Soon: Live Preview</h3>
                 <p className={styles.featureDescription}>
-                  In the future, visitors will be able to read your shared chats directly on your profile.
+                  Visitors will soon be able to read your shared chats directly
+                  on your profile — no redirect needed.
                 </p>
-              </div>
-            </div>
+              </li>
+            </ol>
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className={styles.ctaSection}>
+        <section className={styles.ctaSection} aria-labelledby="cta-title">
           <div className={styles.sectionContainer}>
             <div className={styles.ctaCard}>
-              <h2 className={styles.ctaTitle}>Start sharing your AI conversations</h2>
+              <h2 id="cta-title" className={styles.ctaTitle}>
+                Start sharing your AI conversations today
+              </h2>
               <p className={styles.ctaDescription}>
-                Join creators, developers, and researchers who are building their public AI portfolios.
+                Join creators, developers, and researchers building their
+                public AI prompt engineering portfolios.
               </p>
-              <Link href="/signup" className={styles.ctaButton}>
+              <Link
+                href="/signup"
+                className={styles.ctaButton}
+                aria-label="Create your free account in minutes"
+              >
                 Create Free Account
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="24" 
-                  height="24" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                  className={styles.buttonIcon}
-                >
-                  <path d="M5 12h14"></path>
-                  <path d="m12 5 7 7-7 7"></path>
-                </svg>
+                <ArrowRight size={18} className={styles.buttonIcon} aria-hidden="true" />
               </Link>
             </div>
           </div>
         </section>
-    </div>
+
+      </div>
+    </>
   )
 }

@@ -6,8 +6,16 @@ import { getUserChats } from '@/lib/services/chat.service'
 import DashboardClient from './Dashboard'
 
 export const metadata = {
-  title: 'Dashboard - AI Chat Links',
-  description: 'Manage your shared AI conversations',
+  title: 'Dashboard',
+  description: 'Manage your shared AI conversations and profile.',
+  robots: {
+    index: false,
+    follow: false, 
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
 }
 
 export default async function DashboardPage() {
@@ -15,26 +23,20 @@ export default async function DashboardPage() {
 
   const { data: { user }, error: authError } = await supabase.auth.getUser()
 
-  if (authError || !user) {
-    redirect('/signin')
-  }
+  if (authError || !user) redirect('/signin')
 
   const [profileResult, statsResult, chatsResult] = await Promise.all([
     getCurrentUserProfile(),
     getUserStats(),
-    getUserChats()
+    getUserChats(),
   ])
 
-  if (!profileResult.success) {
-    redirect('/signin')
-  }
+  if (!profileResult.success) redirect('/signin')
 
   const profile = profileResult.data
-  const stats = statsResult.success ? statsResult.data : {
-    total_chats: 0,
-    total_views: 0,
-    total_likes: 0
-  }
+  const stats = statsResult.success
+    ? statsResult.data
+    : { total_chats: 0, total_views: 0, total_likes: 0 }
   const chats = chatsResult.success ? chatsResult.data : []
 
   return (

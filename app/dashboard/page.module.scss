@@ -268,90 +268,100 @@
       }
     }
 
-    .addButton {
+    .containerChats{
       // size
       width: 100%;
 
       // display
-      @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-6);
 
-      // margin
-      padding: variables.$spacing-4;
-
-      // decoration
-      background-color: rgba(variables.$color-surface, 0.5);
-      border: 1px dashed variables.$color-border;
-      border-radius: variables.$radius-lg;
-      font-size: variables.$font-size-sm;
-      font-weight: variables.$font-weight-medium;
-      color: variables.$color-text-muted;
-      cursor: pointer;
-      transition: all variables.$transition-base;
-
-      &:hover {
-        // decoration
-        border-color: rgba(variables.$color-primary, 0.3);
-        color: variables.$color-foreground;
-      }
-
-      svg {
+      .addButton {
         // size
-        width: variables.$spacing-4;
-        height: variables.$spacing-4;
-      }
-    }
-
-    .emptyState {
-      // size
-      width: 100%;
-
-      // display
-      @include mixins.flex(column, center, center, nowrap, variables.$spacing-2);
-
-      // margin
-      padding: variables.$spacing-8 variables.$spacing-4;
-
-      // decoration
-      text-align: center;
-      color: variables.$color-text-muted;
-      background-color: variables.$color-surface;
-      border: 1px solid variables.$color-border;
-      border-radius: variables.$radius-lg;
-
-      svg{
-        // size
-        width: variables.$spacing-8;
-        height: variables.$spacing-8;
-      }
-
-      .emptyStateInfo{
         width: 100%;
 
         // display
-        @include mixins.flex(column, center, center);
+        @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
 
-        h4{
+        // margin
+        padding: variables.$spacing-4;
+
+        // decoration
+        background-color: rgba(variables.$color-surface, 0.5);
+        border: 1px dashed variables.$color-border;
+        border-radius: variables.$radius-lg;
+        font-size: variables.$font-size-sm;
+        font-weight: variables.$font-weight-medium;
+        color: variables.$color-text-muted;
+        cursor: pointer;
+        transition: all variables.$transition-base;
+
+        &:hover {
           // decoration
-          font-size: variables.$font-size-sm;
-          font-weight: variables.$font-weight-normal;
-          color: variables.$color-text-secondary;
+          border-color: rgba(variables.$color-primary, 0.3);
+          color: variables.$color-foreground;
         }
 
-        p {
-          // decoration
-          font-size: variables.$font-size-xs;
-          color: variables.$color-text-muted;
+        svg {
+          // size
+          width: variables.$spacing-4;
+          height: variables.$spacing-4;
         }
+      }
+
+      .emptyState {
+        // size
+        width: 100%;
+
+        // display
+        @include mixins.flex(column, center, center, nowrap, variables.$spacing-2);
+
+        // margin
+        padding: variables.$spacing-8 variables.$spacing-4;
+
+        // decoration
+        text-align: center;
+        color: variables.$color-text-muted;
+        background-color: variables.$color-surface;
+        border: 1px solid variables.$color-border;
+        border-radius: variables.$radius-lg;
+
+        svg{
+          // size
+          width: variables.$spacing-8;
+          height: variables.$spacing-8;
+        }
+
+        .emptyStateInfo{
+          width: 100%;
+
+          // display
+          @include mixins.flex(column, center, center);
+
+          h4{
+            // decoration
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-normal;
+            color: variables.$color-text-secondary;
+          }
+
+          p {
+            // decoration
+            font-size: variables.$font-size-xs;
+            color: variables.$color-text-muted;
+          }
+        }
+      }
+
+      .chatsList {
+        // size
+        width: 100%;
+
+        // display
+        @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-3);
       }
     }
 
-    .chatsList {
-      // size
-      width: 100%;
-
-      // display
-      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-3);
-    }
+    
   }
 
   .modal {
