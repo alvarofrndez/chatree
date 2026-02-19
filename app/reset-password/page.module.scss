@@ -277,6 +277,35 @@
                     }
                 }
             }
+
+            .alert {
+                // display
+                @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-2);
+
+                // margin
+                margin-bottom: variables.$spacing-4;
+
+                // margin
+                padding: variables.$spacing-3 variables.$spacing-4;
+
+                // decoration
+                border-radius: variables.$radius-md;
+                font-size: variables.$font-size-sm;
+                font-weight: variables.$font-weight-medium;
+                animation: slideIn 0.3s ease-out;
+
+                &.error {
+                    background-color: rgba(variables.$color-error, 0.1);
+                    color: variables.$color-error;
+                    border: 1px solid rgba(variables.$color-error, 0.3);
+                }
+
+                &.success {
+                    background-color: rgba(variables.$color-success, 0.1);
+                    color: variables.$color-success;
+                    border: 1px solid rgba(variables.$color-success, 0.3);
+                }
+            }
         }
 
         .footer {
@@ -304,32 +333,6 @@
                     }
                 }
             }
-        }
-    }
-
-    .alert {
-        // margin
-        margin-bottom: variables.$spacing-4;
-
-        // margin
-        padding: variables.$spacing-3 variables.$spacing-4;
-
-        // decoration
-        border-radius: variables.$radius-md;
-        font-size: variables.$font-size-sm;
-        font-weight: variables.$font-weight-medium;
-        animation: slideIn 0.3s ease-out;
-
-        &.error {
-            background-color: rgba(variables.$color-error, 0.1);
-            color: variables.$color-error;
-            border: 1px solid rgba(variables.$color-error, 0.3);
-        }
-
-        &.success {
-            background-color: rgba(variables.$color-success, 0.1);
-            color: variables.$color-success;
-            border: 1px solid rgba(variables.$color-success, 0.3);
         }
     }
 }

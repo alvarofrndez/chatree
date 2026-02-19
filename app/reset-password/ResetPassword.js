@@ -8,6 +8,7 @@ import { IoMdEye, IoMdEyeOff } from 'react-icons/io'
 import { PiTree } from 'react-icons/pi'
 import { createClient } from '@/lib/supabase/client'
 import styles from './page.module.scss'
+import DotLoading from '@/components/DotLoading'
 
 const REQUIREMENTS = [
   { key: 'minLength',   label: 'At least 8 characters',  test: (p) => p.length >= 8 },
@@ -240,7 +241,7 @@ export default function ResetPasswordClient() {
                 aria-busy={loading}
               >
                 {loading
-                  ? <><Loader2 size={16} className={styles.spinner} aria-hidden="true" /> Updating…</>
+                  ? <DotLoading text='Updating' />
                   : 'Update Password'
                 }
               </button>

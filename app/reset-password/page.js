@@ -1,4 +1,4 @@
-import ResetPasswordClient from './ResetPasswordClient'
+import ResetPasswordClient from './ResetPassword'
 
 export const metadata = {
   title: 'Reset Password',
