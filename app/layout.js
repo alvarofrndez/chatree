@@ -26,7 +26,7 @@ export const metadata = {
   publisher: process.env.NEXT_PUBLIC_APP_NAME || 'Chatree',
 
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || 'https://chatree.app'
+    process.env.NEXT_PUBLIC_SITE_URL || 'https://chatree.chat'
   ),
 
   icons: {

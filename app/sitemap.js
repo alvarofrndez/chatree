@@ -33,7 +33,7 @@ const STATIC_ROUTES = [
 // For large sites (50k+ URLs), split into multiple sitemaps using generateSitemaps().
 // See: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/sitemap
 export default async function sitemap() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chatree.chat'
 
   // ── 1. Static routes ──────────────────────────────────────────────────────
   const staticRoutes = STATIC_ROUTES.map(({ url, changeFrequency, priority }) => ({

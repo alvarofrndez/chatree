@@ -33,7 +33,7 @@ export const metadata = {
   ],
   authors:  [{ name: process.env.NEXT_PUBLIC_APP_NAME }],
   creator:  process.env.NEXT_PUBLIC_APP_NAME,
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://yourdomain.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.chatree.chat'),
   openGraph: {
     type:      'website',
     locale:    'en_US',
