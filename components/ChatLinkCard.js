@@ -2,11 +2,12 @@
 
 import styles from './ChatLinkCard.module.scss'
 import { Trash2, Pencil, Eye, Heart, ExternalLink, GripVertical, Cloud } from 'lucide-react'
-import { PLATAFORM_DATA } from '@/lib/utils/constants'
+import { PLATFORM_DATA } from '@/lib/utils/constants'
 import { formatNumber } from '@/lib/utils'
 import { incrementChatViews } from '@/lib/services/chat.service'
 import { useChatLike } from '@/hooks/UseChatLike.js'
 import { toast } from 'sonner'
+import { useRouter } from 'next/navigation'
 
 export default function ChatLinkCard({
   chat,
@@ -14,17 +15,13 @@ export default function ChatLinkCard({
   draggable    = false,
   initialLiked = null,
   isOwner      = false,
-  // isOwner es true  → usuario logueado y es el dueño del chat
-  // isOwner es false → puede ser usuario logueado (no dueño) O anónimo
-  // Para distinguir anónimos, el padre pasa currentUserId:
-  //   - string  → logueado (no dueño)
-  //   - null    → no logueado
   currentUserId = null,
   onEdit,
   onDelete,
 }) {
-  const data = PLATAFORM_DATA[chat.ai_platform] || PLATAFORM_DATA.other
+  const data = PLATFORM_DATA[chat.ai_platform] || PLATFORM_DATA.other
   const Logo = data.icon
+  const router = useRouter()
 
   const {
     liked,
@@ -43,7 +40,6 @@ export default function ChatLinkCard({
   const handleLikeClick = async (e) => {
     e.stopPropagation()
 
-    // ── Usuario no logueado ──────────────────────────────────────────────────
     if (!isOwner && currentUserId === null) {
       toast.info('Sign in to like chats', {
         description: 'Create a free account or sign in to like and save your favourite conversations.',
@@ -56,7 +52,6 @@ export default function ChatLinkCard({
       return
     }
 
-    // ── Dueño del chat ───────────────────────────────────────────────────────
     if (isOwner) {
       toast.info("You can't like your own chat", {
         description: 'Share your profile link so others can like your conversations.',

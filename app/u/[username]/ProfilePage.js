@@ -5,13 +5,7 @@ import { Calendar, Eye, Link2, MessageSquare } from 'lucide-react'
 import ChatLinkCard from '@/components/ChatLinkCard'
 import styles from './page.module.scss'
 import { useAuth } from '@/contexts/auth'
-
-const PLATFORMS = [
-  { value: 'all',     label: 'All' },
-  { value: 'chatgpt', label: 'ChatGPT' },
-  { value: 'claude',  label: 'Claude' },
-  { value: 'gemini',  label: 'Gemini' },
-]
+import { PLATFORMS } from '@/lib/utils/constants'
 
 function ProfileHeader({ profile, totalChats, totalViews, joinDate }) {
   const initials = (profile.full_name || profile.username).charAt(0).toUpperCase()
