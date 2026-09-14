@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { getChatLikeStatuses } from '@/lib/services/like.service'
+import { getPromptLikeStatuses } from '@/lib/services/prompt-like.service'
 import ProfilePage from './ProfilePage'
 
 export async function generateMetadata({ params }) {
@@ -23,13 +24,14 @@ export async function generateMetadata({ params }) {
   const displayName = profile.full_name || username
   const description =
     profile.bio ||
-    `Explore ${displayName}'s curated AI conversations — ChatGPT, Claude, Gemini and more.`
+    `Explore ${displayName}'s curated AI conversations and prompts — ChatGPT, Claude, Gemini and more.`
 
   return {
-    title: `${displayName} (@${username}) – AI Chat Portfolio`,
+    title: `${displayName} (@${username}) – AI Chat & Prompt Portfolio`,
     description,
     keywords: [
       `${username} AI chats`,
+      `${username} AI prompts`,
       `${displayName} prompt engineering`,
       'AI conversation portfolio',
       'ChatGPT conversations',
@@ -41,7 +43,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       type: 'profile',
       url: `/u/${username}`,
-      title: `${displayName} – AI Chat Portfolio`,
+      title: `${displayName} – AI Chat & Prompt Portfolio`,
       description,
       username,
       ...(profile.avatar_url && {
@@ -57,7 +59,7 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: 'summary',
-      title: `${displayName} (@${username}) – AI Chat Portfolio`,
+      title: `${displayName} (@${username}) – AI Chat & Prompt Portfolio`,
       description,
       ...(profile.avatar_url && { images: [profile.avatar_url] }),
     },
@@ -68,7 +70,7 @@ export async function generateMetadata({ params }) {
   }
 }
 
-function JsonLd({ profile, chats }) {
+function JsonLd({ profile, chats, prompts }) {
   const displayName = profile.full_name || profile.username
   const profileUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/u/${profile.username}`
 
@@ -79,10 +81,10 @@ function JsonLd({ profile, chats }) {
         '@type': 'ProfilePage',
         '@id': `${profileUrl}#profilepage`,
         url: profileUrl,
-        name: `${displayName}'s AI Chat Portfolio`,
+        name: `${displayName}'s AI Chat & Prompt Portfolio`,
         description:
           profile.bio ||
-          `${displayName}'s curated AI conversations on ${process.env.NEXT_PUBLIC_APP_NAME}`,
+          `${displayName}'s curated AI conversations and prompts on ${process.env.NEXT_PUBLIC_APP_NAME}`,
         dateCreated: profile.created_at,
         breadcrumb: {
           '@type': 'BreadcrumbList',
@@ -125,6 +127,22 @@ function JsonLd({ profile, chats }) {
             },
           ]
         : []),
+      ...(prompts.length > 0
+        ? [
+            {
+              '@type': 'ItemList',
+              '@id': `${profileUrl}#promptlist`,
+              name: `${displayName}'s AI Prompts`,
+              numberOfItems: prompts.length,
+              itemListElement: prompts.slice(0, 10).map((prompt, i) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                name: prompt.title || `AI Prompt ${i + 1}`,
+                url: `${process.env.NEXT_PUBLIC_SITE_URL}/prompt/${prompt.id}`,
+              })),
+            },
+          ]
+        : []),
     ],
   }
 
@@ -148,26 +166,44 @@ export default async function ProfileView({ params }) {
 
   if (profileError || !profile) notFound()
 
-  const { data: chatLinks } = await supabase
-    .from('ai_chat_links')
-    .select('*')
-    .eq('user_id', profile.id)
-    .eq('is_active', true)
-    .order('position')
+  const [{ data: chatLinks }, { data: promptLinks }] = await Promise.all([
+    supabase
+      .from('ai_chat_links')
+      .select('*')
+      .eq('user_id', profile.id)
+      .eq('is_active', true)
+      .order('position'),
+    supabase
+      .from('ai_prompts')
+      .select('*')
+      .eq('user_id', profile.id)
+      .eq('is_active', true)
+      .order('position'),
+  ])
 
   const chats = chatLinks || []
+  const prompts = promptLinks || []
 
   const chatIds = chats.map((c) => c.id)
-  const likeResult = await getChatLikeStatuses(chatIds)
+  const promptIds = prompts.map((p) => p.id)
+
+  const [likeResult, promptLikeResult] = await Promise.all([
+    getChatLikeStatuses(chatIds),
+    getPromptLikeStatuses(promptIds),
+  ])
+
   const likeStatuses = likeResult?.data ?? {}
+  const promptLikeStatuses = promptLikeResult?.data ?? {}
 
   return (
     <>
-      <JsonLd profile={profile} chats={chats} />
+      <JsonLd profile={profile} chats={chats} prompts={prompts} />
       <ProfilePage
         profile={profile}
         chatLinks={chats}
+        promptLinks={prompts}
         likeStatuses={likeStatuses}
+        promptLikeStatuses={promptLikeStatuses}
       />
     </>
   )

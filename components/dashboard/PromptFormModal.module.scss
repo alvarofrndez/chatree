@@ -93,6 +93,8 @@
             border-color: variables.$color-primary;
             ring: 1px solid rgba(variables.$color-primary, 0.25);
           }
+
+          @include mixins.custom-scrollbar;
         }
 
         textarea {

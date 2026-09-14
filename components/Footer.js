@@ -7,7 +7,6 @@ export default function Footer() {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.brand}>
-          <PiTree className={styles.brandIcon} />
           <span className={styles.brandName}>{process.env.NEXT_PUBLIC_APP_NAME}</span>
         </div>
 

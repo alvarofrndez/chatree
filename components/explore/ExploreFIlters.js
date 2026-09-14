@@ -2,17 +2,14 @@
 
 import { Search } from 'lucide-react'
 import styles from './ExploreFilters.module.scss'
+import { PLATFORMS } from '@/lib/utils/constants'
 
-const PLATFORMS = [
-  { value: 'all', label: 'All Platforms' },
-  { value: 'chatgpt', label: 'ChatGPT' },
-  { value: 'claude', label: 'Claude' },
-  { value: 'gemini', label: 'Gemini' },
-  { value: 'copilot', label: 'Copilot' },
-  { value: 'perplexity', label: 'Perplexity' },
-  { value: 'other', label: 'Other' }
-]
-
+/**
+ * Barra de filtros de Explore.
+ * - Siempre muestra el buscador.
+ * - Muestra el filtro de plataforma para 'chats' y 'prompts' (ambos tienen ai_platform).
+ * - Siempre muestra el selector de orden.
+ */
 export default function ExploreFilters({
   activeTab,
   search,
@@ -21,42 +18,47 @@ export default function ExploreFilters({
   sortOptions,
   onSearchChange,
   onPlatformChange,
-  onSortChange
+  onSortChange,
 }) {
+  const showPlatformFilter = activeTab === 'chats' || activeTab === 'prompts'
+
+  const searchPlaceholder =
+    activeTab === 'creators'
+      ? 'Search creators by name or username...'
+      : activeTab === 'prompts'
+      ? 'Search prompts by title or description...'
+      : 'Search chats by title or description...'
+
   return (
     <>
-      {/* Search Bar */}
       <div className={styles.searchContainer}>
         <div className={styles.searchWrapper}>
-          <Search className={styles.searchIcon} />
+          <Search className={styles.searchIcon} size={16} aria-hidden="true" />
           <input
-            type="text"
-            placeholder={
-              activeTab === 'creators' 
-                ? 'Search creators by username or name...' 
-                : 'Search chats by title, description, or tags...'
-            }
+            type="search"
+            className={styles.searchInput}
+            placeholder={searchPlaceholder}
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            className={styles.searchInput}
+            aria-label={searchPlaceholder}
           />
         </div>
       </div>
 
-      {/* Filters */}
       <div className={styles.filtersContainer}>
-        {/* Platform filter only for chats */}
-        {activeTab === 'chats' && (
+        {showPlatformFilter && (
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Platform</label>
-            <div className={styles.filterButtons}>
-              {PLATFORMS.map(p => (
+            <span className={styles.filterLabel}>Platform</span>
+            <div className={styles.filterButtons} role="group" aria-label="Filter by AI platform">
+              {PLATFORMS.map(({ value, label }) => (
                 <button
-                  key={p.value}
-                  onClick={() => onPlatformChange(p.value)}
-                  className={`${styles.filterButton} ${platform === p.value ? styles.active : ''}`}
+                  key={value}
+                  type="button"
+                  className={`${styles.filterButton} ${platform === value ? styles.active : ''}`}
+                  onClick={() => onPlatformChange(value)}
+                  aria-pressed={platform === value}
                 >
-                  {p.label}
+                  {label}
                 </button>
               ))}
             </div>
@@ -64,15 +66,17 @@ export default function ExploreFilters({
         )}
 
         <div className={styles.filterGroup}>
-          <label className={styles.filterLabel}>Sort by</label>
-          <div className={styles.filterButtons}>
-            {sortOptions.map(option => (
+          <span className={styles.filterLabel}>Sort by</span>
+          <div className={styles.filterButtons} role="group" aria-label="Sort results">
+            {sortOptions.map(({ value, label }) => (
               <button
-                key={option.value}
-                onClick={() => onSortChange(option.value)}
-                className={`${styles.filterButton} ${sort === option.value ? styles.active : ''}`}
+                key={value}
+                type="button"
+                className={`${styles.filterButton} ${sort === value ? styles.active : ''}`}
+                onClick={() => onSortChange(value)}
+                aria-pressed={sort === value}
               >
-                {option.label}
+                {label}
               </button>
             ))}
           </div>

@@ -12,16 +12,22 @@ import {
   Plus,
   Settings,
   ChartColumn,
+  Sparkles,
 } from 'lucide-react'
 import styles from './page.module.scss'
 import { formatNumber, copyToClipboard } from '@/lib/utils'
 import { useAuth } from '@/contexts/auth'
 import ChatLinkCard from '@/components/ChatLinkCard'
+import PromptCard from '@/components/PromptCard'
 import ChatFormModal from '@/components/dashboard/ChatFormMOdal'
 import DeleteChatModal from '@/components/dashboard/DeleteChatModal'
+import PromptFormModal from '@/components/dashboard/PromptFormModal'
+import DeletePromptModal from '@/components/dashboard/DeletePromptModal'
 import SettingsTab from '@/components/dashboard/SettingsTab'
 import { useChats } from '@/hooks/UseChats'
 import { useChatForm } from '@/hooks/UseChatForm'
+import { usePrompts } from '@/hooks/UsePrompts'
+import { usePromptForm } from '@/hooks/UsePromptForm'
 import { toast } from 'sonner'
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
@@ -96,7 +102,7 @@ function ProfileUrlBar({ username }) {
   )
 }
 
-// ─── Empty Chats ──────────────────────────────────────────────────────────────
+// ─── Empty States ─────────────────────────────────────────────────────────────
 function EmptyChats({ onAdd }) {
   return (
     <div className={styles.emptyState} role="status">
@@ -113,27 +119,39 @@ function EmptyChats({ onAdd }) {
   )
 }
 
-// ─── Chat Card Skeleton ───────────────────────────────────────────────────────
-// Mirrors ChatLinkCard structure: platform icon + title/badge + description
-// + tags + stats. Rendered when chatsLoading is true (during mutations).
-function ChatCardSkeleton() {
+function EmptyPrompts({ onAdd }) {
+  return (
+    <div className={styles.emptyState} role="status">
+      <Sparkles size={24} aria-hidden="true" />
+      <div className={styles.emptyStateInfo}>
+        <h2 className={styles.emptyStateTitle}>No prompts yet</h2>
+        <p>Publish your first prompt so others can use and copy it</p>
+      </div>
+      <button className={styles.addButton} onClick={onAdd}>
+        <Plus size={16} aria-hidden="true" />
+        Add your first prompt
+      </button>
+    </div>
+  )
+}
+
+// ─── Card Skeletons ───────────────────────────────────────────────────────────
+// Mirrors ChatLinkCard/PromptCard structure. Rendered while loading is true
+// (during mutations).
+function CardSkeleton() {
   return (
     <div className={styles.chatCardSkeleton} aria-hidden="true">
-      {/* Platform icon */}
       <div className={styles.skeletonChatIcon} />
 
       <div className={styles.skeletonChatBody}>
-        {/* Title row + platform badge */}
         <div className={styles.skeletonChatHeader}>
           <div className={styles.skeletonLine} style={{ width: '50%', height: '1rem' }} />
           <div className={styles.skeletonPill} style={{ width: '4.5rem' }} />
         </div>
 
-        {/* Description lines */}
         <div className={styles.skeletonLine} style={{ width: '92%',  height: '0.75rem', marginTop: '0.6rem' }} />
         <div className={styles.skeletonLine} style={{ width: '68%',  height: '0.75rem', marginTop: '0.3rem' }} />
 
-        {/* Footer: tags + stats */}
         <div className={styles.skeletonChatFooter}>
           <div className={styles.skeletonChatTags}>
             {[0, 1, 2].map((i) => (
@@ -154,21 +172,19 @@ function ChatCardSkeleton() {
   )
 }
 
-// Renders N skeletons matching the current chat count so layout doesn't shift
-function ChatsSkeletonList({ count }) {
-  // Show at least 3, at most 8, matching real list length
+function CardsSkeletonList({ count }) {
   const n = Math.min(Math.max(count, 3), 8)
   return (
-    <div className={styles.chatsList} aria-label="Updating chats…" aria-busy="true">
+    <div className={styles.chatsList} aria-label="Updating…" aria-busy="true">
       {Array.from({ length: n }, (_, i) => (
-        <ChatCardSkeleton key={i} />
+        <CardSkeleton key={i} />
       ))}
     </div>
   )
 }
 
 // ─── Dashboard Client ─────────────────────────────────────────────────────────
-export default function DashboardClient({ initialProfile, initialStats, initialChats }) {
+export default function DashboardClient({ initialProfile, initialStats, initialChats, initialPrompts }) {
   const router = useRouter()
   const { user, loading: authLoading } = useAuth()
   const currentUserId = user?.id
@@ -182,8 +198,32 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
   const [editingChat,     setEditingChat]     = useState(null)
   const [chatToDelete,    setChatToDelete]    = useState(null)
 
+  const [showPromptModal,       setShowPromptModal]       = useState(false)
+  const [showDeletePromptModal, setShowDeletePromptModal] = useState(false)
+  const [editingPrompt,         setEditingPrompt]         = useState(null)
+  const [promptToDelete,        setPromptToDelete]        = useState(null)
+
   const { chats, loading: chatsLoading, addChat, editChat, removeChat } = useChats(initialChats)
   const { formData, tagInput, setTagInput, updateField, addTag, removeTag, resetForm, loadData } = useChatForm()
+
+  const { prompts, loading: promptsLoading, addPrompt, editPrompt, removePrompt } = usePrompts(initialPrompts)
+  const {
+    formData: promptFormData,
+    tagInput: promptTagInput,
+    setTagInput: setPromptTagInput,
+    updateField: updatePromptField,
+    addTag: addPromptTag,
+    removeTag: removePromptTag,
+    resetForm: resetPromptForm,
+    loadData: loadPromptData,
+  } = usePromptForm()
+
+  // Contadores en vivo: `chats`/`prompts` son los arrays locales que
+  // useChats/usePrompts actualizan al crear/editar/borrar. `stats` en cambio
+  // es un snapshot del servidor tomado solo al cargar la página (nunca se
+  // vuelve a pedir), así que NO debe usarse para pintar estos contadores.
+  const totalChats   = chats.length
+  const totalPrompts = prompts.length
 
   useEffect(() => {
     if (!authLoading && !user) router.push('/signin')
@@ -243,7 +283,49 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
     }
   }
 
-  // ── Modal helpers ─────────────────────────────────────────────────────────
+  // ── Save prompt ───────────────────────────────────────────────────────────
+  const handleSavePrompt = async (e) => {
+    e.preventDefault()
+
+    const isEditing = !!editingPrompt
+    const result    = isEditing
+      ? await editPrompt(editingPrompt.id, promptFormData)
+      : await addPrompt(promptFormData)
+
+    if (result.success) {
+      setShowPromptModal(false)
+      resetPromptForm()
+      setEditingPrompt(null)
+      toast.success(isEditing ? 'Prompt updated' : 'Prompt published', {
+        description: isEditing
+          ? 'Your changes have been saved.'
+          : 'Your prompt is now live on your profile.',
+      })
+    } else {
+      toast.error(isEditing ? 'Could not update prompt' : 'Could not add prompt', {
+        description: result.error || 'Please try again.',
+      })
+    }
+  }
+
+  // ── Delete prompt ─────────────────────────────────────────────────────────
+  const handleDeletePrompt = async () => {
+    if (!promptToDelete) return
+    const result = await removePrompt(promptToDelete.id)
+    if (result.success) {
+      setShowDeletePromptModal(false)
+      setPromptToDelete(null)
+      toast.success('Prompt deleted', {
+        description: `"${promptToDelete.title || 'Untitled prompt'}" has been removed from your profile.`,
+      })
+    } else {
+      toast.error('Could not delete prompt', {
+        description: result.error || 'Please try again.',
+      })
+    }
+  }
+
+  // ── Modal helpers: chats ──────────────────────────────────────────────────
   const openDeleteModal  = (chat) => { setChatToDelete(chat); setShowDeleteModal(true) }
   const closeDeleteModal = ()     => { setShowDeleteModal(false); setChatToDelete(null) }
 
@@ -265,6 +347,28 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
     setEditingChat(null)
   }
 
+  // ── Modal helpers: prompts ────────────────────────────────────────────────
+  const openDeletePromptModal  = (prompt) => { setPromptToDelete(prompt); setShowDeletePromptModal(true) }
+  const closeDeletePromptModal = ()       => { setShowDeletePromptModal(false); setPromptToDelete(null) }
+
+  const handleEditPrompt = (prompt) => {
+    setEditingPrompt(prompt)
+    loadPromptData(prompt)
+    setShowPromptModal(true)
+  }
+
+  const handleOpenAddPromptModal = () => {
+    resetPromptForm()
+    setEditingPrompt(null)
+    setShowPromptModal(true)
+  }
+
+  const handleClosePromptModal = () => {
+    setShowPromptModal(false)
+    resetPromptForm()
+    setEditingPrompt(null)
+  }
+
   const handleProfileUpdate = (updatedProfile) => {
     setProfile(updatedProfile)
   }
@@ -277,12 +381,11 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
 
         <header className={styles.header}>
           <h1 className={styles.title}>Dashboard</h1>
-          <p className={styles.subtitle}>Manage your shared AI chats and profile</p>
+          <p className={styles.subtitle}>Manage your shared AI chats, prompts and profile</p>
         </header>
 
         <dl className={styles.statsGrid}>
-          <StatCard icon={Link2}       label="Chats" value={stats.total_chats} />
-          <StatCard icon={Eye}         label="Views" value={formatNumber(stats.total_views)} />
+          <StatCard icon={Eye} label="Views" value={formatNumber(stats.total_views)} />
           <StatCard icon={ChartColumn} label="Likes" value={formatNumber(stats.total_likes)} />
         </dl>
 
@@ -296,7 +399,16 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
             className={`${styles.tab} ${activeTab === 'chats' ? styles.active : ''}`}
             onClick={() => setActiveTab('chats')}
           >
-            My Chats ({stats.total_chats})
+            Chats ({totalChats})
+          </button>
+          <button
+            role="tab"
+            aria-selected={activeTab === 'prompts'}
+            aria-controls="dashboard-panel"
+            className={`${styles.tab} ${activeTab === 'prompts' ? styles.active : ''}`}
+            onClick={() => setActiveTab('prompts')}
+          >
+            Prompts ({totalPrompts})
           </button>
           <button
             role="tab"
@@ -311,25 +423,22 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
         </nav>
 
         {activeTab === 'chats' && (
-          <section id="dashboard-panel" aria-label="My AI chats" className={styles.containerChats}>
+          <section id="dashboard-panel" aria-label="My chats" className={styles.containerChats}>
             <button
               className={styles.addButton}
               onClick={handleOpenAddModal}
               disabled={chatsLoading}
             >
               <Plus size={16} aria-hidden="true" />
-              Add AI Chat
+              Add Chat
             </button>
 
-            {/* Loading: skeleton list matching current chat count */}
-            {chatsLoading && <ChatsSkeletonList count={chats.length} />}
+            {chatsLoading && <CardsSkeletonList count={chats.length} />}
 
-            {/* Empty state */}
             {!chatsLoading && chats.length === 0 && (
               <EmptyChats onAdd={handleOpenAddModal} />
             )}
 
-            {/* Real list */}
             {!chatsLoading && chats.length > 0 && (
               <div className={styles.chatsList}>
                 {chats.map((chat) => (
@@ -349,6 +458,41 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
           </section>
         )}
 
+        {activeTab === 'prompts' && (
+          <section id="dashboard-panel" aria-label="My prompts" className={styles.containerChats}>
+            <button
+              className={styles.addButton}
+              onClick={handleOpenAddPromptModal}
+              disabled={promptsLoading}
+            >
+              <Plus size={16} aria-hidden="true" />
+              Add Prompt
+            </button>
+
+            {promptsLoading && <CardsSkeletonList count={prompts.length} />}
+
+            {!promptsLoading && prompts.length === 0 && (
+              <EmptyPrompts onAdd={handleOpenAddPromptModal} />
+            )}
+
+            {!promptsLoading && prompts.length > 0 && (
+              <div className={styles.chatsList}>
+                {prompts.map((prompt) => (
+                  <PromptCard
+                    key={prompt.id}
+                    prompt={prompt}
+                    editable
+                    isOwner={currentUserId != null && currentUserId === prompt.user_id}
+                    currentUserId={currentUserId ?? null}
+                    onEdit={() => handleEditPrompt(prompt)}
+                    onDelete={() => openDeletePromptModal(prompt)}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
         {activeTab === 'settings' && (
           <section id="dashboard-panel" aria-label="Profile settings">
             <SettingsTab
@@ -360,7 +504,7 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
 
       </div>
 
-      {/* ── Modals ── */}
+      {/* ── Chat Modals ── */}
       {showChatModal && (
         <ChatFormModal
           isEditing={!!editingChat}
@@ -382,6 +526,31 @@ export default function DashboardClient({ initialProfile, initialStats, initialC
           loading={chatsLoading}
           onConfirm={handleDeleteChat}
           onClose={closeDeleteModal}
+        />
+      )}
+
+      {/* ── Prompt Modals ── */}
+      {showPromptModal && (
+        <PromptFormModal
+          isEditing={!!editingPrompt}
+          formData={promptFormData}
+          tagInput={promptTagInput}
+          loading={promptsLoading}
+          onSubmit={handleSavePrompt}
+          onClose={handleClosePromptModal}
+          onFieldChange={updatePromptField}
+          onTagInputChange={setPromptTagInput}
+          onAddTag={addPromptTag}
+          onRemoveTag={removePromptTag}
+        />
+      )}
+
+      {showDeletePromptModal && promptToDelete && (
+        <DeletePromptModal
+          prompt={promptToDelete}
+          loading={promptsLoading}
+          onConfirm={handleDeletePrompt}
+          onClose={closeDeletePromptModal}
         />
       )}
     </main>

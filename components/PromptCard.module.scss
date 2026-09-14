@@ -1,0 +1,442 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.card {
+  // size
+  width: 100%;
+
+  // position
+  position: relative;
+
+  // margin
+  padding: variables.$spacing-4;
+
+  // decoration
+  background-color: variables.$color-surface;
+  border: 1px solid rgba(variables.$color-border, 0.5);
+  border-radius: variables.$radius-lg;
+  cursor: pointer;
+  transition: all variables.$transition-base;
+  overflow: hidden;
+
+  @media (min-width: variables.$breakpoint-sm) {
+    // margin
+    padding: variables.$spacing-5;
+  }
+
+  .content {
+    // size
+    width: 100%;
+
+    // position
+    position: relative;
+    z-index: 1;
+
+    // display
+    display: flex;
+    gap: variables.$spacing-3;
+
+    @media (min-width: variables.$breakpoint-sm) {
+      // display
+      gap: variables.$spacing-4;
+    }
+
+    .dragHandle {
+      // display
+      @include mixins.flex(row, flex-start, flex-start);
+
+      // margin
+      padding-top: variables.$spacing-1;
+
+      // decoration
+      color: rgba(variables.$color-text-muted, 0.4);
+      transition: color variables.$transition-base;
+      cursor: grab;
+
+      &:active {
+        // decoration
+        cursor: grabbing;
+      }
+
+      svg {
+        // size
+        width: variables.$spacing-4;
+        height: variables.$spacing-4;
+      }
+    }
+
+    .platformIcon {
+      // size
+      width: variables.$spacing-10;
+      height: variables.$spacing-10;
+
+      // display
+      @include mixins.flex(row, center, center);
+      flex-shrink: 0;
+
+      // decoration
+      border-radius: variables.$radius-md;
+      border: 1px solid;
+      transition: all variables.$transition-base;
+
+      .svgLogo {
+        // size
+        width: variables.$spacing-5;
+        height: variables.$spacing-5;
+
+        // decoration
+        transition: transform variables.$transition-base;
+      }
+
+      .fallbackIcon {
+        // decoration
+        font-size: variables.$font-size-xl;
+        color: variables.$color-primary;
+      }
+    }
+
+    .promptInfo {
+      // size
+      width: 100%;
+      min-width: 0;
+
+      // display
+      @include mixins.flex(column, flex-start, flex-start, nowrap, variables.$spacing-3);
+
+      .promptHeader {
+        // size
+        width: 100%;
+
+        // display
+        @include mixins.flex(row, space-between, flex-start, nowrap, variables.$spacing-2);
+
+        .promptHeaderContent {
+          // size
+          min-width: 0;
+          flex: 1;
+
+          // display
+          @include mixins.flex(column, flex-start, flex-start, nowrap, variables.$spacing-2);
+
+          .promptTitle {
+            // size
+            width: 100%;
+
+            // decoration
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-semibold;
+            color: variables.$color-foreground;
+            line-height: variables.$line-height-tight;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+
+            @media (min-width: variables.$breakpoint-sm) {
+              font-size: variables.$font-size-base;
+            }
+          }
+
+          .badges {
+            // display
+            @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-1-5);
+          }
+
+          .categoryBadge {
+            // margin
+            display: inline-flex;
+            align-items: center;
+            padding: variables.$spacing-1 0.5rem;
+
+            // decoration
+            border-radius: variables.$radius-md;
+            border: 1px solid rgba(variables.$color-secondary, 0.3);
+            background-color: rgba(variables.$color-secondary, 0.1);
+            color: variables.$color-secondary-light;
+            font-size: variables.$font-size-xs;
+            font-weight: variables.$font-weight-medium;
+          }
+
+          .platformBadge {
+            // margin
+            display: inline-flex;
+            align-items: center;
+            padding: variables.$spacing-1 0.5rem;
+
+            // decoration
+            border-radius: variables.$radius-md;
+            border: 1px solid;
+            font-size: variables.$font-size-xs;
+            font-weight: variables.$font-weight-medium;
+            transition: all variables.$transition-base;
+          }
+        }
+
+        .promptActions {
+          // display
+          @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-1);
+          flex-shrink: 0;
+
+          .deleteButton,
+          .editButton {
+            // margin
+            padding: variables.$spacing-1-5;
+
+            // decoration
+            background: none;
+            border: none;
+            border-radius: variables.$radius-md;
+            color: variables.$color-text-muted;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all variables.$transition-base;
+
+            svg {
+              // size
+              width: variables.$spacing-4;
+              height: variables.$spacing-4;
+            }
+
+            &:hover {
+              opacity: 1;
+              background-color: variables.$color-surface-elevated;
+            }
+          }
+
+          .deleteButton {
+            &:hover {
+              background-color: rgba(variables.$color-error, 0.1);
+              color: variables.$color-error;
+            }
+          }
+
+          .editButton {
+            &:hover {
+              color: variables.$color-primary;
+            }
+          }
+        }
+      }
+
+      .promptDescription {
+        // size
+        width: 100%;
+
+        // display
+        display: -webkit-box;
+
+        // decoration
+        font-size: variables.$font-size-sm;
+        color: variables.$color-text-muted;
+        line-height: variables.$line-height-relaxed;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .emptyDescription {
+        // decoration
+        font-style: italic;
+        opacity: 0.7;
+      }
+
+      .promptPreview {
+        // size
+        width: 100%;
+        max-height: 4.5rem;
+
+        // margin
+        padding: variables.$spacing-2 variables.$spacing-3;
+
+        // decoration
+        background-color: rgba(variables.$color-background, 0.5);
+        border: 1px solid rgba(variables.$color-border, 0.6);
+        border-radius: variables.$radius-md;
+        font-family: variables.$font-mono;
+        font-size: variables.$font-size-xs;
+        color: variables.$color-text-secondary;
+        line-height: variables.$line-height-normal;
+        white-space: pre-wrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+      }
+
+      .promptFooter {
+        // size
+        width: 100%;
+
+        // display
+        @include mixins.flex(row, space-between, center, wrap, variables.$spacing-3);
+
+        .promptTags {
+          // display
+          @include mixins.flex(row, flex-start, flex-start, wrap, variables.$spacing-2);
+          flex: 1;
+          min-width: 0;
+
+          .tag {
+            // margin
+            padding: 0.25rem 0.5rem;
+
+            // decoration
+            border: 1px solid;
+            border-radius: variables.$radius-full;
+            font-size: variables.$font-size-xs;
+            font-weight: variables.$font-weight-medium;
+            white-space: nowrap;
+          }
+
+          .emptyTags {
+            // decoration
+            font-size: variables.$font-size-xs;
+            font-weight: variables.$font-weight-medium;
+            color: variables.$color-text-muted;
+            font-style: italic;
+            opacity: 0.7;
+          }
+        }
+
+        .promptStats {
+          // display
+          @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-2);
+          flex-shrink: 0;
+
+          // decoration
+          font-size: variables.$font-size-xs;
+          color: rgba(variables.$color-text-muted, 0.7);
+
+          .stat {
+            // display
+            @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-1);
+
+            svg {
+              // size
+              width: variables.$spacing-3;
+              height: variables.$spacing-3;
+            }
+          }
+
+          .copyButton {
+            // margin
+            padding: 0;
+
+            // decoration
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all variables.$transition-base;
+
+            &:hover {
+              color: variables.$color-primary;
+              transform: scale(1.05);
+            }
+          }
+
+          .likeButton {
+            // margin
+            padding: 0;
+
+            // decoration
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: all variables.$transition-base;
+
+            &:hover:not(:disabled) {
+              color: variables.$color-primary;
+              transform: scale(1.05);
+            }
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: not-allowed;
+            }
+
+            &.loading {
+              opacity: 1;
+            }
+
+            &.liked {
+              color: variables.$color-primary;
+
+              .heartFilled {
+                fill: currentColor;
+                animation: heartBeat 0.3s ease-in-out;
+              }
+            }
+
+            .heartFilled {
+              transition: fill variables.$transition-base;
+            }
+
+            .heartPulsing {
+              animation: heartPulse 0.6s ease-in-out infinite;
+            }
+          }
+
+          @keyframes heartBeat {
+            0% { transform: scale(1); }
+            25% { transform: scale(1.3); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+          }
+
+          @keyframes heartPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+          }
+        }
+      }
+    }
+  }
+
+  .glow {
+    // position
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+
+    // decoration
+    opacity: 0;
+    transition: opacity variables.$transition-base;
+    pointer-events: none;
+  }
+
+  // Hover state
+  &:hover {
+    // decoration
+    background-color: transparent;
+    border-color: rgba(var(--platform-color-rgb), 0.3);
+
+    .glow {
+      opacity: 1;
+    }
+
+    .platformIcon {
+      transform: scale(1.05);
+
+      .svgLogo {
+        transform: scale(1.1);
+      }
+    }
+
+    .dragHandle {
+      color: variables.$color-text-muted;
+    }
+  }
+
+  // Editable specific styles
+  &.editable {
+    .promptActions {
+      .deleteButton,
+      .editButton {
+        opacity: 1;
+      }
+    }
+  }
+}

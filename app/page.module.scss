@@ -208,14 +208,17 @@
 
             .stats {
                 // display
-                @include mixins.flex(row, center, center, wrap, variables.$spacing-6);
                 display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: variables.$spacing-6;
+                grid-template-columns: repeat(2, 1fr);
+                gap: variables.$spacing-6 variables.$spacing-4;
+
+                @media (min-width: variables.$breakpoint-sm) {
+                    grid-template-columns: repeat(4, 1fr);
+                }
 
                 // size
                 width: 100%;
-                max-width: 32rem;
+                max-width: 36rem;
 
                 // margin
                 margin-top: variables.$spacing-16;
@@ -368,6 +371,9 @@
             }
 
             .featureCard {
+                // position — needed so the New badge can anchor to this card
+                position: relative;
+
                 // margin
                 padding: variables.$spacing-6;
 
@@ -426,6 +432,372 @@
                     line-height: variables.$line-height-relaxed;
                     color: variables.$color-text-muted;
                 }
+            }
+
+            // Card destacada: mismo borde/fondo que las demás en reposo,
+            // solo un borde acento sutil para que el badge no quede huérfano.
+            .featureCardNew {
+                border-color: rgba(variables.$color-accent, 0.35);
+
+                &:hover {
+                    border-color: rgba(variables.$color-accent, 0.5);
+                }
+
+                .featureIcon {
+                    background-color: rgba(variables.$color-accent, 0.12);
+
+                    svg {
+                        color: variables.$color-accent;
+                    }
+                }
+            }
+
+            .newBadge {
+                // position — top-right corner ribbon, same pattern as
+                // notification/status pills in professional apps
+                position: absolute;
+                top: variables.$spacing-4;
+                right: variables.$spacing-4;
+
+                // margin
+                padding: 0.1875rem variables.$spacing-2-5;
+
+                // decoration
+                background-color: variables.$color-accent;
+                color: variables.$color-accent-foreground;
+                border-radius: variables.$radius-full;
+                font-size: 0.6875rem;
+                font-weight: variables.$font-weight-bold;
+                letter-spacing: 0.02em;
+                line-height: 1;
+            }
+        }
+    }
+}
+
+.comparisonSection {
+    // decoration
+    border-top: 1px solid rgba(variables.$color-border, 0.5);
+
+    .sectionContainer {
+        // size
+        width: 100%;
+        max-width: variables.$container-lg;
+
+        // margin
+        margin: 0 auto;
+        padding: variables.$spacing-20 variables.$spacing-4;
+
+        @media (min-width: variables.$breakpoint-sm) {
+            padding: variables.$spacing-20 variables.$spacing-6;
+        }
+
+        .sectionHeader {
+            // margin
+            margin-bottom: variables.$spacing-12;
+
+            // decoration
+            text-align: center;
+
+            .sectionTitle {
+                // margin
+                margin: 0;
+
+                // decoration
+                font-family: variables.$font-display;
+                font-size: variables.$font-size-2xl;
+                font-weight: variables.$font-weight-bold;
+                line-height: variables.$line-height-tight;
+                letter-spacing: -0.025em;
+                color: variables.$color-foreground;
+
+                @media (min-width: variables.$breakpoint-sm) {
+                    font-size: variables.$font-size-3xl;
+                }
+            }
+
+            .sectionDescription {
+                // size
+                max-width: 32rem;
+
+                // margin
+                margin: variables.$spacing-3 auto 0;
+
+                // decoration
+                font-size: variables.$font-size-base;
+                color: variables.$color-text-muted;
+            }
+        }
+
+        .comparisonGrid {
+            // display
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: variables.$spacing-6;
+
+            @media (min-width: variables.$breakpoint-sm) {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .comparisonCard {
+                // margin
+                padding: variables.$spacing-8;
+
+                // decoration
+                border: 1px solid rgba(variables.$color-border, 0.5);
+                border-radius: variables.$radius-xl;
+                background-color: variables.$color-surface;
+
+                .comparisonIcon {
+                    // display
+                    @include mixins.flex(row, center, center, nowrap);
+
+                    // size
+                    width: variables.$spacing-11;
+                    height: variables.$spacing-11;
+
+                    // margin
+                    margin-bottom: variables.$spacing-5;
+
+                    // decoration
+                    background-color: rgba(variables.$color-primary, 0.1);
+                    border-radius: variables.$radius-lg;
+
+                    svg {
+                        color: variables.$color-primary;
+                    }
+                }
+
+                .comparisonTitle {
+                    // margin
+                    margin: 0 0 variables.$spacing-3 0;
+
+                    // decoration
+                    font-size: variables.$font-size-xl;
+                    font-weight: variables.$font-weight-bold;
+                    color: variables.$color-foreground;
+                }
+
+                .comparisonDescription {
+                    // margin
+                    margin: 0 0 variables.$spacing-5 0;
+
+                    // decoration
+                    font-size: variables.$font-size-sm;
+                    line-height: variables.$line-height-relaxed;
+                    color: variables.$color-text-muted;
+                }
+
+                .comparisonList {
+                    // reset
+                    margin: 0;
+                    padding: 0;
+                    list-style: none;
+
+                    // display
+                    @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-2-5);
+
+                    li {
+                        // display
+                        position: relative;
+
+                        // margin
+                        padding-left: variables.$spacing-5;
+
+                        // decoration
+                        font-size: variables.$font-size-sm;
+                        color: variables.$color-text-secondary;
+
+                        &::before {
+                            content: '';
+
+                            // position
+                            position: absolute;
+                            left: 0;
+                            top: 0.5em;
+
+                            // size
+                            width: 6px;
+                            height: 6px;
+
+                            // decoration
+                            background-color: variables.$color-primary;
+                            border-radius: variables.$radius-full;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.platformsSection {
+    // decoration
+    border-top: 1px solid rgba(variables.$color-border, 0.5);
+
+    .sectionContainer {
+        // size
+        width: 100%;
+        max-width: variables.$container-lg;
+
+        // margin
+        margin: 0 auto;
+        padding: variables.$spacing-16 variables.$spacing-4;
+
+        // display
+        @include mixins.flex(column, center, center, nowrap, variables.$spacing-6);
+
+        @media (min-width: variables.$breakpoint-sm) {
+            padding: variables.$spacing-16 variables.$spacing-6;
+        }
+
+        .platformsTitle {
+            // margin
+            margin: 0;
+
+            // decoration
+            font-size: variables.$font-size-sm;
+            font-weight: variables.$font-weight-semibold;
+            color: variables.$color-text-muted;
+            text-align: center;
+        }
+
+        .platformsRow {
+            // display
+            @include mixins.flex(row, center, center, wrap, variables.$spacing-3);
+
+            .platformPill {
+                // margin
+                padding: variables.$spacing-2 variables.$spacing-4;
+
+                // decoration
+                border-radius: variables.$radius-full;
+                background-color: rgba(var(--platform-color-rgb, 122, 122, 122), 0.1);
+                border: 1px solid rgba(var(--platform-color-rgb, 122, 122, 122), 0.25);
+                color: var(--platform-color, #{variables.$color-text-secondary});
+                font-size: variables.$font-size-sm;
+                font-weight: variables.$font-weight-medium;
+            }
+
+            .platformPillMuted {
+                background-color: variables.$color-surface;
+                border-color: rgba(variables.$color-border, 0.6);
+                color: variables.$color-text-muted;
+            }
+        }
+    }
+}
+
+.faqSection {
+    // decoration
+    border-top: 1px solid rgba(variables.$color-border, 0.5);
+
+    .sectionContainer {
+        // size
+        width: 100%;
+        max-width: variables.$container-md;
+
+        // margin
+        margin: 0 auto;
+        padding: variables.$spacing-20 variables.$spacing-4;
+
+        @media (min-width: variables.$breakpoint-sm) {
+            padding: variables.$spacing-20 variables.$spacing-6;
+        }
+
+        .sectionHeader {
+            // margin
+            margin-bottom: variables.$spacing-10;
+
+            // decoration
+            text-align: center;
+
+            .sectionTitle {
+                // margin
+                margin: 0;
+
+                // decoration
+                font-family: variables.$font-display;
+                font-size: variables.$font-size-2xl;
+                font-weight: variables.$font-weight-bold;
+                line-height: variables.$line-height-tight;
+                letter-spacing: -0.025em;
+                color: variables.$color-foreground;
+
+                @media (min-width: variables.$breakpoint-sm) {
+                    font-size: variables.$font-size-3xl;
+                }
+            }
+
+            .sectionDescription {
+                // margin
+                margin: variables.$spacing-3 0 0;
+
+                // decoration
+                font-size: variables.$font-size-base;
+                color: variables.$color-text-muted;
+            }
+        }
+
+        .faqList {
+            // display
+            @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-3);
+        }
+
+        .faqItem {
+            // margin
+            padding: variables.$spacing-5 variables.$spacing-6;
+
+            // decoration
+            border: 1px solid rgba(variables.$color-border, 0.5);
+            border-radius: variables.$radius-lg;
+            background-color: variables.$color-surface;
+
+            &[open] {
+                border-color: rgba(variables.$color-primary, 0.25);
+
+                .faqChevron {
+                    transform: rotate(180deg);
+                }
+            }
+
+            .faqQuestion {
+                // display
+                @include mixins.flex(row, space-between, center, nowrap, variables.$spacing-4);
+
+                // decoration
+                font-size: variables.$font-size-base;
+                font-weight: variables.$font-weight-semibold;
+                color: variables.$color-foreground;
+                cursor: pointer;
+                list-style: none;
+
+                &::-webkit-details-marker {
+                    display: none;
+                }
+
+                .faqChevron {
+                    // size
+                    width: variables.$spacing-3;
+                    height: variables.$spacing-3;
+                    flex-shrink: 0;
+
+                    // decoration
+                    border-right: 2px solid variables.$color-text-muted;
+                    border-bottom: 2px solid variables.$color-text-muted;
+                    transform: rotate(45deg);
+                    transition: transform variables.$transition-base;
+                }
+            }
+
+            .faqAnswer {
+                // margin
+                margin: variables.$spacing-3 0 0;
+
+                // decoration
+                font-size: variables.$font-size-sm;
+                line-height: variables.$line-height-relaxed;
+                color: variables.$color-text-muted;
             }
         }
     }

@@ -1,0 +1,307 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.main {
+  // position
+  position: relative;
+
+  // size
+  width: 100%;
+  min-height: 100vh;
+
+  // display
+  @include mixins.flex(column, flex-start, stretch);
+
+  // decoration
+  background-color: variables.$color-background;
+
+  .container {
+    // size
+    width: 100%;
+    max-width: variables.$container-md;
+
+    // display
+    @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-5);
+
+    // margin
+    margin: 0 auto;
+    padding: variables.$spacing-10 variables.$spacing-4;
+
+    @media (min-width: variables.$breakpoint-sm) {
+      padding: variables.$spacing-10 variables.$spacing-6;
+    }
+
+    .backLink {
+      // display
+      @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-2);
+      width: fit-content;
+
+      // decoration
+      font-size: variables.$font-size-sm;
+      color: variables.$color-text-muted;
+      text-decoration: none;
+      transition: color variables.$transition-base;
+
+      svg {
+        width: variables.$spacing-4;
+        height: variables.$spacing-4;
+      }
+
+      &:hover {
+        color: variables.$color-primary;
+      }
+    }
+
+    .header {
+      // display
+      @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-4);
+
+      .platformIcon {
+        // size
+        width: variables.$spacing-12;
+        height: variables.$spacing-12;
+        flex-shrink: 0;
+
+        // display
+        @include mixins.flex(row, center, center);
+
+        // decoration
+        border-radius: variables.$radius-md;
+        border: 1px solid;
+
+        svg {
+          width: variables.$spacing-6;
+          height: variables.$spacing-6;
+        }
+      }
+
+      .headerText {
+        // display
+        @include mixins.flex(column, flex-start, flex-start, nowrap, variables.$spacing-2);
+        min-width: 0;
+
+        .title {
+          // margin
+          margin: 0;
+
+          // decoration
+          font-size: variables.$font-size-2xl;
+          font-weight: variables.$font-weight-bold;
+          color: variables.$color-foreground;
+          line-height: variables.$line-height-tight;
+
+          @media (min-width: variables.$breakpoint-sm) {
+            font-size: variables.$font-size-3xl;
+          }
+        }
+
+        .badges {
+          @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-2);
+        }
+
+        .categoryBadge {
+          padding: variables.$spacing-1 0.5rem;
+          border-radius: variables.$radius-md;
+          border: 1px solid rgba(variables.$color-secondary, 0.3);
+          background-color: rgba(variables.$color-secondary, 0.1);
+          color: variables.$color-secondary-light;
+          font-size: variables.$font-size-xs;
+          font-weight: variables.$font-weight-medium;
+        }
+
+        .platformBadge {
+          padding: variables.$spacing-1 0.5rem;
+          border-radius: variables.$radius-md;
+          border: 1px solid;
+          font-size: variables.$font-size-xs;
+          font-weight: variables.$font-weight-medium;
+        }
+      }
+    }
+
+    .author {
+      // display
+      @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-2);
+      width: fit-content;
+
+      // decoration
+      font-size: variables.$font-size-sm;
+      color: variables.$color-text-muted;
+      text-decoration: none;
+      transition: color variables.$transition-base;
+
+      &:hover {
+        color: variables.$color-primary;
+      }
+
+      .authorAvatar {
+        // size
+        width: variables.$spacing-6;
+        height: variables.$spacing-6;
+
+        // display
+        @include mixins.flex(row, center, center);
+
+        // decoration
+        background-color: rgba(variables.$color-primary, 0.1);
+        border-radius: variables.$radius-full;
+        overflow: hidden;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        svg {
+          width: variables.$spacing-3-5;
+          height: variables.$spacing-3-5;
+          color: variables.$color-primary;
+        }
+      }
+    }
+
+    .description {
+      // margin
+      margin: 0;
+
+      // decoration
+      font-size: variables.$font-size-base;
+      line-height: variables.$line-height-relaxed;
+      color: variables.$color-text-secondary;
+    }
+
+    .promptBox {
+      // decoration
+      background-color: variables.$color-surface;
+      border: 1px solid rgba(variables.$color-border, 0.6);
+      border-radius: variables.$radius-lg;
+      overflow: hidden;
+
+      .promptBoxHeader {
+        // display
+        @include mixins.flex(row, space-between, center);
+
+        // margin
+        padding: variables.$spacing-3 variables.$spacing-4;
+
+        // decoration
+        background-color: variables.$color-surface-elevated;
+        border-bottom: 1px solid rgba(variables.$color-border, 0.6);
+        font-size: variables.$font-size-xs;
+        font-weight: variables.$font-weight-semibold;
+        color: variables.$color-text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+
+        .copyButton {
+          // display
+          @include mixins.flex(row, center, center, nowrap, variables.$spacing-1-5);
+
+          // margin
+          padding: variables.$spacing-1-5 variables.$spacing-3;
+
+          // decoration
+          background-color: rgba(variables.$color-primary, 0.1);
+          color: variables.$color-primary;
+          border: 1px solid rgba(variables.$color-primary, 0.3);
+          border-radius: variables.$radius-md;
+          font-size: variables.$font-size-xs;
+          font-weight: variables.$font-weight-semibold;
+          text-transform: none;
+          letter-spacing: normal;
+          cursor: pointer;
+          transition: all variables.$transition-base;
+
+          svg {
+            width: variables.$spacing-3-5;
+            height: variables.$spacing-3-5;
+          }
+
+          &:hover {
+            background-color: rgba(variables.$color-primary, 0.2);
+            transform: translateY(-1px);
+          }
+        }
+      }
+
+      .promptText {
+        // margin
+        padding: variables.$spacing-4;
+
+        // decoration
+        font-family: variables.$font-mono;
+        font-size: variables.$font-size-sm;
+        line-height: variables.$line-height-relaxed;
+        color: variables.$color-foreground;
+        white-space: pre-wrap;
+        word-break: break-word;
+        max-height: 60vh;
+        overflow-y: auto;
+
+        @include mixins.custom-scrollbar;
+      }
+    }
+
+    .tags {
+      @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-2);
+
+      .tag {
+        padding: 0.25rem 0.625rem;
+        border-radius: variables.$radius-full;
+        background-color: rgba(variables.$color-primary, 0.08);
+        border: 1px solid rgba(variables.$color-primary, 0.2);
+        color: variables.$color-primary;
+        font-size: variables.$font-size-xs;
+        font-weight: variables.$font-weight-medium;
+      }
+    }
+
+    .stats {
+      // display
+      @include mixins.flex(row, flex-start, center, wrap, variables.$spacing-5);
+
+      // margin
+      padding-top: variables.$spacing-4;
+      border-top: 1px solid rgba(variables.$color-border, 0.5);
+
+      // decoration
+      font-size: variables.$font-size-sm;
+      color: variables.$color-text-muted;
+
+      .stat {
+        @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-1-5);
+
+        svg {
+          width: variables.$spacing-4;
+          height: variables.$spacing-4;
+        }
+      }
+
+      .likeButton {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: all variables.$transition-base;
+
+        &:hover:not(:disabled) {
+          color: variables.$color-primary;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        &.liked {
+          color: variables.$color-primary;
+
+          .heartFilled {
+            fill: currentColor;
+          }
+        }
+      }
+    }
+  }
+}

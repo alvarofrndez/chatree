@@ -1,54 +1,59 @@
 'use client'
 
-import ChatLinkCard from '@/components/ChatLinkCard'
+import PromptCard from '@/components/PromptCard'
 import DotLoading from '@/components/DotLoading'
-import styles from './DeleteChatModal.module.scss'
-import { useAuth } from '@/contexts/auth'
+import styles from './DeletePromptModal.module.scss'
 
-export default function DeleteChatModal({
-  chat,
+export default function DeletePromptModal({
+  prompt,
   loading = false,
   onConfirm,
   onClose
 }) {
-
-  const { user } = useAuth()
-  const current_user_id = user?.id
-
   return (
-    <div className={styles.modal} onClick={onClose}>
-      <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+    <div
+      className={styles.modal}
+      role='dialog'
+      aria-modal='true'
+      aria-labelledby='delete-prompt-title'
+      onClick={onClose}
+    >
+      <div
+        className={styles.modalContent}
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className={styles.modalHeader}>
-          <h2>Delete Chat</h2>
+          <h2 id='delete-prompt-title'>Delete Prompt</h2>
         </div>
-        
+
         <div className={styles.modalBody}>
           <p className={styles.warningText}>
-            Are you sure you want to delete this chat? This action cannot be undone.
+            Are you sure you want to delete this prompt? This action cannot
+            be undone.
           </p>
-          
-          <div className={styles.chatPreview}>
-            <ChatLinkCard
-              chat={chat}
+
+          <div className={styles.promptPreview}>
+            <PromptCard
+              prompt={prompt}
               editable={false}
               draggable={false}
-              isOwner={current_user_id != null && current_user_id === chat.user_id}
-              currentUserId={current_user_id}
+              currentUserId={null}
             />
           </div>
         </div>
 
         <div className={styles.modalActions}>
-          <button 
-            type='button' 
+          <button
+            type='button'
             className={styles.actionCancel}
             onClick={onClose}
             disabled={loading}
           >
             Cancel
           </button>
-          <button 
-            type='button' 
+
+          <button
+            type='button'
             className={styles.actionDelete}
             onClick={onConfirm}
             disabled={loading}

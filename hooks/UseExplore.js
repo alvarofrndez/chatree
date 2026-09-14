@@ -2,9 +2,10 @@
 
 import { useState, useCallback } from 'react'
 import { getPublicChats, getPublicCreators } from '@/lib/services/explore.service'
+import { getPublicPrompts } from '@/lib/services/explore.service'
 
 /**
- * Custom hook for managing explore data (creators or chats)
+ * Custom hook for managing explore data (creators, chats or prompts)
  */
 export function useExplore(type = 'creators') {
   const [data, setData] = useState([])
@@ -31,6 +32,8 @@ export function useExplore(type = 'creators') {
 
       if (type === 'creators') {
         result = await getPublicCreators(filters)
+      } else if (type === 'prompts') {
+        result = await getPublicPrompts(filters)
       } else {
         result = await getPublicChats(filters)
       }
@@ -67,4 +70,4 @@ export function useExplore(type = 'creators') {
     fetchData,
     refresh
   }
-}
+} 

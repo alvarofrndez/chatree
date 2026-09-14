@@ -41,7 +41,7 @@
     max-width: variables.$container-md;
 
     // display
-    @include mixins.flex(column, flex-start, stretch);
+    @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-8);
 
     // margin
     margin: 0 auto;
@@ -163,12 +163,58 @@
       }
     }
 
+    .tabsContainer {
+      // display
+      @include mixins.flex(row, center, stretch, nowrap, variables.$spacing-1);
+
+      // margin
+      padding: variables.$spacing-1;
+
+      // decoration
+      background-color: variables.$color-surface;
+      border: 1px solid rgba(variables.$color-border, 0.5);
+      border-radius: variables.$radius-lg;
+
+      .tab {
+        // display
+        @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+        flex: 1;
+
+        // margin
+        padding: variables.$spacing-2 variables.$spacing-3;
+
+        // decoration
+        background: none;
+        border: none;
+        border-radius: variables.$radius-md;
+        font-size: variables.$font-size-sm;
+        font-weight: variables.$font-weight-medium;
+        color: variables.$color-text-muted;
+        cursor: pointer;
+        transition: all variables.$transition-base;
+
+        &:hover {
+          // decoration
+          color: variables.$color-foreground;
+        }
+
+        &.active {
+          // decoration
+          background-color: variables.$color-surface-elevated;
+          color: variables.$color-foreground;
+        }
+
+        svg {
+          // size
+          width: variables.$spacing-3-5;
+          height: variables.$spacing-3-5;
+        }
+      }
+    }
+
     .filtersBar {
       // display
       @include mixins.flex(row, space-between, center, nowrap, variables.$spacing-4);
-
-      // margin
-      margin-top: variables.$spacing-8;
 
       .filterButtons {
         // display
@@ -215,9 +261,6 @@
 
       // display
       @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-3);
-
-      // margin
-      margin-top: variables.$spacing-4;
     }
 
     .emptyState {

@@ -43,6 +43,9 @@
     }
 
     .modalHeader {
+      // display
+      @include mixins.flex(row, flex-start, center, nowrap, variables.$spacing-3);
+
       // margin
       margin-bottom: variables.$spacing-6;
 
@@ -63,7 +66,13 @@
 
     .modalBody {
       // display
-      @include mixins.flex(column, flex-start, stretch, nowrap, variables.$spacing-4);
+      @include mixins.flex(
+        column,
+        flex-start,
+        stretch,
+        nowrap,
+        variables.$spacing-4
+      );
 
       .warningText {
         // margin
@@ -73,27 +82,31 @@
         font-size: variables.$font-size-sm;
         color: variables.$color-text-secondary;
         line-height: variables.$line-height-relaxed;
-      }
 
-      .chatPreview {
-        // margin
-        padding: variables.$spacing-4;
-
-        // decoration
-        background-color: variables.$color-background;
-        border: 1px solid variables.$color-border;
-        border-radius: variables.$radius-lg;
+        strong {
+          color: variables.$color-foreground;
+          font-weight: variables.$font-weight-semibold;
+        }
       }
     }
 
     .modalActions {
       // display
-      @include mixins.flex(row, flex-end, center, nowrap, variables.$spacing-3);
+      @include mixins.flex(
+        row,
+        flex-end,
+        center,
+        nowrap,
+        variables.$spacing-3
+      );
 
       // margin
       margin-top: variables.$spacing-6;
 
       button {
+        // display
+        @include mixins.flex(row, center, center, nowrap, variables.$spacing-2);
+
         // margin
         padding: variables.$spacing-2-5 variables.$spacing-5;
 
@@ -130,6 +143,10 @@
 
         &:hover:not(:disabled) {
           background-color: darken(variables.$color-error, 10%);
+        }
+
+        svg {
+          flex-shrink: 0;
         }
       }
     }

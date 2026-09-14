@@ -1,6 +1,6 @@
 'use client'
 
-import { Plus } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 import DotLoading from '@/components/DotLoading'
 import styles from './ChatFormModal.module.scss'
 
@@ -104,7 +104,7 @@ export default function ChatFormModal({
                       type="button"
                       onClick={() => onRemoveTag(tag)}
                     >
-                      ×
+                      <X size={12}/>
                     </button>
                   </span>
                 ))}
@@ -127,9 +127,9 @@ export default function ChatFormModal({
               disabled={loading}
             >
               {loading ? (
-                <DotLoading text={isEditing ? 'Updating' : 'Adding'} />
+                <DotLoading text={isEditing ? 'Updating' : 'Publishing'} />
               ) : (
-                isEditing ? 'Update' : 'Add'
+                isEditing ? 'Update' : 'Publish'
               )}
             </button>
           </div>

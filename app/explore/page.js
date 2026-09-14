@@ -1,5 +1,6 @@
-import { getPublicCreators, getPublicChats } from '@/lib/services/explore.service'
+import { getPublicCreators, getPublicChats, getPublicPrompts } from '@/lib/services/explore.service'
 import { getChatLikeStatuses } from '@/lib/services/like.service'
+import { getPromptLikeStatuses } from '@/lib/services/prompt-like.service'
 import ExploreClient from './Explore'
 
 export async function generateMetadata({ searchParams }) {
@@ -7,17 +8,21 @@ export async function generateMetadata({ searchParams }) {
   const tab = params.tab || 'creators'
   const search = params.search || ''
 
-  const tabLabel = tab === 'creators' ? 'Creators' : 'AI Chats'
+  const tabLabel = tab === 'creators' ? 'Creators' : tab === 'prompts' ? 'Prompts' : 'AI Chats'
   const searchSuffix = search ? ` – "${search}"` : ''
+
+  const descriptions = {
+    creators: 'Browse prompt engineers and AI power users. Discover public profiles showcasing the best ChatGPT, Claude, and Gemini conversations.',
+    chats: 'Explore curated AI conversations from creators around the world. Filter by model, topic, and popularity.',
+    prompts: 'Discover and copy ready-to-use AI prompts shared by the community. Filter by model, category, and popularity.',
+  }
 
   return {
     title: `Explore ${tabLabel}${searchSuffix}`,
-    description:
-      tab === 'creators'
-        ? 'Browse prompt engineers and AI power users. Discover public profiles showcasing the best ChatGPT, Claude, and Gemini conversations.'
-        : 'Explore curated AI conversations from creators around the world. Filter by model, topic, and popularity.',
+    description: descriptions[tab] || descriptions.creators,
     keywords: [
       'explore AI conversations',
+      'AI prompts library',
       'prompt engineers',
       'ChatGPT profiles',
       'Claude AI users',
@@ -29,8 +34,7 @@ export async function generateMetadata({ searchParams }) {
     },
     openGraph: {
       title: `Explore ${tabLabel} | ${process.env.NEXT_PUBLIC_APP_NAME}`,
-      description:
-        'Discover creators and curated AI conversations. Browse public profiles and the best prompt engineering examples.',
+      description: descriptions[tab] || descriptions.creators,
       url: '/explore',
       type: 'website',
     },
@@ -42,12 +46,14 @@ export async function generateMetadata({ searchParams }) {
 }
 
 function JsonLd({ tab, total }) {
+  const tabLabel = tab === 'creators' ? 'Creators' : tab === 'prompts' ? 'Prompts' : 'AI Chats'
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: `Explore ${tab === 'creators' ? 'Creators' : 'AI Chats'} – ${process.env.NEXT_PUBLIC_APP_NAME}`,
+    name: `Explore ${tabLabel} – ${process.env.NEXT_PUBLIC_APP_NAME}`,
     description:
-      'Browse and discover AI conversation creators and their curated chats.',
+      'Browse and discover AI conversation creators, chats and prompts.',
     url: `${process.env.NEXT_PUBLIC_SITE_URL}/explore`,
     isPartOf: {
       '@type': 'WebSite',
@@ -93,7 +99,9 @@ export default async function ExplorePage({ searchParams }) {
 
   let initialCreators = []
   let initialChats = []
+  let initialPrompts = []
   let initialLikeStatuses = {}
+  let initialPromptLikeStatuses = {}
   let initialPagination = {
     page: 1,
     limit: 20,
@@ -108,6 +116,20 @@ export default async function ExplorePage({ searchParams }) {
     if (result.success) {
       initialCreators = result.data
       initialPagination = result.pagination
+    }
+  } else if (initialTab === 'prompts') {
+    const result = await getPublicPrompts({ page, limit: 20, search, platform, sort })
+    if (result.success) {
+      initialPrompts = result.data
+      initialPagination = result.pagination
+
+      const promptIds = result.data.map((p) => p.id)
+      if (promptIds.length > 0) {
+        const likeResult = await getPromptLikeStatuses(promptIds)
+        if (likeResult.success) {
+          initialPromptLikeStatuses = likeResult.data
+        }
+      }
     }
   } else {
     const result = await getPublicChats({ page, limit: 20, search, platform, sort })
@@ -131,9 +153,11 @@ export default async function ExplorePage({ searchParams }) {
       <ExploreClient
         initialCreators={initialCreators}
         initialChats={initialChats}
+        initialPrompts={initialPrompts}
         initialPagination={initialPagination}
         initialTab={initialTab}
         initialLikeStatuses={initialLikeStatuses}
+        initialPromptLikeStatuses={initialPromptLikeStatuses}
       />
     </>
   )
