@@ -11,19 +11,9 @@ const STATIC_ROUTES = [
   },
   {
     url: '/explore',
-    changeFrequency: 'hourly', // new creators/chats appear constantly
+    changeFrequency: 'hourly',
     priority: 0.9,
-  },
-  {
-    url: '/signup',
-    changeFrequency: 'monthly',
-    priority: 0.7,
-  },
-  {
-    url: '/signin',
-    changeFrequency: 'monthly',
-    priority: 0.3,
-  },
+  }
 ]
 
 // ─── Sitemap generator ────────────────────────────────────────────────────────

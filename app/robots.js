@@ -4,17 +4,17 @@
 // Docs: https://nextjs.org/docs/app/api-reference/file-conventions/metadata/robots
 
 export default function robots() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.chatree.chat'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chatree.chat'
 
   return {
     rules: [
       {
-        // Main rule for all crawlers
         userAgent: '*',
         allow: [
           '/',
           '/explore',
-          '/u/',       // all public profile pages
+          '/u/',
+          '/prompt/',
         ],
         disallow: [
           '/dashboard',
@@ -23,9 +23,9 @@ export default function robots() {
           '/signup',
           '/forgot-password',
           '/reset-password',
-          '/api/',          // never expose API routes
-          '/_next/',        // Next.js internals
-          '/admin/',        // future-proof
+          '/api/',
+          '/_next/',
+          '/admin/',
         ],
       },
       {
