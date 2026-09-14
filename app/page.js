@@ -463,7 +463,8 @@ export default function HomePage() {
               </span>
             ))}
             <span className={`${styles.platformPill} ${styles.platformPillMuted}`}>
-              <Plus size={12}/> more
+              <Plus size={12}/> 
+              <span>more</span>
             </span>
           </div>
         </div>

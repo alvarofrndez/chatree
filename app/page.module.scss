@@ -680,6 +680,10 @@
             }
 
             .platformPillMuted {
+                // display
+                @include mixins.flex(row, center, center, wrap, variables.$spacing-1);
+                
+                // decoration
                 background-color: variables.$color-surface;
                 border-color: rgba(variables.$color-border, 0.6);
                 color: variables.$color-text-muted;
