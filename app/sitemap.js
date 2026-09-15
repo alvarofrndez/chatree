@@ -3,10 +3,14 @@ import { createClient } from '@/lib/supabase/server'
 // ─── Static routes config ─────────────────────────────────────────────────────
 // priority: 0.0–1.0 (Google treats it as a hint, not a directive)
 // changeFrequency: how often the page is likely to change
+const STATIC_LAST_MODIFIED = process.env.NEXT_PUBLIC_SITE_LAST_MODIFIED
+  ? new Date(process.env.NEXT_PUBLIC_SITE_LAST_MODIFIED)
+  : new Date()
+
 const STATIC_ROUTES = [
   {
     url: '/',
-    changeFrequency: 'weekly',
+    changeFrequency: 'daily',
     priority: 1.0,
   },
   {
@@ -28,7 +32,7 @@ export default async function sitemap() {
   // ── 1. Static routes ──────────────────────────────────────────────────────
   const staticRoutes = STATIC_ROUTES.map(({ url, changeFrequency, priority }) => ({
     url: `${baseUrl}${url}`,
-    lastModified: new Date(),
+    lastModified: STATIC_LAST_MODIFIED,
     changeFrequency,
     priority,
   }))
@@ -62,8 +66,34 @@ export default async function sitemap() {
     console.error('[sitemap] Failed to fetch profiles:', err)
   }
 
-  // ── 3. Merge and return ───────────────────────────────────────────────────
-  return [...staticRoutes, ...profileRoutes]
+  // ── 3. Dynamic public prompt pages (/prompt/[id]) ───────────────────────
+  // Only index active prompts
+  let promptRoutes = []
+  try {
+    const supabase = await createClient()
+
+    const { data: prompts } = await supabase
+      .from('ai_prompts')
+      .select('id, updated_at')
+      .eq('is_active', true)
+      // Limit to avoid overwhelming the sitemap on very large datasets.
+      // If you have 50k+ prompts, use generateSitemaps() to split instead.
+      .order('updated_at', { ascending: false })
+      .limit(45000) // Stay under Google's 50k URL/sitemap limit
+
+    promptRoutes = (prompts ?? []).map((prompt) => ({
+      url: `${baseUrl}/prompt/${prompt.id}`,
+      lastModified: prompt.updated_at ? new Date(prompt.updated_at) : new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    }))
+  } catch (err) {
+    // Never let a DB error break the build — just omit dynamic routes
+    console.error('[sitemap] Failed to fetch prompts:', err)
+  }
+
+  // ── 4. Merge and return ───────────────────────────────────────────────────
+  return [...staticRoutes, ...profileRoutes, ...promptRoutes]
 }
 
 // ─── Revalidation ─────────────────────────────────────────────────────────────

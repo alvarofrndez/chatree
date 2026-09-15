@@ -15,6 +15,7 @@ import styles from './page.module.scss'
 import { getGlobalStats } from '@/lib/services/stats.service'
 import { formatNumber } from '@/lib/utils'
 import { Users, Link as LinkIcon } from 'lucide-react'
+import { generateBreadcrumbSchema } from '@/lib/utils'
 
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 export const metadata = {
@@ -111,15 +112,7 @@ function JsonLd({ stats }) {
         name:          `${process.env.NEXT_PUBLIC_APP_NAME} – The Linktree for AI Chats & Prompts`,
         isPartOf:      { '@id': `${process.env.NEXT_PUBLIC_SITE_URL}/#website` },
         description:   'Create your public AI conversation profile. Share your ChatGPT, Claude, and Gemini chats, publish reusable prompts, and demonstrate your prompt engineering skills.',
-        breadcrumb: {
-          '@type': 'BreadcrumbList',
-          itemListElement: [{
-            '@type':  'ListItem',
-            position: 1,
-            name:     'Home',
-            item:     process.env.NEXT_PUBLIC_SITE_URL,
-          }],
-        },
+        breadcrumb: generateBreadcrumbSchema(process.env.NEXT_PUBLIC_SITE_URL, []),
       },
       {
         '@type':               'SoftwareApplication',

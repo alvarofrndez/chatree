@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { getChatLikeStatuses } from '@/lib/services/like.service'
 import { getPromptLikeStatuses } from '@/lib/services/prompt-like.service'
+import { generateBreadcrumbSchema } from '@/lib/utils'
 import ProfilePage from './ProfilePage'
 
 export async function generateMetadata({ params }) {
@@ -21,7 +22,7 @@ export async function generateMetadata({ params }) {
     }
   }
 
-  const displayName = profile.full_name || username
+  const displayName = profile.username || username
   const description =
     profile.bio ||
     `Explore ${displayName}'s curated AI conversations and prompts — ChatGPT, Claude, Gemini and more.`
@@ -71,7 +72,7 @@ export async function generateMetadata({ params }) {
 }
 
 function JsonLd({ profile, chats, prompts }) {
-  const displayName = profile.full_name || profile.username
+  const displayName = profile.username || profile.username
   const profileUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/u/${profile.username}`
 
   const schema = {
@@ -86,14 +87,10 @@ function JsonLd({ profile, chats, prompts }) {
           profile.bio ||
           `${displayName}'s curated AI conversations and prompts on ${process.env.NEXT_PUBLIC_APP_NAME}`,
         dateCreated: profile.created_at,
-        breadcrumb: {
-          '@type': 'BreadcrumbList',
-          itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: process.env.NEXT_PUBLIC_SITE_URL },
-            { '@type': 'ListItem', position: 2, name: 'Explore', item: `${process.env.NEXT_PUBLIC_SITE_URL}/explore` },
-            { '@type': 'ListItem', position: 3, name: displayName, item: profileUrl },
-          ],
-        },
+        breadcrumb: generateBreadcrumbSchema(process.env.NEXT_PUBLIC_SITE_URL, [
+      { name: 'Explore', url: '/explore' },
+      { name: displayName, url: `/u/${profile.username}` }
+    ]),
         mainEntity: { '@id': `${profileUrl}#person` },
       },
       {

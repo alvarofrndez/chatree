@@ -1,6 +1,7 @@
 import { getPublicCreators, getPublicChats, getPublicPrompts } from '@/lib/services/explore.service'
 import { getChatLikeStatuses } from '@/lib/services/like.service'
 import { getPromptLikeStatuses } from '@/lib/services/prompt-like.service'
+import { generateBreadcrumbSchema } from '@/lib/utils'
 import ExploreClient from './Explore'
 
 export async function generateMetadata({ searchParams }) {
@@ -61,23 +62,9 @@ function JsonLd({ tab, total }) {
       url: process.env.NEXT_PUBLIC_SITE_URL,
     },
     numberOfItems: total,
-    breadcrumb: {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        {
-          '@type': 'ListItem',
-          position: 1,
-          name: 'Home',
-          item: process.env.NEXT_PUBLIC_SITE_URL,
-        },
-        {
-          '@type': 'ListItem',
-          position: 2,
-          name: 'Explore',
-          item: `${process.env.NEXT_PUBLIC_SITE_URL}/explore`,
-        },
-      ],
-    },
+    breadcrumb: generateBreadcrumbSchema(process.env.NEXT_PUBLIC_SITE_URL, [
+      { name: 'Explore', url: '/explore' }
+    ]),
   }
 
   return (

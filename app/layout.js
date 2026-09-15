@@ -20,6 +20,7 @@ export const metadata = {
   },
   description:
     'Create your public profile, curate your best ChatGPT, Claude, and Gemini conversations, and showcase your prompt engineering skills.',
+  keywords: ['AI conversations', 'prompt engineering', 'ChatGPT', 'Claude', 'Gemini', 'AI prompts'],
   applicationName: process.env.NEXT_PUBLIC_APP_NAME || 'Chatree',
   authors: [{ name: process.env.NEXT_PUBLIC_APP_NAME || 'Chatree' }],
   creator: process.env.NEXT_PUBLIC_APP_NAME || 'Chatree',
@@ -54,7 +55,7 @@ export const metadata = {
       'The Linktree for AI conversations. Share your best ChatGPT, Claude, and Gemini chats.',
     images: [
       {
-        url: '/og-image.png', // 1200×630px in /public
+        url: '/og-image.svg', // 1200×630px in /public
         width: 1200,
         height: 630,
         alt: `${process.env.NEXT_PUBLIC_APP_NAME || 'Chatree'} – Share your AI conversations`,
@@ -68,7 +69,7 @@ export const metadata = {
     title: process.env.NEXT_PUBLIC_APP_NAME || 'Chatree',
     description:
       'The Linktree for AI conversations. Build your public prompt engineering portfolio.',
-    images: ['/og-image.png'],
+    images: ['/og-image.svg'],
   },
 
   robots: {

@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { checkPromptLikeStatus } from '@/lib/services/prompt-like.service'
+import { generateBreadcrumbSchema } from '@/lib/utils'
 import PromptDetail from './PromptDetail'
 
 export async function generateMetadata({ params }) {
@@ -57,6 +58,10 @@ function JsonLd({ prompt, profile }) {
         }
       : undefined,
     keywords: prompt.tags?.join(', ') || undefined,
+    breadcrumb: generateBreadcrumbSchema(process.env.NEXT_PUBLIC_SITE_URL, [
+      { name: 'Explore', url: '/explore' },
+      { name: prompt.title, url: `/prompt/${prompt.id}` }
+    ]),
   }
 
   return (
