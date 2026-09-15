@@ -32,7 +32,7 @@ export const metadata = {
 
   icons: {
     icon: [
-      { url: '/favicon.ico' },
+      { url: '/favicon.svg' },
       { url: '/icon-16.png', sizes: '16x16', type: 'image/png' },
       { url: '/icon-32.png', sizes: '32x32', type: 'image/png' },
       { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
@@ -40,7 +40,7 @@ export const metadata = {
     apple: [
       { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
     ],
-    shortcut: '/favicon.ico',
+    shortcut: '/favicon.svg',
   },
 
   manifest: '/manifest.json',
@@ -55,7 +55,7 @@ export const metadata = {
       'The Linktree for AI conversations. Share your best ChatGPT, Claude, and Gemini chats.',
     images: [
       {
-        url: '/og-image.svg', // 1200×630px in /public
+        url: '/og-image.svg',
         width: 1200,
         height: 630,
         alt: `${process.env.NEXT_PUBLIC_APP_NAME || 'Chatree'} – Share your AI conversations`,
@@ -65,7 +65,7 @@ export const metadata = {
 
   twitter: {
     card: 'summary_large_image',
-    site: '@chatree', // replace with your actual handle
+    site: '@chatreeofficial',
     title: process.env.NEXT_PUBLIC_APP_NAME || 'Chatree',
     description:
       'The Linktree for AI conversations. Build your public prompt engineering portfolio.',

@@ -10,6 +10,7 @@ import { SiGoogle, SiGithub } from '@icons-pack/react-simple-icons'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import styles from './page.module.scss'
+import Image from 'next/image'
 
 // ─── OAuth hook ───────────────────────────────────────────────────────────────
 function useOAuth(supabase) {
@@ -266,7 +267,14 @@ export default function SignupClient() {
             className={styles.brandLink}
             aria-label={`Go to ${process.env.NEXT_PUBLIC_APP_NAME} homepage`}
           >
-            <PiTree className={styles.brandIcon} aria-hidden="true" />
+            <Image
+              className={styles.brandIcon}
+              src='/favicon.svg' 
+              alt='Logo' 
+              width={24}
+              height={24}
+              aria-hidden='true'
+            />
             <span className={styles.brandName}>{process.env.NEXT_PUBLIC_APP_NAME}</span>
           </Link>
           <p className={styles.brandDescription}>Create your account</p>

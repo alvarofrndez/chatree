@@ -5,11 +5,11 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Loader2 } from 'lucide-react'
 import { IoMdEye, IoMdEyeOff } from 'react-icons/io'
-import { PiTree } from 'react-icons/pi'
 import { SiGoogle, SiGithub } from '@icons-pack/react-simple-icons'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import styles from './page.module.scss'
+import Image from 'next/image'
 
 // ─── OAuth hook ───────────────────────────────────────────────────────────────
 function useOAuth(supabase) {
@@ -26,8 +26,6 @@ function useOAuth(supabase) {
 
       if (error) throw error
 
-      // Si llegamos aquí sin error, el redirect ya está en marcha —
-      // Sonner descartará el loading toast automáticamente al salir de la página
       toast.dismiss(loadingToast)
     } catch (err) {
       toast.dismiss(loadingToast)
@@ -129,7 +127,7 @@ export default function SigninClient() {
         })
       } else if (msg.includes('user not found')) {
         toast.error('Account not found', {
-          description: "No account with that email. Try signing up instead.",
+          description: 'No account with that email. Try signing up instead.',
         })
       } else {
         toast.error('Could not sign in', {
@@ -143,15 +141,22 @@ export default function SigninClient() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.backgroundGlow} aria-hidden="true">
+      <div className={styles.backgroundGlow} aria-hidden='true'>
         <div className={styles.glowOrb} />
       </div>
 
       <div className={styles.wrapper}>
 
         <div className={styles.brand}>
-          <Link href="/" className={styles.brandLink} aria-label={`Go to ${process.env.NEXT_PUBLIC_APP_NAME} homepage`}>
-            <PiTree className={styles.brandIcon} aria-hidden="true" />
+          <Link href='/' className={styles.brandLink} aria-label={`Go to ${process.env.NEXT_PUBLIC_APP_NAME} homepage`}>
+            <Image
+              className={styles.brandIcon}
+              src='/favicon.svg' 
+              alt='Logo' 
+              width={24}
+              height={24}
+              aria-hidden='true'
+            />
             <span className={styles.brandName}>{process.env.NEXT_PUBLIC_APP_NAME}</span>
           </Link>
           <p className={styles.brandDescription}>Welcome back</p>
@@ -160,99 +165,99 @@ export default function SigninClient() {
         <div className={styles.card}>
           <form onSubmit={handleSubmit} className={styles.form} noValidate>
             <div className={styles.formField}>
-              <label htmlFor="email" className={styles.label}>
+              <label htmlFor='email' className={styles.label}>
                 Email
               </label>
               <input
-                id="email"
-                type="email"
-                name="email"
-                placeholder="alex@example.com"
+                id='email'
+                type='email'
+                name='email'
+                placeholder='alex@example.com'
                 value={formData.email}
                 onChange={handleChange}
                 required
-                autoComplete="email"
+                autoComplete='email'
                 className={styles.input}
               />
             </div>
 
             <div className={styles.formField}>
-              <label htmlFor="password" className={styles.label}>
+              <label htmlFor='password' className={styles.label}>
                 Password
               </label>
               <div className={styles.passwordWrapper}>
                 <input
-                  id="password"
+                  id='password'
                   type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  placeholder="••••••••"
+                  name='password'
+                  placeholder='••••••••'
                   value={formData.password}
                   onChange={handleChange}
                   required
-                  autoComplete="current-password"
+                  autoComplete='current-password'
                   className={styles.input}
                 />
                 <button
-                  type="button"
+                  type='button'
                   onClick={() => setShowPassword((v) => !v)}
                   className={styles.toggleButton}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   aria-pressed={showPassword}
                 >
                   {showPassword
-                    ? <IoMdEyeOff aria-hidden="true" />
-                    : <IoMdEye    aria-hidden="true" />
+                    ? <IoMdEyeOff aria-hidden='true' />
+                    : <IoMdEye    aria-hidden='true' />
                   }
                 </button>
               </div>
             </div>
 
             <div className={styles.forgotPassword}>
-              <Link href="/forgot-password" className={styles.forgotPasswordLink}>
+              <Link href='/forgot-password' className={styles.forgotPasswordLink}>
                 Forgot password?
               </Link>
             </div>
 
             <button
-              type="submit"
+              type='submit'
               className={styles.submitButton}
               disabled={loading}
               aria-busy={loading}
             >
               {loading
-                ? <><Loader2 size={16} className={styles.spinner} aria-hidden="true" /> Signing in…</>
+                ? <><Loader2 size={16} className={styles.spinner} aria-hidden='true' /> Signing in…</>
                 : 'Sign In'
               }
             </button>
           </form>
 
-          <div className={styles.divider} aria-hidden="true">
+          <div className={styles.divider} aria-hidden='true'>
             <span>or</span>
           </div>
 
           <div
             className={styles.oauthButtonsContainer}
-            role="group"
-            aria-label="Sign in with a third-party account"
+            role='group'
+            aria-label='Sign in with a third-party account'
           >
             <button
-              type="button"
+              type='button'
               onClick={() => signInWithOAuth('github')}
               className={styles.oauthButton}
               disabled={loading}
-              aria-label="Continue with GitHub"
+              aria-label='Continue with GitHub'
             >
-              <SiGithub aria-hidden="true" />
+              <SiGithub aria-hidden='true' />
               Continue with GitHub
             </button>
             <button
-              type="button"
+              type='button'
               onClick={() => signInWithOAuth('google')}
               className={styles.oauthButton}
               disabled={loading}
-              aria-label="Continue with Google"
+              aria-label='Continue with Google'
             >
-              <SiGoogle aria-hidden="true" />
+              <SiGoogle aria-hidden='true' />
               Continue with Google
             </button>
           </div>
@@ -261,7 +266,7 @@ export default function SigninClient() {
         <footer className={styles.footer}>
           <p>
             Don&apos;t have an account?{' '}
-            <Link href="/signup">Sign up</Link>
+            <Link href='/signup'>Sign up</Link>
           </p>
         </footer>
 

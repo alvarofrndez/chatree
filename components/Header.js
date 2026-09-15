@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth'
 import styles from './header.module.scss'
 import { PiTree } from 'react-icons/pi'
+import Image from 'next/image'
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -24,7 +25,14 @@ export default function Header() {
     <header className={styles.header}>
       <nav className={styles.nav}>
         <Link href="/" className={styles.brandLink}>
-          <PiTree className={styles.brandIcon} />
+          <Image
+            className={styles.brandIcon}
+            src='/favicon.svg' 
+            alt='Logo' 
+            width={24}
+            height={24}
+            aria-hidden='true'
+          />
           <span className={styles.brandName}>{process.env.NEXT_PUBLIC_APP_NAME}</span>
         </Link>
 

@@ -3,6 +3,7 @@
 import { useAuth } from '@/contexts/auth'
 import { PiTree } from 'react-icons/pi'
 import styles from './AuthLoadingWrapper.module.scss'
+import Image from 'next/image'
 
 export default function AuthLoadingWrapper({ children }) {
   const { loading } = useAuth()
@@ -16,7 +17,14 @@ export default function AuthLoadingWrapper({ children }) {
 
         <div className={styles.content}>
           <div className={styles.logoMark} aria-hidden="true">
-            <PiTree className={styles.logoIcon} />
+            <Image
+              className={styles.logoIcon}
+              src='/favicon.svg' 
+              alt='Logo' 
+              width={24}
+              height={24}
+              aria-hidden='true'
+            />
           </div>
 
           <div className={styles.barTrack} aria-hidden="true">
