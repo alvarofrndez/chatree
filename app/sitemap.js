@@ -19,7 +19,7 @@ const STATIC_ROUTES = [
     priority: 0.9,
   },
   {
-    url: 'about',
+    url: '/about',
     changeFrequency: 'weekly',
     priority: 0.8,
   }
