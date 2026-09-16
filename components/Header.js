@@ -40,6 +40,9 @@ export default function Header() {
           <Link href="/explore" className={styles.navLink}>
             Explore
           </Link>
+          <Link href="/about" className={styles.navLink}>
+            About
+          </Link>
           {!loading && (
             <>
               {user ? (
@@ -90,29 +93,36 @@ export default function Header() {
 
       {mobileMenuOpen && (
         <div className={styles.mobileMenu}>
-          <Link 
-            href="/explore" 
+          <Link
+            href="/explore"
             className={styles.mobileNavLink}
             onClick={() => setMobileMenuOpen(false)}
           >
             Explore
           </Link>
+          <Link
+            href="/about"
+            className={styles.mobileNavLink}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            About
+          </Link>
           {!loading && (
             <>
               {user ? (
                 <>
-                  <Link 
-                    href="/dashboard" 
+                  <Link
+                    href="/dashboard"
                     className={styles.mobileNavLink}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Dashboard
                   </Link>
-                  <button 
+                  <button
                     onClick={() => {
                       handleLogout()
                       setMobileMenuOpen(false)
-                    }} 
+                    }}
                     className={styles.mobileNavLink}
                   >
                     Log Out
@@ -120,15 +130,15 @@ export default function Header() {
                 </>
               ) : (
                 <>
-                  <Link 
-                    href="/signin" 
+                  <Link
+                    href="/signin"
                     className={styles.mobileNavLink}
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Sign In
                   </Link>
-                  <Link 
-                    href="/signup" 
+                  <Link
+                    href="/signup"
                     className={styles.mobileCtaButton}
                     onClick={() => setMobileMenuOpen(false)}
                   >

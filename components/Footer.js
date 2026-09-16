@@ -14,6 +14,9 @@ export default function Footer() {
           <Link href="/explore" className={styles.link}>
             Explore
           </Link>
+          <Link href="/about" className={styles.link}>
+            About
+          </Link>
           <span className={styles.tagline}>Built for the AI generation</span>
         </div>
       </div>

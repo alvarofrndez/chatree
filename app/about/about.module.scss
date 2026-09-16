@@ -1,0 +1,264 @@
+@use '@/styles/variables.scss' as variables;
+@use '@/styles/mixins.scss' as mixins;
+
+.aboutWrapper {
+  // display
+  @include mixins.flex(column, flex-start, stretch, nowrap);
+  flex: 1;
+  background-color: variables.$color-background;
+  color: variables.$color-foreground;
+}
+
+.heroSection {
+  position: relative;
+  overflow: hidden;
+  padding: variables.$spacing-20 variables.$spacing-4;
+  text-align: center;
+  @media (min-width: variables.$breakpoint-sm) {
+    padding: variables.$spacing-24 variables.$spacing-6;
+  }
+  .heroTitle {
+    margin: 0 0 variables.$spacing-4 0;
+    font-family: variables.$font-display;
+    font-size: variables.$font-size-3xl;
+    font-weight: variables.$font-weight-bold;
+    line-height: variables.$line-height-tight;
+    @media (min-width: variables.$breakpoint-sm) {
+      font-size: variables.$font-size-4xl;
+    }
+  }
+  .heroDescription {
+    max-width: 36rem;
+    margin: 0 auto variables.$spacing-6;
+    font-size: variables.$font-size-lg;
+    line-height: variables.$line-height-relaxed;
+    color: variables.$color-text-muted;
+  }
+  .ctaButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: variables.$spacing-3 variables.$spacing-6;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-semibold;
+    color: variables.$color-primary-foreground;
+    background-color: variables.$color-primary;
+    border-radius: variables.$radius-lg;
+    text-decoration: none;
+    transition: all variables.$transition-base;
+    &:hover {
+      background-color: variables.$color-primary-light;
+    }
+    span {
+      margin-left: variables.$spacing-2;
+      transition: transform variables.$transition-base;
+    }
+    &:hover span {
+      transform: translateX(4px);
+    }
+  }
+}
+
+.section {
+  padding: variables.$spacing-20 variables.$spacing-4;
+  @media (min-width: variables.$breakpoint-sm) {
+    padding: variables.$spacing-20 variables.$spacing-6;
+  }
+  border-top: 1px solid rgba(variables.$color-border, 0.5);
+  &:first-child {
+    border-top: none;
+  }
+  .sectionContainer {
+    width: 100%;
+    max-width: variables.$container-lg;
+    margin: 0 auto;
+  }
+  .sectionTitle {
+    margin: 0 0 variables.$spacing-4 0;
+    font-family: variables.$font-display;
+    font-size: variables.$font-size-2xl;
+    font-weight: variables.$font-weight-bold;
+    line-height: variables.$line-height-tight;
+    color: variables.$color-foreground;
+    @media (min-width: variables.$breakpoint-sm) {
+      font-size: variables.$font-size-3xl;
+    }
+  }
+  .sectionDescription {
+    margin: 0 0 variables.$spacing-6 0;
+    font-size: variables.$font-size-base;
+    line-height: variables.$line-height-relaxed;
+    color: variables.$color-text-muted;
+    max-width: 36rem;
+  }
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: variables.$spacing-6;
+  @media (min-width: variables.$breakpoint-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: variables.$breakpoint-lg) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.featureCard {
+  position: relative;
+  padding: variables.$spacing-6;
+  border: 1px solid rgba(variables.$color-border, 0.5);
+  border-radius: variables.$radius-xl;
+  background-color: variables.$color-surface;
+  transition: all variables.$transition-base;
+  &:hover {
+    border-color: rgba(variables.$color-primary, 0.2);
+    background-color: rgba(variables.$color-surface-elevated, 0.3);
+  }
+  .featureIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: variables.$spacing-10;
+    height: variables.$spacing-10;
+    margin-bottom: variables.$spacing-4;
+    background-color: rgba(variables.$color-primary, 0.1);
+    border-radius: variables.$radius-lg;
+    svg {
+      width: variables.$spacing-5;
+      height: variables.$spacing-5;
+      color: variables.$color-primary;
+    }
+  }
+  .featureTitle {
+    margin: 0 0 variables.$spacing-2 0;
+    font-size: variables.$font-size-base;
+    font-weight: variables.$font-weight-semibold;
+    color: variables.$color-foreground;
+  }
+  .featureDescription {
+    margin: 0;
+    font-size: variables.$font-size-sm;
+    line-height: variables.$line-height-relaxed;
+    color: variables.$color-text-muted;
+  }
+}
+
+.stepsList {
+  margin: variables.$spacing-4 0 0 variables.$spacing-2;
+  padding: 0;
+  list-style: none;
+  li {
+    position: relative;
+    padding-left: variables.$spacing-5;
+    margin-bottom: variables.$spacing-3;
+    font-size: variables.$font-size-sm;
+    line-height: variables.$line-height-relaxed;
+    color: variables.$color-text-secondary;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.6em;
+      width: 6px;
+      height: 6px;
+      background-color: variables.$color-primary;
+      border-radius: variables.$radius-full;
+    }
+    strong {
+      color: variables.$color-foreground;
+    }
+  }
+}
+
+.problemList {
+  margin: variables.$spacing-4 0 0 variables.$spacing-2;
+  padding: 0;
+  list-style: none;
+  li {
+    position: relative;
+    padding-left: variables.$spacing-5;
+    margin-bottom: variables.$spacing-3;
+    font-size: variables.$font-size-sm;
+    line-height: variables.$line-height-relaxed;
+    color: variables.$color-text-secondary;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.6em;
+      width: 6px;
+      height: 6px;
+      background-color: variables.$color-primary;
+      border-radius: variables.$radius-full;
+    }
+    strong {
+      color: variables.$color-foreground;
+    }
+  }
+}
+
+.ctaSection {
+  border-top: 1px solid rgba(variables.$color-border, 0.5);
+  .sectionContainer {
+    width: 100%;
+    max-width: variables.$container-lg;
+    margin: 0 auto;
+    text-align: center;
+    padding: variables.$spacing-20 variables.$spacing-4;
+    @media (min-width: variables.$breakpoint-sm) {
+      padding: variables.$spacing-20 variables.$spacing-6;
+    }
+  }
+  .ctaCard {
+    display: inline-block;
+    padding: variables.$spacing-8;
+    border: 1px solid rgba(variables.$color-border, 0.5);
+    border-radius: variables.$radius-2xl;
+    background-color: variables.$color-surface;
+    @media (min-width: variables.$breakpoint-sm) {
+      padding: variables.$spacing-12;
+    }
+  }
+  .ctaTitle {
+    margin: 0 0 variables.$spacing-4 0;
+    font-family: variables.$font-display;
+    font-size: variables.$font-size-2xl;
+    font-weight: variables.$font-weight-bold;
+    line-height: variables.$line-height-tight;
+    color: variables.$color-foreground;
+    @media (min-width: variables.$breakpoint-sm) {
+      font-size: variables.$font-size-3xl;
+    }
+  }
+  .ctaDescription {
+    max-width: 28rem;
+    margin: 0 auto variables.$spacing-6;
+    font-size: variables.$font-size-base;
+    line-height: variables.$line-height-relaxed;
+    color: variables.$color-text-muted;
+  }
+  .ctaButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: variables.$spacing-3 variables.$spacing-6;
+    font-size: variables.$font-size-sm;
+    font-weight: variables.$font-weight-semibold;
+    color: variables.$color-primary-foreground;
+    background-color: variables.$color-primary;
+    border-radius: variables.$radius-lg;
+    text-decoration: none;
+    transition: all variables.$transition-base;
+    &:hover {
+      background-color: variables.$color-primary-light;
+    }
+    span {
+      margin-left: variables.$spacing-2;
+      transition: transform variables.$transition-base;
+    }
+    &:hover span {
+      transform: translateX(4px);
+    }
+  }
+}
