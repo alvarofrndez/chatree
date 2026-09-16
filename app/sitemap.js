@@ -17,6 +17,11 @@ const STATIC_ROUTES = [
     url: '/explore',
     changeFrequency: 'hourly',
     priority: 0.9,
+  },
+  {
+    url: 'about',
+    changeFrequency: 'weekly',
+    priority: 0.8,
   }
 ]
 

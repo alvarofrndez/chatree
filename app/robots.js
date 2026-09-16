@@ -15,6 +15,7 @@ export default function robots() {
           '/explore',
           '/u/',
           '/prompt/',
+          '/about',
         ],
         disallow: [
           '/dashboard',

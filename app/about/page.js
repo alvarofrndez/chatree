@@ -18,7 +18,7 @@ export const metadata = {
   ],
   authors: [{ name: process.env.NEXT_PUBLIC_APP_NAME }],
   creator: process.env.NEXT_PUBLIC_APP_NAME,
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://www.chatree.chat'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://chatree.chat'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -27,7 +27,7 @@ export const metadata = {
     title: 'About Chatree – The Linktree for AI Conversations',
     description: 'Discover the story behind Chatree, its mission, and how it empowers AI enthusiasts to share their knowledge.',
     images: [{
-      url: '/og-image.png',
+      url: '/favicon.png',
       width: 1200,
       height: 630,
       alt: 'About Chatree – AI Conversation & Prompt Portfolio',
@@ -37,7 +37,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'About Chatree – The Linktree for AI Conversations',
     description: 'Learn why Chatree exists, what problem it solves, and how it helps you build a public AI prompt engineering portfolio.',
-    images: ['/og-image.png'],
+    images: ['/favicon.png'],
   },
   robots: {
     index: true,
