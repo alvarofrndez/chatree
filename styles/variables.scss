@@ -1,4 +1,4 @@
-$color-primary: #19E6D5;
+$color-primary: #19e6d5da;
 $color-primary-muted-light: #73eee4;
 $color-primary-light: #19E6D5;
 $color-primary-dark: darken($color-primary, 10%);
@@ -43,7 +43,7 @@ $color-copilot: #7160e8;
 $color-perplexity: #2dd4bf;
 
 // Typography - Distinctive font choices
-$font-display: 'Space Grotesk', 'Inter', -apple-system, sans-serif;
+$font-display: 'Inter', 'Inter Fallback', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 $font-body: 'Inter', 'Inter Fallback', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 $font-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
@@ -134,6 +134,7 @@ $z-index-modal: 1050;
 $z-index-popover: 1060;
 $z-index-tooltip: 1070;
 $z-index-toast: 1080;
+$z-index-full: 9999;
 
 // Breakpoints
 $breakpoint-2xs: 360px;

@@ -1,39 +1,46 @@
+// AuthLoadingWrapper.jsx
 'use client'
 
 import { useAuth } from '@/contexts/auth'
-import { PiTree } from 'react-icons/pi'
 import styles from './AuthLoadingWrapper.module.scss'
 import Image from 'next/image'
+
+const PARTICLE_COUNT = 8
 
 export default function AuthLoadingWrapper({ children }) {
   const { loading } = useAuth()
 
   if (loading) {
     return (
-      <div className={styles.overlay} aria-label="Loading" role="status" aria-live="polite">
+      <div className={styles.overlay} aria-label="Cargando" role="status" aria-live="polite">
+        <div className={styles.noise} aria-hidden="true" />
+        <div className={styles.backdrop} aria-hidden="true" />
 
-        <div className={styles.orb1} aria-hidden="true" />
-        <div className={styles.orb2} aria-hidden="true" />
-
-        <div className={styles.content}>
-          <div className={styles.logoMark} aria-hidden="true">
-            <Image
-              className={styles.logoIcon}
-              src='/favicon.svg' 
-              alt='Logo' 
-              width={24}
-              height={24}
-              aria-hidden='true'
-            />
-          </div>
-
-          <div className={styles.barTrack} aria-hidden="true">
-            <div className={styles.barFill} />
-          </div>
-
-          <span className={styles.label}>Loading</span>
+        <div className={styles.mesh} aria-hidden="true">
+          <div className={styles.blob1} />
+          <div className={styles.blob2} />
+          <div className={styles.blob3} />
         </div>
 
+        <div className={styles.particles} aria-hidden="true">
+          {Array.from({ length: PARTICLE_COUNT }).map((_, i) => (
+            <span key={i} className={styles.particle} />
+          ))}
+        </div>
+
+        <div className={styles.content}>
+          <div className={styles.logoWrap}>
+            <div className={styles.logoMark}>
+              <Image
+                className={styles.logoIcon}
+                src="/favicon.svg"
+                alt="Logo"
+                width={22}
+                height={22}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     )
   }

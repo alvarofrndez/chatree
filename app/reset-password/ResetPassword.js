@@ -9,6 +9,7 @@ import { PiTree } from 'react-icons/pi'
 import { createClient } from '@/lib/supabase/client'
 import styles from './page.module.scss'
 import DotLoading from '@/components/DotLoading'
+import Image from 'next/image'
 
 const REQUIREMENTS = [
   { key: 'minLength',   label: 'At least 8 characters',  test: (p) => p.length >= 8 },
@@ -133,14 +134,20 @@ export default function ResetPasswordClient() {
       </div>
 
       <div className={styles.wrapper}>
-
         <div className={styles.brand}>
           <Link
             href="/"
             className={styles.brandLink}
             aria-label={`Go to ${process.env.NEXT_PUBLIC_APP_NAME} homepage`}
           >
-            <PiTree className={styles.brandIcon} aria-hidden="true" />
+            <Image
+              className={styles.brandIcon}
+              src='/favicon.svg' 
+              alt='Logo' 
+              width={24}
+              height={24}
+              aria-hidden='true'
+            />
             <span className={styles.brandName}>{process.env.NEXT_PUBLIC_APP_NAME}</span>
           </Link>
           <p className={styles.brandDescription}>Set your new password</p>

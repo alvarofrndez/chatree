@@ -313,7 +313,7 @@
         width: 100%;
 
         // display
-        @include mixins.flex(column, center, center, nowrap, variables.$spacing-2);
+        @include mixins.flex(column, center, center, nowrap, variables.$spacing-4);
 
         // margin
         padding: variables.$spacing-8 variables.$spacing-4;
@@ -325,28 +325,22 @@
         border: 1px solid variables.$color-border;
         border-radius: variables.$radius-lg;
 
-        svg{
-          // size
-          width: variables.$spacing-8;
-          height: variables.$spacing-8;
-        }
-
         .emptyStateInfo{
           width: 100%;
 
           // display
-          @include mixins.flex(column, center, center);
+          @include mixins.flex(column, center, center, nowrap, variables.$spacing-1);
 
           h4{
             // decoration
             font-size: variables.$font-size-sm;
             font-weight: variables.$font-weight-normal;
-            color: variables.$color-text-secondary;
+            color: variables.$color-text-primary;
           }
 
           p {
             // decoration
-            font-size: variables.$font-size-xs;
+            font-size: variables.$font-size-sm;
             color: variables.$color-text-muted;
           }
         }

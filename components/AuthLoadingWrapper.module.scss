@@ -1,173 +1,165 @@
+// AuthLoadingWrapper.module.scss
 @use '@/styles/variables.scss' as variables;
 @use '@/styles/mixins.scss' as mixins;
 
 // ─── Overlay ──────────────────────────────────────────────────────────────────
 .overlay {
-  // position
   position: fixed;
   inset: 0;
   z-index: 9999;
 
-  // size
   width: 100%;
   height: 100%;
 
-  // display
   @include mixins.flex(column, center, center);
 
-  // decoration
   background-color: variables.$color-background;
+  overflow: hidden;
 
-  // animation — fade in instantly, fade out smoothly
-  animation: fadeIn 0.15s ease-out both;
+  animation: fadeIn 0.2s ease-out both;
 }
 
-// ─── Ambient orbs ────────────────────────────────────────────────────────────
-// Two large blurred color blobs that pulse slowly in the background.
-// Pure CSS, no JS, works in all browsers via opacity animation.
-.orb1 {
-  // position
+.noise {
   position: absolute;
-  top: 25%;
+  inset: -10%;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+
+  background-image: radial-gradient(rgba(variables.$color-border, 0.6) 1px, transparent 1px);
+  background-size: 26px 26px;
+
+  mask-image: radial-gradient(circle at center, black, transparent 65%);
+  -webkit-mask-image: radial-gradient(circle at center, black, transparent 65%);
+
+  opacity: 0.5;
+}
+
+.mesh {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.blob1, .blob2, .blob3 {
+  position: absolute;
+  border-radius: variables.$radius-full;
+  filter: blur(2px);
+}
+
+.blob1 {
+  top: 30%;
+  left: 38%;
+  width: 22rem;
+  height: 22rem;
+  background: radial-gradient(circle at center, color-mix(in srgb, variables.$color-primary 16%, transparent) 0%, transparent 70%);
+  animation: driftA 9s ease-in-out infinite;
+}
+
+.blob2 {
+  top: 55%;
+  left: 62%;
+  width: 16rem;
+  height: 16rem;
+  background: radial-gradient(circle at center, color-mix(in srgb, variables.$color-primary 12%, transparent) 0%, transparent 70%);
+  animation: driftB 11s ease-in-out infinite;
+}
+
+.blob3 {
+  top: 42%;
   left: 50%;
-  transform: translateX(-60%);
-
-  // size
-  width: 28rem;
-  height: 28rem;
-
-  // decoration
-  background: radial-gradient(
-    circle at center,
-    rgba(variables.$color-primary, 0.12) 0%,
-    transparent 70%
-  );
-  border-radius: variables.$radius-full;
-  pointer-events: none;
-
-  // animation
-  animation: pulse 3.5s ease-in-out infinite;
+  width: 12rem;
+  height: 12rem;
+  background: radial-gradient(circle at center, color-mix(in srgb, variables.$color-primary 10%, transparent) 0%, transparent 70%);
+  animation: driftC 7.5s ease-in-out infinite;
 }
 
-.orb2 {
-  // position
+// ─── Floating particles ───────────────────────────────────────────────────────
+.particles {
   position: absolute;
-  bottom: 25%;
-  right: 50%;
-  transform: translateX(60%);
-
-  // size
-  width: 20rem;
-  height: 20rem;
-
-  // decoration
-  background: radial-gradient(
-    circle at center,
-    rgba(variables.$color-primary, 0.07) 0%,
-    transparent 70%
-  );
-  border-radius: variables.$radius-full;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: 22rem;
+  height: 22rem;
+  transform: translate(-50%, -50%);
   pointer-events: none;
-
-  // animation — offset so it doesn't pulse in sync with orb1
-  animation: pulse 3.5s ease-in-out 1.75s infinite;
 }
+
+.particle {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: variables.$radius-full;
+  background: color-mix(in srgb, variables.$color-primary 60%, transparent);
+  opacity: 0;
+  animation: particleFloat 4s ease-in-out infinite;
+}
+
+.particle:nth-child(1) { top: 8%;  left: 50%; animation-delay: 0s;    animation-duration: 4.2s; }
+.particle:nth-child(2) { top: 24%; left: 82%; animation-delay: 0.5s;  animation-duration: 3.6s; }
+.particle:nth-child(3) { top: 52%; left: 92%; animation-delay: 1.1s;  animation-duration: 4.6s; }
+.particle:nth-child(4) { top: 78%; left: 78%; animation-delay: 1.6s;  animation-duration: 3.9s; }
+.particle:nth-child(5) { top: 90%; left: 48%; animation-delay: 0.3s;  animation-duration: 4.4s; }
+.particle:nth-child(6) { top: 76%; left: 18%; animation-delay: 2s;    animation-duration: 3.7s; }
+.particle:nth-child(7) { top: 50%; left: 8%;  animation-delay: 0.9s;  animation-duration: 4.1s; }
+.particle:nth-child(8) { top: 22%; left: 20%; animation-delay: 1.4s;  animation-duration: 3.5s; }
 
 // ─── Content ──────────────────────────────────────────────────────────────────
 .content {
-  // position
+  position: relative;
+  z-index: 2;
+
+  @include mixins.flex(column, center, center, nowrap, variables.$spacing-5);
+
+  animation: riseIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+// ─── Logo + rings ─────────────────────────────────────────────────────────────
+.logoWrap {
+  position: relative;
+
+  width: 5.5rem;
+  height: 5.5rem;
+
+  @include mixins.flex(row, center, center);
+
+  animation: popIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+}
+
+.logoMark {
   position: relative;
   z-index: 1;
 
-  // display
-  @include mixins.flex(column, center, center, nowrap, variables.$spacing-5);
+  width: 2.75rem;
+  height: 2.75rem;
 
-  // animation
-  animation: riseIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
-}
-
-// ─── Logo mark ────────────────────────────────────────────────────────────────
-.logoMark {
-  // size
-  width: 3rem;
-  height: 3rem;
-
-  // display
   @include mixins.flex(row, center, center);
 
-  // decoration
   background-color: variables.$color-surface;
   border: 1px solid rgba(variables.$color-border, 0.6);
   border-radius: variables.$radius-lg;
+  box-shadow: 0 2px 10px -2px color-mix(in srgb, variables.$color-primary 25%, transparent);
 
-  // animation
-  animation: breathe 2.8s ease-in-out infinite;
+  animation: breathe 2.6s ease-in-out infinite;
 }
 
 .logoIcon {
-  // size
-  width: 1.5rem;
-  height: 1.5rem;
-
-  // decoration
+  width: 1.35rem;
+  height: 1.35rem;
   color: variables.$color-primary;
 }
-
-// ─── Progress bar ─────────────────────────────────────────────────────────────
-// Indeterminate bar — a fill that slides back and forth inside a track.
-// Uses transform: translateX so it's GPU-accelerated and silky smooth
-// across all browsers including Safari.
-.barTrack {
-  // size
-  width: 8rem;
-  height: 2px;
-
-  // decoration
-  background-color: rgba(variables.$color-border, 0.4);
-  border-radius: variables.$radius-full;
-
-  // clip the fill to stay inside the track
-  overflow: hidden;
-}
-
-.barFill {
-  // size
-  width: 45%;
-  height: 100%;
-
-  // decoration
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    variables.$color-primary 40%,
-    variables.$color-primary 60%,
-    transparent 100%
-  );
-  border-radius: variables.$radius-full;
-
-  // animation — slides from -100% to +222% so the fill enters and exits cleanly
-  animation: slide 1.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-
-  // GPU hint — forces compositing in all browsers
-  will-change: transform;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
-
-// ─── Label ────────────────────────────────────────────────────────────────────
-.label {
-  // decoration
-  font-size: variables.$font-size-xs;
-  font-weight: variables.$font-weight-medium;
-  color: variables.$color-text-muted;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-
-  // animation — subtle fade-pulse so it doesn't feel static
-  animation: textPulse 2.8s ease-in-out infinite;
-}
-
-// ─── Keyframes ────────────────────────────────────────────────────────────────
 
 @keyframes fadeIn {
   from { opacity: 0; }
@@ -175,36 +167,56 @@
 }
 
 @keyframes riseIn {
-  from {
-    opacity:   0;
-    transform: translateY(0.75rem);
-  }
-  to {
-    opacity:   1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(0.75rem); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-// Logo breathe — scale pulses very subtly so it feels alive
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes driftA {
+  0%, 100% { transform: translate(0, 0) scale(1);        }
+  50%       { transform: translate(2rem, -1.5rem) scale(1.08); }
+}
+
+@keyframes driftB {
+  0%, 100% { transform: translate(0, 0) scale(1);          }
+  50%       { transform: translate(-2.5rem, 1.5rem) scale(0.92); }
+}
+
+@keyframes driftC {
+  0%, 100% { transform: translate(-50%, -50%) scale(1);        }
+  50%       { transform: translate(-50%, -50%) translate(1.5rem, 2rem) scale(1.15); }
+}
+
+@keyframes particleFloat {
+  0%   { opacity: 0;   transform: translateY(0.5rem) scale(0.6); }
+  30%  { opacity: 0.9; transform: translateY(0)       scale(1);   }
+  70%  { opacity: 0.9; transform: translateY(-0.75rem) scale(1);  }
+  100% { opacity: 0;   transform: translateY(-1.5rem) scale(0.6); }
+}
+
+// Material-style indeterminate arc: grows, travels, shrinks back
+@keyframes dash {
+  0%   { stroke-dasharray: 1, 150;   stroke-dashoffset: 0;    }
+  50%  { stroke-dasharray: 100, 150; stroke-dashoffset: -28;  }
+  100% { stroke-dasharray: 100, 150; stroke-dashoffset: -118; }
+}
+
 @keyframes breathe {
-  0%, 100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(variables.$color-primary, 0);    }
-  50%       { transform: scale(1.04); box-shadow: 0 0 0 6px rgba(variables.$color-primary, 0.08); }
+  0%, 100% { transform: scale(1);    }
+  50%       { transform: scale(1.05); }
 }
 
-// Background orbs — opacity only, no transform, avoids layout thrashing
-@keyframes pulse {
-  0%, 100% { opacity: 1;   }
-  50%       { opacity: 0.4; }
-}
-
-// Bar fill slide — translateX drives the animation (GPU only, no layout)
-@keyframes slide {
-  0%   { transform: translateX(-222%); }
-  100% { transform: translateX(222%);  }
-}
-
-// Label subtle fade
-@keyframes textPulse {
-  0%, 100% { opacity: 0.5; }
-  50%       { opacity: 1;   }
+// Respect reduced-motion preferences — keep it elegant, just static
+@media (prefers-reduced-motion: reduce) {
+  .overlay, .content, .logoWrap, .labelRow { animation: none; opacity: 1; transform: none; }
+  .blob1, .blob2, .blob3, .particle, .ringOuter, .ringInner, .ringInnerPath,
+  .logoMark, .glow, .dots span {
+    animation: none;
+  }
+  .particle { opacity: 0; }
+  .ringInnerPath { stroke-dasharray: 90 176; }
 }

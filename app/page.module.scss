@@ -548,26 +548,6 @@
                 border-radius: variables.$radius-xl;
                 background-color: variables.$color-surface;
 
-                .comparisonIcon {
-                    // display
-                    @include mixins.flex(row, center, center, nowrap);
-
-                    // size
-                    width: variables.$spacing-11;
-                    height: variables.$spacing-11;
-
-                    // margin
-                    margin-bottom: variables.$spacing-5;
-
-                    // decoration
-                    background-color: rgba(variables.$color-primary, 0.1);
-                    border-radius: variables.$radius-lg;
-
-                    svg {
-                        color: variables.$color-primary;
-                    }
-                }
-
                 .comparisonTitle {
                     // margin
                     margin: 0 0 variables.$spacing-3 0;

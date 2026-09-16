@@ -55,7 +55,7 @@
         z-index: 1;
 
         // display
-        @include mixins.flex(column, flex-start, center, nowrap);
+        @include mixins.flex(column, flex-start, center, nowrap, variables.$spacing-4);
 
         .brand {
             // size
@@ -298,9 +298,6 @@
         }
 
         .footer {
-            // margin
-            margin-top: variables.$spacing-6;
-
             // decoration
             text-align: center;
 

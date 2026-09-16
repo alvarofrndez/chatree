@@ -55,7 +55,7 @@
         z-index: 1;
 
         // display
-        @include mixins.flex(column, flex-start, center, nowrap);
+        @include mixins.flex(column, flex-start, center, nowrap, variables.$spacing-4);
 
         .brand {
             // size
@@ -63,9 +63,6 @@
 
             // display
             @include mixins.flex(column, center, center, nowrap, variables.$spacing-2);
-
-            // margin
-            margin-bottom: variables.$spacing-8;
 
             .brandLink {
                 // display
@@ -293,6 +290,7 @@
                 font-size: variables.$font-size-sm;
                 font-weight: variables.$font-weight-medium;
                 animation: slideIn 0.3s ease-out;
+                overflow: hidden;
 
                 &.error {
                     background-color: rgba(variables.$color-error, 0.1);
@@ -309,9 +307,6 @@
         }
 
         .footer {
-            // margin
-            margin-top: variables.$spacing-6;
-
             // decoration
             text-align: center;
 

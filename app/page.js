@@ -401,9 +401,6 @@ export default function HomePage() {
 
           <div className={styles.comparisonGrid}>
             <div className={styles.comparisonCard}>
-              <div className={styles.comparisonIcon} aria-hidden='true'>
-                <MessageCircle size={22} />
-              </div>
               <h3 className={styles.comparisonTitle}>Chats</h3>
               <p className={styles.comparisonDescription}>
                 Link a shared conversation so visitors can read the full
@@ -417,9 +414,7 @@ export default function HomePage() {
             </div>
 
             <div className={styles.comparisonCard}>
-              <div className={styles.comparisonIcon} aria-hidden='true'>
-                <Copy size={22} />
-              </div>
+     
               <h3 className={styles.comparisonTitle}>Prompts</h3>
               <p className={styles.comparisonDescription}>
                 Publish the reusable text behind a great result — what it's

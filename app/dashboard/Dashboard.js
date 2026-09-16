@@ -106,9 +106,9 @@ function ProfileUrlBar({ username }) {
 function EmptyChats({ onAdd }) {
   return (
     <div className={styles.emptyState} role="status">
-      <Link2 size={24} aria-hidden="true" />
+    <Link2 className={styles.emptyStateIcon}  size={18} />
       <div className={styles.emptyStateInfo}>
-        <h2 className={styles.emptyStateTitle}>No chats yet</h2>
+        <h4 className={styles.emptyStateTitle}>No chats yet</h4>
         <p>Add your first AI conversation to get started</p>
       </div>
       <button className={styles.addButton} onClick={onAdd}>
@@ -122,9 +122,9 @@ function EmptyChats({ onAdd }) {
 function EmptyPrompts({ onAdd }) {
   return (
     <div className={styles.emptyState} role="status">
-      <Sparkles size={24} aria-hidden="true" />
+      <Sparkles className={styles.emptyStateIcon} size={18} />
       <div className={styles.emptyStateInfo}>
-        <h2 className={styles.emptyStateTitle}>No prompts yet</h2>
+        <h4 className={styles.emptyStateTitle}>No prompts yet</h4>
         <p>Publish your first prompt so others can use and copy it</p>
       </div>
       <button className={styles.addButton} onClick={onAdd}>
